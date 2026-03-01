@@ -60,7 +60,7 @@ export default function Footer() {
       <Container>
         <div style={{ padding: '64px 0 32px' }}>
 
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : isTablet ? '1fr 1fr' : '1fr repeat(3, auto)', gap: isMobile ? 40 : 64, marginBottom: 64 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : isTablet ? '1fr 1fr' : 'repeat(4, 1fr)', gap: isMobile ? 40 : 48, marginBottom: 64 }}>
             <div>
               <div style={{ fontSize: 18, fontWeight: 800, color: t.textPrimary, marginBottom: 12, letterSpacing: '-0.02em' }}>
                 NeoBank
