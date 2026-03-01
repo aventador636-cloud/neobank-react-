@@ -49,11 +49,11 @@ export default function Hero({ onCta }: HeroProps) {
             paddingTop: 40, paddingBottom: 64,
           }}>
             {[
-              { icon: <Users size={20} strokeWidth={1.5} color="#a78bfa" />, val: '1М+', desc: 'довольных клиентов', stripe: 'trust-stripe-purple', glow: 'rgba(167,139,250,0.06)', iconBg: 'rgba(167,139,250,0.1)', iconBorder: 'rgba(167,139,250,0.15)', delay: '0s' },
-              { icon: <Percent size={20} strokeWidth={1.5} color="#60a5fa" />, val: '5%', desc: 'кэшбэк на покупки', stripe: 'trust-stripe-blue', glow: 'rgba(96,165,250,0.06)', iconBg: 'rgba(96,165,250,0.1)', iconBorder: 'rgba(96,165,250,0.15)', delay: '0.1s' },
-              { icon: <BadgeDollarSign size={20} strokeWidth={1.5} color="#4ade80" />, val: '0₽', desc: 'обслуживание навсегда', stripe: 'trust-stripe-green', glow: 'rgba(74,222,128,0.06)', iconBg: 'rgba(74,222,128,0.1)', iconBorder: 'rgba(74,222,128,0.15)', delay: '0.2s' },
+              { icon: <Users size={20} strokeWidth={1.5} color="#a78bfa" style={{ animation: 'iconFloat 3s ease-in-out infinite' }} />, val: '1М+', desc: 'довольных клиентов', stripe: 'trust-stripe-purple', glow: 'rgba(167,139,250,0.06)', iconBg: 'rgba(167,139,250,0.1)', iconBorder: 'rgba(167,139,250,0.2)', delay: '0s' },
+              { icon: <Percent size={20} strokeWidth={1.5} color="#818cf8" style={{ animation: 'iconSpin 8s linear infinite' }} />, val: '5%', desc: 'кэшбэк на покупки', stripe: 'trust-stripe-blue', glow: 'rgba(129,140,248,0.06)', iconBg: 'rgba(129,140,248,0.1)', iconBorder: 'rgba(129,140,248,0.2)', delay: '0.1s' },
+              { icon: <BadgeDollarSign size={20} strokeWidth={1.5} color="#60a5fa" style={{ animation: 'iconPulse 2.5s ease-in-out infinite' }} />, val: '0₽', desc: 'обслуживание навсегда', stripe: 'trust-stripe-indigo', glow: 'rgba(96,165,250,0.06)', iconBg: 'rgba(96,165,250,0.1)', iconBorder: 'rgba(96,165,250,0.2)', delay: '0.2s' },
             ].map(s => (
-              <div key={s.val} style={{
+              <div key={s.val} className="trust-card" style={{
                 position: 'relative', overflow: 'hidden',
                 display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14,
                 padding: '32px 20px', borderRadius: t.r24,
@@ -156,9 +156,33 @@ export default function Hero({ onCta }: HeroProps) {
               background-size: 200% auto;
               animation: trustStripe 4s linear infinite;
             }
+            .trust-stripe-indigo {
+              background: linear-gradient(90deg, #60a5fa 0%, #818cf8 50%, #60a5fa 100%);
+              background-size: 200% auto;
+              animation: trustStripe 4s linear infinite;
+            }
             @keyframes trustStripe {
               0%   { background-position: 0% center; }
               100% { background-position: 200% center; }
+            }
+            .trust-card {
+              transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s ease;
+            }
+            .trust-card:hover {
+              transform: translateY(-6px);
+              box-shadow: 0 0 0 1px rgba(167,139,250,0.25), 0 20px 48px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08) !important;
+            }
+            @keyframes iconFloat {
+              0%, 100% { transform: translateY(0px); }
+              50%       { transform: translateY(-4px); }
+            }
+            @keyframes iconSpin {
+              from { transform: rotate(0deg); }
+              to   { transform: rotate(360deg); }
+            }
+            @keyframes iconPulse {
+              0%, 100% { transform: scale(1); }
+              50%       { transform: scale(1.18); }
             }
           `}</style>
         </div>
