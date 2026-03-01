@@ -1,7 +1,9 @@
 import { useEffect, useRef } from 'react'
 import { t } from '../styles/tokens'
 
-export default function BrandAnimation() {
+interface BrandAnimationProps { size?: number }
+
+export default function BrandAnimation({ size = 480 }: BrandAnimationProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const frameRef  = useRef<number>(0)
   const timeRef   = useRef<number>(0)
@@ -12,7 +14,7 @@ export default function BrandAnimation() {
     const ctx = canvas.getContext('2d')!
 
     const DPR = window.devicePixelRatio || 1
-    const SIZE = 480
+    const SIZE = size
     canvas.width  = SIZE * DPR
     canvas.height = SIZE * DPR
     canvas.style.width  = `${SIZE}px`

@@ -1,5 +1,6 @@
 import { t } from '../styles/tokens'
 import { Container } from './Layout'
+import { useResponsive } from '../hooks/useResponsive'
 
 const cols = [
   { title: 'Продукты',  links: ['Стандартная карта', 'Премиум карта', 'Кредиты', 'Вклады'] },
@@ -53,12 +54,13 @@ const socials = [
 ]
 
 export default function Footer() {
+  const { isMobile, isTablet } = useResponsive()
   return (
     <footer style={{ borderTop: `1px solid ${t.border}` }}>
       <Container>
         <div style={{ padding: '64px 0 32px' }}>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr repeat(3, auto)', gap: 64, marginBottom: 64 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : isTablet ? '1fr 1fr' : '1fr repeat(3, auto)', gap: isMobile ? 40 : 64, marginBottom: 64 }}>
             <div>
               <div style={{ fontSize: 18, fontWeight: 800, color: t.textPrimary, marginBottom: 12, letterSpacing: '-0.02em' }}>
                 NeoBank
@@ -103,9 +105,9 @@ export default function Footer() {
             ))}
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 24, borderTop: `1px solid ${t.border}` }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 12, paddingTop: 24, borderTop: `1px solid ${t.border}` }}>
             <p style={{ fontSize: 13, color: t.textTertiary }}>© 2026 NeoBank. Лицензия ЦБ РФ №1234.</p>
-            <div style={{ display: 'flex', gap: 8 }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
               {['Конфиденциальность', 'Соглашение', 'Реквизиты'].map(l => (
                 <a key={l} href="#" style={{ fontSize: 13, color: t.textTertiary, padding: '4px 8px', transition: t.ease }}
                   onMouseEnter={e => (e.currentTarget.style.color = t.textSecondary)}

@@ -2,10 +2,12 @@ import { Users, Percent, BadgeDollarSign } from 'lucide-react'
 import { t } from '../styles/tokens'
 import { Container, Btn } from './Layout'
 import BrandAnimation from './BrandAnimation'
+import { useResponsive } from '../hooks/useResponsive'
 
 interface HeroProps { onCta: () => void }
 
 export default function Hero({ onCta }: HeroProps) {
+  const { isMobile, isTablet } = useResponsive()
   return (
     <div style={{ position: 'relative', overflow: 'hidden', paddingBottom: 0 }}>
 
@@ -21,7 +23,7 @@ export default function Hero({ onCta }: HeroProps) {
 
         {/* ── Brand animation — самый верх ── */}
         <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 40 }}>
-          <BrandAnimation />
+          <BrandAnimation size={isMobile ? 280 : isTablet ? 360 : 480} />
         </div>
 
         {/* ── Headline ── */}
@@ -34,14 +36,14 @@ export default function Hero({ onCta }: HeroProps) {
           </p>
 
           {/* ── CTAs ── */}
-          <div style={{ display: 'flex', gap: 12, justifyContent: 'center', marginBottom: 64 }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, justifyContent: 'center', marginBottom: 64 }}>
             <Btn onClick={onCta}>Открыть счёт бесплатно</Btn>
             <Btn variant="ghost" href="#cards">Сравнить карты</Btn>
           </div>
 
           {/* ── Trust bar ── */}
           <div style={{
-            display: 'flex', justifyContent: 'center', gap: 48,
+            display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: isMobile ? 24 : 48,
             paddingTop: 40, paddingBottom: 64,
             borderTop: `1px solid ${t.border}`,
           }}>

@@ -1,20 +1,24 @@
 import type { ReactNode, CSSProperties } from 'react'
 import { t } from '../styles/tokens'
+import { useResponsive } from '../hooks/useResponsive'
 
 interface ContainerProps { children: ReactNode; style?: CSSProperties }
 interface SectionProps   { children: ReactNode; style?: CSSProperties; id?: string }
 
 export function Container({ children, style }: ContainerProps) {
+  const { isMobile } = useResponsive()
   return (
-    <div style={{ maxWidth: 1160, margin: '0 auto', padding: '0 40px', ...style }}>
+    <div style={{ maxWidth: 1160, margin: '0 auto', padding: isMobile ? '0 20px' : '0 40px', ...style }}>
       {children}
     </div>
   )
 }
 
 export function Section({ children, style, id }: SectionProps) {
+  const { isMobile, isTablet } = useResponsive()
+  const padding = isMobile ? '48px 0' : isTablet ? '64px 0' : '96px 0'
   return (
-    <section id={id} style={{ padding: '96px 0', ...style }}>
+    <section id={id} style={{ padding, ...style }}>
       <Container>{children}</Container>
     </section>
   )

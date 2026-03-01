@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { t } from '../styles/tokens'
 import { Container } from './Layout'
 import { stats } from '../data/cards'
+import { useResponsive } from '../hooks/useResponsive'
 
 function useCountUp(target: number, active: boolean) {
   const [val, setVal] = useState(0)
@@ -31,7 +32,7 @@ function StatItem({ value, suffix, label }: { value: number; suffix: string; lab
   }, [])
 
   return (
-    <div ref={ref} style={{ padding: '48px 40px' }}>
+    <div ref={ref} style={{ padding: 'clamp(28px, 4vw, 48px) clamp(20px, 4vw, 40px)' }}>
       <div className="shimmer" style={{ fontSize: 48, fontWeight: 900, letterSpacing: '-0.04em', lineHeight: 1, marginBottom: 8 }}>
         {val}{suffix}
       </div>
@@ -41,12 +42,16 @@ function StatItem({ value, suffix, label }: { value: number; suffix: string; lab
 }
 
 export default function Stats() {
+  const { isMobile } = useResponsive()
   return (
     <div style={{ borderTop: `1px solid ${t.border}`, borderBottom: `1px solid ${t.border}` }}>
       <Container style={{ padding: 0 }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)' }}>
           {stats.map((s, i) => (
-            <div key={i} style={{ borderRight: i < stats.length - 1 ? `1px solid ${t.border}` : 'none' }}>
+            <div key={i} style={{
+              borderRight: (isMobile ? i % 2 === 0 : i < stats.length - 1) ? `1px solid ${t.border}` : 'none',
+              borderBottom: isMobile && i < 2 ? `1px solid ${t.border}` : 'none',
+            }}>
               <StatItem {...s} />
             </div>
           ))}

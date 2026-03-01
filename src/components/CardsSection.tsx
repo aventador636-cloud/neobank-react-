@@ -5,6 +5,7 @@ import { Section, Label, Heading, Sub, Btn } from './Layout'
 import Card3D from './Card3D'
 import { cards } from '../data/cards'
 import type { CardType } from '../data/cards'
+import { useResponsive } from '../hooks/useResponsive'
 
 interface CardsSectionProps { onOrder: (type: CardType) => void }
 
@@ -12,12 +13,13 @@ export default function CardsSection({ onOrder }: CardsSectionProps) {
   const [active, setActive] = useState<CardType>('standard')
   const card = cards.find(c => c.id === active)!
   const accent = active === 'premium' ? t.purple : t.blue
+  const { isMobile, isTablet } = useResponsive()
 
   return (
     <Section id="cards">
       <Label style={{ fontSize: 14 }}>Продукты</Label>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 80, alignItems: 'start' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isTablet ? '1fr' : '1fr 1fr', gap: isTablet ? 48 : 80, alignItems: 'start' }}>
 
         {/* Left */}
         <div>
@@ -83,7 +85,7 @@ export default function CardsSection({ onOrder }: CardsSectionProps) {
         </div>
 
         {/* Right */}
-        <div style={{ position: 'sticky', top: 100 }}>
+        <div style={{ position: isTablet ? 'static' : 'sticky', top: 100, maxWidth: isMobile ? 360 : '100%', margin: '0 auto', width: '100%' }}>
           <Card3D key={active} card={card} />
         </div>
 

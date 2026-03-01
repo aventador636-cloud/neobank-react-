@@ -2,15 +2,17 @@ import { useState } from 'react'
 import { t } from '../styles/tokens'
 import { Section, Label, Heading } from './Layout'
 import { faqItems } from '../data/cards'
+import { useResponsive } from '../hooks/useResponsive'
 
 export default function FAQ() {
   const [open, setOpen] = useState<number | null>(null)
+  const { isTablet } = useResponsive()
 
   return (
     <Section>
-      <div style={{ display: 'grid', gridTemplateColumns: '340px 1fr', gap: 80 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isTablet ? '1fr' : '340px 1fr', gap: isTablet ? 40 : 80 }}>
 
-        <div style={{ position: 'sticky', top: 100, alignSelf: 'start' }}>
+        <div style={{ position: isTablet ? 'static' : 'sticky', top: 100, alignSelf: 'start' }}>
           <Label>FAQ</Label>
           <Heading size="lg" style={{ marginBottom: 16 }}>Частые<br />вопросы</Heading>
           <p style={{ fontSize: 15, color: t.textSecondary, lineHeight: 1.65 }}>

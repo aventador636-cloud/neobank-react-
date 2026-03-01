@@ -1,6 +1,7 @@
 import { ShieldCheck, ScanFace, Zap } from 'lucide-react'
 import { t } from '../styles/tokens'
 import { Section, Label, Heading } from './Layout'
+import { useResponsive } from '../hooks/useResponsive'
 
 const items = [
   {
@@ -36,16 +37,17 @@ const items = [
 ]
 
 export default function Security() {
+  const { isMobile } = useResponsive()
   return (
     <Section>
       <Label>Безопасность</Label>
       <Heading size="xl" style={{ marginBottom: 48 }}>Ваши деньги<br />под защитой</Heading>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: 12 }}>
 
         {/* Large card */}
         <div style={{
-          gridColumn: 'span 2', padding: 40, borderRadius: t.r24,
+          gridColumn: isMobile ? 'span 1' : 'span 2', padding: isMobile ? 28 : 40, borderRadius: t.r24,
           background: t.surface, border: `1px solid ${t.border}`,
           display: 'flex', flexDirection: 'column', gap: 20, minHeight: 280,
         }}>
