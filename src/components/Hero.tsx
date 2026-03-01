@@ -48,15 +48,15 @@ export default function Hero({ onCta }: HeroProps) {
             borderTop: `1px solid ${t.border}`,
           }}>
             {[
-              { icon: <Users size={15} strokeWidth={1.75} color={t.textTertiary} />, val: '1М+', desc: 'клиентов' },
-              { icon: <Percent size={15} strokeWidth={1.75} color={t.textTertiary} />, val: '5%', desc: 'кэшбэк' },
-              { icon: <BadgeDollarSign size={15} strokeWidth={1.75} color={t.textTertiary} />, val: '0₽', desc: 'обслуживание' },
+              { icon: <Users size={18} strokeWidth={1.75} color={t.textTertiary} />, val: '1М+', desc: 'клиентов', valSize: 28, descSize: 14 },
+              { icon: <Percent size={13} strokeWidth={1.75} color={t.textTertiary} />, val: '5%', desc: 'кэшбэк', valSize: 16, descSize: 11 },
+              { icon: <BadgeDollarSign size={15} strokeWidth={1.75} color={t.textTertiary} />, val: '0₽', desc: 'обслуживание', valSize: 20, descSize: 12 },
             ].map(s => (
               <div key={s.val} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 {s.icon}
                 <div>
-                  <div className="shimmer" style={{ fontSize: 20, fontWeight: 800, letterSpacing: '-0.03em', lineHeight: 1 }}>{s.val}</div>
-                  <div style={{ fontSize: 12, color: t.textTertiary, marginTop: 2 }}>{s.desc}</div>
+                  <div className="shimmer" style={{ fontSize: s.valSize, fontWeight: 800, letterSpacing: '-0.03em', lineHeight: 1 }}>{s.val}</div>
+                  <div style={{ fontSize: s.descSize, color: t.textTertiary, marginTop: 2 }}>{s.desc}</div>
                 </div>
               </div>
             ))}

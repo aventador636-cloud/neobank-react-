@@ -2,7 +2,6 @@ import { useState } from 'react'
 import type { CardType } from './data/cards'
 import Header from './components/Header'
 import Hero from './components/Hero'
-import Stats from './components/Stats'
 import CardsSection from './components/CardsSection'
 import Security from './components/Security'
 import FAQ from './components/FAQ'
@@ -20,7 +19,6 @@ export default function App() {
     <>
       <Header onCta={() => openModal()} />
       <Hero onCta={() => openModal()} />
-      <Stats />
       <CardsSection onOrder={openModal} />
       <Security />
       <FAQ />
