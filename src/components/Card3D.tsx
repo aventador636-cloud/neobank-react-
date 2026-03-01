@@ -57,18 +57,9 @@ export default function Card3D({ card }: Card3DProps) {
             position: 'relative',
             overflow: 'hidden',
             background: isPremium ? '#0e0b16' : '#0b0e17',
-            boxShadow: `
-              0 0 0 1px rgba(255,255,255,0.07),
-              0 24px 60px rgba(0,0,0,0.6),
-              inset 0 1px 0 rgba(255,255,255,0.06)
-            `,
+            boxShadow: `0 24px 60px rgba(0,0,0,0.6)`,
           }}>
 
-            {/* Animated gradient top border */}
-            <div className={isPremium ? 'card-stripe-premium' : 'card-stripe-standard'} style={{
-              position: 'absolute', top: 0, left: 0, right: 0, height: 2,
-              borderRadius: '24px 24px 0 0',
-            }} />
 
             {/* Glare overlay */}
             <div ref={glareRef} style={{
@@ -179,21 +170,6 @@ export default function Card3D({ card }: Card3DProps) {
         @keyframes cardFloat {
           0%,100% { transform: translateY(0px) rotateX(1deg) rotateY(-3deg); }
           50%      { transform: translateY(-14px) rotateX(-1deg) rotateY(3deg); }
-        }
-
-        .card-stripe-standard {
-          background: linear-gradient(90deg, #60a5fa 0%, #818cf8 33%, #a78bfa 66%, #60a5fa 100%);
-          background-size: 200% auto;
-          animation: cardStripeShimmer 4s linear infinite;
-        }
-        .card-stripe-premium {
-          background: linear-gradient(90deg, #a78bfa 0%, #c084fc 33%, #818cf8 66%, #a78bfa 100%);
-          background-size: 200% auto;
-          animation: cardStripeShimmer 4s linear infinite;
-        }
-        @keyframes cardStripeShimmer {
-          0%   { background-position: 0% center; }
-          100% { background-position: 200% center; }
         }
 
         .card-name-standard {
