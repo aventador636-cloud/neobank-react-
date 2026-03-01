@@ -43,24 +43,68 @@ export default function Hero({ onCta }: HeroProps) {
 
           {/* ── Trust bar ── */}
           <div style={{
-            display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: isMobile ? 24 : 48,
+            display: 'grid',
+            gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
+            gap: 12,
             paddingTop: 40, paddingBottom: 64,
-            borderTop: `1px solid ${t.border}`,
           }}>
             {[
-              { icon: <Users size={18} strokeWidth={1.75} color={t.textTertiary} />, val: '1М+', desc: 'клиентов', valSize: 28, descSize: 14 },
-              { icon: <Percent size={13} strokeWidth={1.75} color={t.textTertiary} />, val: '5%', desc: 'кэшбэк', valSize: 16, descSize: 11 },
-              { icon: <BadgeDollarSign size={15} strokeWidth={1.75} color={t.textTertiary} />, val: '0₽', desc: 'обслуживание', valSize: 20, descSize: 12 },
+              { icon: <Users size={20} strokeWidth={1.5} color="#a78bfa" />, val: '1М+', desc: 'довольных клиентов', stripe: 'trust-stripe-purple', glow: 'rgba(167,139,250,0.06)', iconBg: 'rgba(167,139,250,0.1)', iconBorder: 'rgba(167,139,250,0.15)', delay: '0s' },
+              { icon: <Percent size={20} strokeWidth={1.5} color="#60a5fa" />, val: '5%', desc: 'кэшбэк на покупки', stripe: 'trust-stripe-blue', glow: 'rgba(96,165,250,0.06)', iconBg: 'rgba(96,165,250,0.1)', iconBorder: 'rgba(96,165,250,0.15)', delay: '0.1s' },
+              { icon: <BadgeDollarSign size={20} strokeWidth={1.5} color="#4ade80" />, val: '0₽', desc: 'обслуживание навсегда', stripe: 'trust-stripe-green', glow: 'rgba(74,222,128,0.06)', iconBg: 'rgba(74,222,128,0.1)', iconBorder: 'rgba(74,222,128,0.15)', delay: '0.2s' },
             ].map(s => (
-              <div key={s.val} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                {s.icon}
-                <div>
-                  <div className="shimmer" style={{ fontSize: s.valSize, fontWeight: 800, letterSpacing: '-0.03em', lineHeight: 1 }}>{s.val}</div>
-                  <div style={{ fontSize: s.descSize, color: t.textTertiary, marginTop: 2 }}>{s.desc}</div>
+              <div key={s.val} style={{
+                position: 'relative', overflow: 'hidden',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14,
+                padding: '32px 20px', borderRadius: t.r24,
+                background: '#0d0e11',
+                boxShadow: '0 0 0 1px rgba(255,255,255,0.07), inset 0 1px 0 rgba(255,255,255,0.05)',
+                animation: `trustFadeUp 0.6s cubic-bezier(0.16,1,0.3,1) ${s.delay} both`,
+              }}>
+                {/* Animated top stripe */}
+                <div className={s.stripe} style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, borderRadius: `${t.r24} ${t.r24} 0 0` }} />
+                {/* Radial glow */}
+                <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: `radial-gradient(ellipse at 50% 0%, ${s.glow} 0%, transparent 65%)` }} />
+
+                <div style={{
+                  position: 'relative', zIndex: 1,
+                  width: 44, height: 44, borderRadius: t.r12, flexShrink: 0,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  background: s.iconBg, border: `1px solid ${s.iconBorder}`,
+                }}>
+                  {s.icon}
                 </div>
+                <div className="shimmer" style={{ position: 'relative', zIndex: 1, fontSize: 44, fontWeight: 900, letterSpacing: '-0.04em', lineHeight: 1 }}>{s.val}</div>
+                <div style={{ position: 'relative', zIndex: 1, fontSize: 14, color: t.textSecondary, lineHeight: 1.4 }}>{s.desc}</div>
               </div>
             ))}
           </div>
+
+          <style>{`
+            @keyframes trustFadeUp {
+              from { opacity: 0; transform: translateY(24px); }
+              to   { opacity: 1; transform: translateY(0); }
+            }
+            .trust-stripe-purple {
+              background: linear-gradient(90deg, #a78bfa 0%, #818cf8 50%, #a78bfa 100%);
+              background-size: 200% auto;
+              animation: trustStripe 4s linear infinite;
+            }
+            .trust-stripe-blue {
+              background: linear-gradient(90deg, #60a5fa 0%, #818cf8 50%, #60a5fa 100%);
+              background-size: 200% auto;
+              animation: trustStripe 4s linear infinite;
+            }
+            .trust-stripe-green {
+              background: linear-gradient(90deg, #4ade80 0%, #34d399 50%, #4ade80 100%);
+              background-size: 200% auto;
+              animation: trustStripe 4s linear infinite;
+            }
+            @keyframes trustStripe {
+              0%   { background-position: 0% center; }
+              100% { background-position: 200% center; }
+            }
+          `}</style>
         </div>
 
       </Container>
