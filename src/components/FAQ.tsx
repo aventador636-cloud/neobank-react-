@@ -18,7 +18,7 @@ export default function FAQ() {
           <p className="shimmer" style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 20 }}>
             FAQ
           </p>
-          <Heading size="lg" style={{ marginBottom: 16 }}>Частые<br />вопросы</Heading>
+          <h2 className="shimmer" style={{ fontSize: 24, fontWeight: 800, lineHeight: 1.2, letterSpacing: '-0.03em', marginBottom: 16 }}>Частые<br />вопросы</h2>
           <p style={{ fontSize: 15, color: t.textSecondary, lineHeight: 1.65, marginBottom: 32 }}>
             Не нашли ответ? Напишите нам — поможем разобраться.
           </p>
@@ -65,7 +65,7 @@ export default function FAQ() {
                     background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left',
                   }}
                 >
-                  <span className="shimmer" style={{ fontSize: 15, fontWeight: 600, lineHeight: 1.4 }}>
+                  <span className="shimmer" style={{ fontSize: 18, fontWeight: 600, lineHeight: 1.4 }}>
                     {item.question}
                   </span>
                   <div style={{
@@ -93,8 +93,8 @@ export default function FAQ() {
                   transition: 'max-height 0.4s cubic-bezier(0.16,1,0.3,1), opacity 0.3s ease',
                 }}>
                   <p style={{
-                    fontSize: 14, color: t.textSecondary, lineHeight: 1.75,
-                    padding: '0 24px 24px',
+                    fontSize: 16, color: t.textSecondary, lineHeight: 1.8,
+                    padding: '0 24px 28px',
                   }}>
                     {item.answer}
                   </p>
