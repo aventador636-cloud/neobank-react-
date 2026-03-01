@@ -23,7 +23,7 @@ export default function CardsSection({ onOrder }: CardsSectionProps) {
       <div style={{
         display: 'grid',
         gridTemplateColumns: isTablet ? '1fr' : '1fr 1fr',
-        gap: 16,
+        gap: 24,
         alignItems: 'stretch',
       }}>
         {cards.map((card, i) => {
@@ -38,20 +38,10 @@ export default function CardsSection({ onOrder }: CardsSectionProps) {
               padding: isMobile ? 24 : 36,
               borderRadius: t.r24,
               background: '#0d0e11',
-              boxShadow: `0 0 0 1px ${borderColor}, inset 0 1px 0 rgba(255,255,255,0.05)`,
+              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.04)',
               display: 'flex', flexDirection: 'column',
               animation: `productFadeUp 0.65s cubic-bezier(0.16,1,0.3,1) ${i * 0.12}s both`,
             }}>
-              {/* Animated top stripe */}
-              <div style={{
-                position: 'absolute', top: 0, left: 0, right: 0, height: 2,
-                borderRadius: `${t.r24} ${t.r24} 0 0`,
-                background: isPremium
-                  ? 'linear-gradient(90deg, #a78bfa 0%, #c084fc 50%, #818cf8 100%)'
-                  : 'linear-gradient(90deg, #60a5fa 0%, #818cf8 50%, #60a5fa 100%)',
-                backgroundSize: '200% auto',
-                animation: 'cardStripe 4s linear infinite',
-              }} />
 
               {/* Radial glow */}
               <div style={{
@@ -121,16 +111,12 @@ export default function CardsSection({ onOrder }: CardsSectionProps) {
           from { opacity: 0; transform: translateY(24px); }
           to   { opacity: 1; transform: translateY(0); }
         }
-        @keyframes cardStripe {
-          0%   { background-position: 0% center; }
-          100% { background-position: 200% center; }
-        }
         .product-card {
           transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s ease;
         }
         .product-card:hover {
           transform: translateY(-6px);
-          box-shadow: 0 0 0 1px rgba(167,139,250,0.25), 0 24px 48px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08) !important;
+          box-shadow: 0 24px 48px rgba(0,0,0,0.4) !important;
         }
 
         .product-btn {

@@ -43,18 +43,18 @@ export default function Security() {
       <Label>Безопасность</Label>
       <Heading size="xl" style={{ marginBottom: 48 }}>Ваши деньги<br />под защитой</Heading>
 
-      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: 12 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: 24 }}>
 
         {/* Large card */}
         <div style={{
-          gridColumn: isMobile ? 'span 1' : 'span 2', padding: isMobile ? 28 : 40, borderRadius: t.r24,
-          background: t.surface, border: `1px solid ${t.border}`,
+          gridColumn: isMobile ? 'span 1' : 'span 2', padding: isMobile ? 32 : 48, borderRadius: t.r24,
+          background: t.surface,
           display: 'flex', flexDirection: 'column', gap: 20, minHeight: 280,
         }}>
           <div style={{
             width: 56, height: 56, borderRadius: t.r16, display: 'flex',
             alignItems: 'center', justifyContent: 'center',
-            background: 'rgba(74,222,128,0.08)', border: '1px solid rgba(74,222,128,0.12)',
+            background: 'rgba(74,222,128,0.08)',
           }}>
             {items[0].icon}
           </div>
@@ -65,21 +65,21 @@ export default function Security() {
           <span style={{
             alignSelf: 'flex-start', padding: '5px 14px', borderRadius: t.r999,
             fontSize: 12, fontWeight: 600, color: items[0].tagColor,
-            background: items[0].tagBg, border: `1px solid ${items[0].tagBorder}`,
+            background: items[0].tagBg,
           }}>{items[0].tag}</span>
         </div>
 
         {/* Small cards */}
         {items.slice(1).map(item => (
           <div key={item.title} style={{
-            padding: 32, borderRadius: t.r24,
-            background: t.surface, border: `1px solid ${t.border}`,
+            padding: 40, borderRadius: t.r24,
+            background: t.surface,
             display: 'flex', flexDirection: 'column', gap: 16,
           }}>
             <div style={{
               width: 52, height: 52, borderRadius: t.r16, display: 'flex',
               alignItems: 'center', justifyContent: 'center',
-              background: item.tagBg, border: `1px solid ${item.tagBorder}`,
+              background: item.tagBg,
             }}>
               {item.icon}
             </div>

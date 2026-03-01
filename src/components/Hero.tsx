@@ -58,11 +58,8 @@ export default function Hero({ onCta }: HeroProps) {
                 display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14,
                 padding: '32px 20px', borderRadius: t.r24,
                 background: '#0d0e11',
-                boxShadow: '0 0 0 1px rgba(255,255,255,0.07), inset 0 1px 0 rgba(255,255,255,0.05)',
                 animation: `trustFadeUp 0.6s cubic-bezier(0.16,1,0.3,1) ${s.delay} both`,
               }}>
-                {/* Animated top stripe */}
-                <div className={s.stripe} style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, borderRadius: `${t.r24} ${t.r24} 0 0` }} />
                 {/* Radial glow */}
                 <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: `radial-gradient(ellipse at 50% 0%, ${s.glow} 0%, transparent 65%)` }} />
 
@@ -70,7 +67,7 @@ export default function Hero({ onCta }: HeroProps) {
                   position: 'relative', zIndex: 1,
                   width: 44, height: 44, borderRadius: t.r12, flexShrink: 0,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  background: s.iconBg, border: `1px solid ${s.iconBorder}`,
+                  background: s.iconBg,
                 }}>
                   {s.icon}
                 </div>
@@ -88,11 +85,8 @@ export default function Hero({ onCta }: HeroProps) {
             padding: isMobile ? '20px 24px' : '24px 32px',
             borderRadius: t.r24, marginBottom: 64,
             background: '#0d0e11',
-            boxShadow: '0 0 0 1px rgba(255,255,255,0.07), inset 0 1px 0 rgba(255,255,255,0.05)',
             animation: 'trustFadeUp 0.6s cubic-bezier(0.16,1,0.3,1) 0.3s both',
           }}>
-            {/* Animated stripe */}
-            <div className="trust-stripe-purple" style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, borderRadius: `${t.r24} ${t.r24} 0 0` }} />
             {/* Glow */}
             <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'radial-gradient(ellipse at 10% 50%, rgba(167,139,250,0.07) 0%, transparent 55%)' }} />
 
@@ -100,7 +94,7 @@ export default function Hero({ onCta }: HeroProps) {
               <div style={{
                 width: 48, height: 48, borderRadius: t.r12, flexShrink: 0,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                background: 'rgba(167,139,250,0.1)', border: '1px solid rgba(167,139,250,0.2)',
+                background: 'rgba(167,139,250,0.1)',
               }}>
                 <Globe size={22} strokeWidth={1.5} color="#a78bfa" style={{ animation: 'globeSpin 6s linear infinite' }} />
               </div>
@@ -116,13 +110,13 @@ export default function Hero({ onCta }: HeroProps) {
 
             <div style={{ position: 'relative', zIndex: 1, flexShrink: 0 }}>
               <button style={{
-                padding: '10px 20px', borderRadius: t.r12, border: '1px solid rgba(167,139,250,0.25)',
+                padding: '10px 20px', borderRadius: t.r12, border: 'none',
                 background: 'rgba(167,139,250,0.08)', color: '#a78bfa',
                 fontSize: 13, fontWeight: 600, cursor: 'pointer',
-                transition: 'background 0.2s ease, border-color 0.2s ease',
+                transition: 'background 0.2s ease',
               }}
-                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(167,139,250,0.15)'; (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(167,139,250,0.4)' }}
-                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(167,139,250,0.08)'; (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(167,139,250,0.25)' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(167,139,250,0.15)' }}
+                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(167,139,250,0.08)' }}
               >
                 <span className="shimmer">Узнать первым</span>
               </button>
@@ -170,7 +164,7 @@ export default function Hero({ onCta }: HeroProps) {
             }
             .trust-card:hover {
               transform: translateY(-6px);
-              box-shadow: 0 0 0 1px rgba(167,139,250,0.25), 0 20px 48px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08) !important;
+              box-shadow: 0 20px 48px rgba(0,0,0,0.4) !important;
             }
             @keyframes iconFloat {
               0%, 100% { transform: translateY(0px); }
