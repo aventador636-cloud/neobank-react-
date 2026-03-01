@@ -13,8 +13,6 @@ export default function CardsSection({ onOrder }: CardsSectionProps) {
 
   return (
     <Section id="cards">
-      <Label style={{ fontSize: 14 }}>Продукты</Label>
-
       <div style={{ textAlign: 'center', marginBottom: 56 }}>
         <Heading size="lg" style={{ marginBottom: 16 }}>Выберите свою NEOкарту</Heading>
         <Sub style={{ maxWidth: 480, margin: '0 auto' }}>
