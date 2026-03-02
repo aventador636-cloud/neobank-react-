@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { ChevronDown } from 'lucide-react'
 import { t } from '../styles/tokens'
-import { Section, Heading } from './Layout'
+import { Section } from './Layout'
 import { faqItems } from '../data/cards'
 import { useResponsive } from '../hooks/useResponsive'
 

@@ -1,6 +1,6 @@
 import { Check } from 'lucide-react'
 import { t } from '../styles/tokens'
-import { Section, Label, Heading, Sub } from './Layout'
+import { Section, Heading, Sub } from './Layout'
 import Card3D from './Card3D'
 import { cards } from '../data/cards'
 import type { CardType } from '../data/cards'
@@ -29,8 +29,6 @@ export default function CardsSection({ onOrder }: CardsSectionProps) {
         {cards.map((card, i) => {
           const isPremium = card.id === 'premium'
           const accent = isPremium ? t.purple : t.blue
-          const borderColor = isPremium ? 'rgba(167,139,250,0.2)' : 'rgba(255,255,255,0.07)'
-          const glowColor = isPremium ? 'rgba(167,139,250,0.05)' : 'rgba(96,165,250,0.03)'
 
           return (
             <div key={card.id} className="product-card" style={{
