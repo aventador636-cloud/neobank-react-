@@ -1,4 +1,4 @@
-export type CardType = 'standard' | 'premium'
+export type CardType = 'standard' | 'premium' | 'diners'
 
 export interface CardProduct {
   id: CardType
@@ -46,6 +46,23 @@ export const cards: CardProduct[] = [
     ],
     accentColor: '#a855f7',
     btnClass: 'premium',
+  },
+  {
+    id: 'diners',
+    title: 'Diners Club',
+    description: 'Эксклюзивная карта для избранных. Безлимитный кэшбэк, консьерж-сервис и доступ в более 1400 VIP-залов по всему миру.',
+    number: '3622 •••• •••• 9001',
+    holder: 'NeoBank Diners',
+    brand: 'Diners Club',
+    badge: 'Эксклюзив',
+    features: [
+      'Кэшбэк 10% в ресторанах и отелях',
+      'Доступ в 1400+ VIP-залов мира',
+      'Консьерж-сервис 24/7',
+      'Безлимитное страхование путешествий',
+    ],
+    accentColor: '#d4a853',
+    btnClass: 'diners',
   },
 ]
 

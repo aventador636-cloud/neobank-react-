@@ -22,13 +22,14 @@ export default function CardsSection({ onOrder }: CardsSectionProps) {
 
       <div style={{
         display: 'grid',
-        gridTemplateColumns: isTablet ? '1fr' : '1fr 1fr',
+        gridTemplateColumns: isMobile ? '1fr' : isTablet ? '1fr 1fr' : 'repeat(3, 1fr)',
         gap: 24,
         alignItems: 'stretch',
       }}>
         {cards.map((card, i) => {
           const isPremium = card.id === 'premium'
-          const accent = isPremium ? t.purple : t.blue
+          const isDiners  = card.id === 'diners'
+          const accent = isDiners ? '#d4a853' : isPremium ? t.purple : t.blue
 
           return (
             <div key={card.id} className="product-card" style={{
@@ -38,7 +39,7 @@ export default function CardsSection({ onOrder }: CardsSectionProps) {
               background: 'rgba(255,255,255,0.04)',
               backdropFilter: 'blur(16px)',
               WebkitBackdropFilter: 'blur(16px)',
-              boxShadow: `0 8px 40px rgba(0,0,0,0.25), 0 0 80px ${isPremium ? 'rgba(167,139,250,0.04)' : 'rgba(96,165,250,0.03)'}`,
+              boxShadow: `0 8px 40px rgba(0,0,0,0.25), 0 0 80px ${isDiners ? 'rgba(212,168,83,0.06)' : isPremium ? 'rgba(167,139,250,0.04)' : 'rgba(96,165,250,0.03)'}`,
               display: 'flex', flexDirection: 'column',
               animation: `productFadeUp 0.65s cubic-bezier(0.16,1,0.3,1) ${i * 0.12}s both`,
             }}>
@@ -46,7 +47,7 @@ export default function CardsSection({ onOrder }: CardsSectionProps) {
               {/* Radial glow */}
               <div style={{
                 position: 'absolute', inset: 0, pointerEvents: 'none',
-                background: `radial-gradient(ellipse at 50% 0%, ${isPremium ? 'rgba(167,139,250,0.10)' : 'rgba(96,165,250,0.07)'} 0%, transparent 65%)`,
+                background: `radial-gradient(ellipse at 50% 0%, ${isDiners ? 'rgba(212,168,83,0.10)' : isPremium ? 'rgba(167,139,250,0.10)' : 'rgba(96,165,250,0.07)'} 0%, transparent 65%)`,
               }} />
 
               {/* Card 3D */}

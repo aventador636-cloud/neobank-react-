@@ -9,6 +9,7 @@ export default function Card3D({ card }: Card3DProps) {
   const glareRef = useRef<HTMLDivElement>(null)
 
   const isPremium = card.id === 'premium'
+  const isDiners  = card.id === 'diners'
 
   const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect()
@@ -56,7 +57,7 @@ export default function Card3D({ card }: Card3DProps) {
             justifyContent: 'space-between',
             position: 'relative',
             overflow: 'hidden',
-            background: isPremium ? '#0e0b16' : '#0b0e17',
+            background: isDiners ? '#0f0c08' : isPremium ? '#0e0b16' : '#0b0e17',
             boxShadow: `0 24px 60px rgba(0,0,0,0.6)`,
           }}>
 
@@ -80,7 +81,9 @@ export default function Card3D({ card }: Card3DProps) {
             {/* Subtle radial glow */}
             <div style={{
               position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none',
-              background: isPremium
+              background: isDiners
+                ? 'radial-gradient(ellipse at 80% 0%, rgba(212,168,83,0.10) 0%, transparent 60%)'
+                : isPremium
                 ? 'radial-gradient(ellipse at 80% 0%, rgba(167,139,250,0.07) 0%, transparent 60%)'
                 : 'radial-gradient(ellipse at 80% 0%, rgba(96,165,250,0.07) 0%, transparent 60%)',
             }} />
@@ -127,7 +130,7 @@ export default function Card3D({ card }: Card3DProps) {
                 <div style={{ fontSize: 10, fontWeight: 600, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 4 }}>
                   Card holder
                 </div>
-                <div className={isPremium ? 'card-name-premium' : 'card-name-standard'} style={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.04em' }}>
+                <div className={isDiners ? 'card-name-diners' : isPremium ? 'card-name-premium' : 'card-name-standard'} style={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.04em' }}>
                   {card.holder}
                 </div>
               </div>
@@ -147,7 +150,9 @@ export default function Card3D({ card }: Card3DProps) {
           {/* Card shadow */}
           <div style={{
             position: 'absolute', bottom: -30, left: '15%', right: '15%', height: 30,
-            background: isPremium
+            background: isDiners
+              ? 'radial-gradient(ellipse, rgba(212,168,83,0.25) 0%, transparent 70%)'
+              : isPremium
               ? 'radial-gradient(ellipse, rgba(167,139,250,0.25) 0%, transparent 70%)'
               : 'radial-gradient(ellipse, rgba(96,165,250,0.2) 0%, transparent 70%)',
             filter: 'blur(10px)',
@@ -159,7 +164,7 @@ export default function Card3D({ card }: Card3DProps) {
       {/* Brand row under card */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 20, padding: '0 4px' }}>
         <span style={{ fontSize: 12, fontWeight: 600, color: t.textTertiary, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-          {card.id === 'premium' ? 'Premium' : 'Standard'}
+          {isDiners ? 'Exclusive' : isPremium ? 'Premium' : 'Standard'}
         </span>
         <span style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.35)', letterSpacing: '0.04em' }}>
           {card.brand}
@@ -182,6 +187,14 @@ export default function Card3D({ card }: Card3DProps) {
         }
         .card-name-premium {
           background: linear-gradient(90deg, #a78bfa 0%, #c084fc 50%, #818cf8 100%);
+          background-size: 200% auto;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          animation: cardStripeShimmer 4s linear infinite;
+        }
+        .card-name-diners {
+          background: linear-gradient(90deg, #b8882a 0%, #f0c96a 40%, #d4a853 70%, #e8d48a 100%);
           background-size: 200% auto;
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
