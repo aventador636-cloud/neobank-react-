@@ -47,7 +47,7 @@ export default function Security() {
 
   return (
     <Section>
-      <Heading size="xl" style={{ marginBottom: 48 }}>Ваши деньги<br />под защитой</Heading>
+      <Heading size="lg" style={{ marginBottom: 48 }}>Ваши деньги<br />под защитой</Heading>
 
       <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: 24, alignItems: 'stretch' }}>
         {items.map(item => (
