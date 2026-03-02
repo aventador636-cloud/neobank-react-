@@ -37,8 +37,10 @@ export default function CardsSection({ onOrder }: CardsSectionProps) {
               position: 'relative', overflow: 'hidden',
               padding: isMobile ? 24 : 36,
               borderRadius: t.r24,
-              background: '#0d0e11',
-              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.04)',
+              background: 'rgba(255,255,255,0.04)',
+              backdropFilter: 'blur(16px)',
+              WebkitBackdropFilter: 'blur(16px)',
+              boxShadow: `0 8px 40px rgba(0,0,0,0.25), 0 0 80px ${isPremium ? 'rgba(167,139,250,0.04)' : 'rgba(96,165,250,0.03)'}`,
               display: 'flex', flexDirection: 'column',
               animation: `productFadeUp 0.65s cubic-bezier(0.16,1,0.3,1) ${i * 0.12}s both`,
             }}>
@@ -46,7 +48,7 @@ export default function CardsSection({ onOrder }: CardsSectionProps) {
               {/* Radial glow */}
               <div style={{
                 position: 'absolute', inset: 0, pointerEvents: 'none',
-                background: `radial-gradient(ellipse at 50% 0%, ${glowColor} 0%, transparent 60%)`,
+                background: `radial-gradient(ellipse at 50% 0%, ${isPremium ? 'rgba(167,139,250,0.10)' : 'rgba(96,165,250,0.07)'} 0%, transparent 65%)`,
               }} />
 
               {/* Card 3D */}
@@ -115,8 +117,8 @@ export default function CardsSection({ onOrder }: CardsSectionProps) {
           transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s ease;
         }
         .product-card:hover {
-          transform: translateY(-6px);
-          box-shadow: 0 24px 48px rgba(0,0,0,0.4) !important;
+          transform: translateY(-8px);
+          box-shadow: 0 32px 64px rgba(0,0,0,0.35), 0 0 120px rgba(129,140,248,0.08) !important;
         }
 
         .product-btn {

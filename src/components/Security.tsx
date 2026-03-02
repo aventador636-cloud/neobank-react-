@@ -54,14 +54,17 @@ export default function Security() {
           <div key={item.title} className="sec-card" style={{
             position: 'relative', overflow: 'hidden',
             padding: isMobile ? 32 : 40, borderRadius: t.r24,
-            background: t.surface,
+            background: 'rgba(255,255,255,0.04)',
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)',
+            boxShadow: `0 8px 40px rgba(0,0,0,0.2), 0 0 80px ${item.glow.replace('0.08', '0.05')}`,
             display: 'flex', flexDirection: 'column', gap: 20,
             animation: `secFadeUp 0.65s cubic-bezier(0.16,1,0.3,1) ${item.delay} both`,
           }}>
             {/* Radial glow */}
             <div style={{
               position: 'absolute', inset: 0, pointerEvents: 'none',
-              background: `radial-gradient(ellipse at 20% 20%, ${item.glow} 0%, transparent 60%)`,
+              background: `radial-gradient(ellipse at 20% 20%, ${item.glow.replace('0.08', '0.14')} 0%, transparent 65%)`,
             }} />
 
             {/* Watermark */}
@@ -118,8 +121,8 @@ export default function Security() {
           transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s ease;
         }
         .sec-card:hover {
-          transform: translateY(-6px);
-          box-shadow: 0 24px 48px rgba(0,0,0,0.4);
+          transform: translateY(-8px);
+          box-shadow: 0 32px 64px rgba(0,0,0,0.3), 0 0 100px rgba(129,140,248,0.07) !important;
         }
 
         @keyframes secIconPulse {

@@ -44,9 +44,12 @@ export default function FAQ() {
               <div key={i} className="faq-card" style={{
                 position: 'relative',
                 borderRadius: t.r24,
-                background: isOpen ? '#0f1014' : '#0d0e11',
+                background: isOpen ? 'rgba(129,140,248,0.06)' : 'rgba(255,255,255,0.03)',
+                backdropFilter: 'blur(16px)',
+                WebkitBackdropFilter: 'blur(16px)',
                 overflow: 'hidden',
-                transition: 'background 0.3s ease',
+                boxShadow: isOpen ? '0 8px 40px rgba(0,0,0,0.2)' : '0 4px 24px rgba(0,0,0,0.12)',
+                transition: 'background 0.3s ease, box-shadow 0.3s ease',
                 animation: `faqFadeUp 0.5s cubic-bezier(0.16,1,0.3,1) ${i * 0.07}s both`,
               }}>
                 {/* Radial glow when open */}
@@ -126,8 +129,8 @@ export default function FAQ() {
           transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s ease, background 0.3s ease;
         }
         .faq-card:hover {
-          transform: translateY(-3px);
-          box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+          transform: translateY(-4px);
+          box-shadow: 0 16px 48px rgba(0,0,0,0.25), 0 0 60px rgba(129,140,248,0.06) !important;
         }
       `}</style>
     </Section>
