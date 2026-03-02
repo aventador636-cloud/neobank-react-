@@ -15,10 +15,10 @@ export default function FAQ() {
 
         {/* Left — sticky */}
         <div style={{ position: isTablet ? 'static' : 'sticky', top: 100, alignSelf: 'start' }}>
-          <p className="shimmer" style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 20 }}>
+          <p className="shimmer" style={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 20 }}>
             FAQ
           </p>
-          <h2 className="shimmer" style={{ fontSize: 40, fontWeight: 800, lineHeight: 1.15, letterSpacing: '-0.03em', marginBottom: 20 }}>Частые<br />вопросы</h2>
+          <h2 className="shimmer" style={{ fontSize: 32, fontWeight: 800, lineHeight: 1.15, letterSpacing: '-0.03em', marginBottom: 20 }}>Частые<br />вопросы</h2>
           <p style={{ fontSize: 15, color: t.textSecondary, lineHeight: 1.7, marginBottom: 36 }}>
             Не нашли ответ? Напишите нам — поможем разобраться.
           </p>
