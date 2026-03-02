@@ -120,6 +120,7 @@ export default function Card3D({ card }: Card3DProps) {
               fontSize: 15, letterSpacing: '0.22em',
               color: 'rgba(255,255,255,0.7)',
               fontWeight: 500,
+              whiteSpace: 'nowrap',
             }}>
               {card.number}
             </div>
