@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
+import type { ReactNode } from 'react'
 import { t } from '../styles/tokens'
 import { useAuth } from '../context/AuthContext'
 import { cards } from '../data/cards'
@@ -43,6 +44,257 @@ function getGreeting() {
   if (h < 12) return 'Доброе утро'
   if (h < 18) return 'Добрый день'
   return 'Добрый вечер'
+}
+
+function Toggle({ on, onToggle }: { on: boolean; onToggle: () => void }) {
+  return (
+    <button onClick={onToggle} style={{
+      width: 44, height: 24, borderRadius: 12, border: 'none', cursor: 'pointer',
+      background: on ? 'linear-gradient(90deg, #a78bfa, #60a5fa)' : t.surfaceHover,
+      position: 'relative', transition: 'background 0.25s ease', flexShrink: 0,
+      boxShadow: on ? '0 0 12px rgba(167,139,250,0.35)' : 'none',
+    }}>
+      <span style={{
+        position: 'absolute', top: 3, left: on ? 23 : 3,
+        width: 18, height: 18, borderRadius: '50%', background: '#fff',
+        transition: 'left 0.25s ease', display: 'block',
+        boxShadow: '0 1px 4px rgba(0,0,0,0.3)',
+      }} />
+    </button>
+  )
+}
+
+function SettingRow({ icon, label, sub, right }: { icon: string; label: string; sub?: string; right: React.ReactNode }) {
+  return (
+    <div style={{
+      display: 'flex', alignItems: 'center', gap: 14,
+      padding: '14px 20px',
+    }}>
+      <div style={{
+        width: 38, height: 38, borderRadius: t.r12, flexShrink: 0,
+        background: t.surfaceHover, display: 'flex', alignItems: 'center',
+        justifyContent: 'center', fontSize: 17,
+      }}>{icon}</div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: 14, fontWeight: 600, color: t.textPrimary }}>{label}</div>
+        {sub && <div style={{ fontSize: 12, color: t.textTertiary, marginTop: 1 }}>{sub}</div>}
+      </div>
+      {right}
+    </div>
+  )
+}
+
+function SectionCard({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <div style={{ marginBottom: 20 }}>
+      <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: t.textTertiary, marginBottom: 10, paddingLeft: 4 }}>
+        {title}
+      </p>
+      <div style={{ background: t.surface, border: `1px solid ${t.border}`, borderRadius: t.r20, overflow: 'hidden' }}>
+        {children}
+      </div>
+    </div>
+  )
+}
+
+function Divider() {
+  return <div style={{ height: 1, background: t.border, margin: '0 20px' }} />
+}
+
+function ProfileTab({ user, activeCard, logout }: { user: { name: string; phone: string } | null; activeCard: number; logout: () => void }) {
+  const [security, setSecurity] = useState({ biometric: true, twofa: false, loginAlerts: true })
+  const [notifs, setNotifs]     = useState({ push: true, sms: false, email: true })
+  const [copied, setCopied]     = useState(false)
+
+  const refCode = 'NEO-ALEX-2024'
+  const initials = user?.name.split(' ').map(w => w[0]).join('') ?? 'НА'
+  const tierColors = ['#60a5fa', '#a855f7', '#d4a853']
+  const tierColor  = tierColors[activeCard]
+  const tierName   = ['Standard', 'Premium', 'Diners Club'][activeCard]
+
+  const copy = useCallback(() => {
+    navigator.clipboard.writeText(refCode)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }, [])
+
+  const toggle = (group: 'security' | 'notifs', key: string) => {
+    if (group === 'security') setSecurity(p => ({ ...p, [key]: !p[key as keyof typeof p] }))
+    else setNotifs(p => ({ ...p, [key]: !p[key as keyof typeof p] }))
+  }
+
+  const dailyUsed  = 23_400
+  const dailyLimit = 100_000
+  const monthUsed  = 78_500
+  const monthLimit = 500_000
+
+  return (
+    <div style={{ maxWidth: 560 }}>
+
+      {/* Hero */}
+      <div style={{
+        background: t.surface, border: `1px solid ${t.border}`,
+        borderRadius: t.r24, padding: '28px 24px', marginBottom: 20,
+        display: 'flex', alignItems: 'center', gap: 20,
+      }}>
+        <div style={{
+          width: 72, height: 72, borderRadius: '50%', flexShrink: 0,
+          background: `linear-gradient(135deg, ${tierColor}33, ${tierColor}66)`,
+          border: `2px solid ${tierColor}55`,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontSize: 24, fontWeight: 800, color: tierColor,
+        }}>{initials}</div>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 20, fontWeight: 800, color: t.textPrimary, marginBottom: 4 }}>{user?.name}</div>
+          <div style={{ fontSize: 14, color: t.textSecondary, marginBottom: 10 }}>{user?.phone}</div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <span style={{
+              fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: t.r999,
+              background: `${tierColor}22`, color: tierColor, letterSpacing: '0.05em',
+            }}>{tierName}</span>
+            <span style={{
+              fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: t.r999,
+              background: 'rgba(74,222,128,0.12)', color: t.green, letterSpacing: '0.05em',
+            }}>✓ Верифицирован</span>
+          </div>
+        </div>
+        <button style={{
+          background: t.surfaceHover, border: `1px solid ${t.border}`,
+          borderRadius: t.r12, padding: '8px 14px', color: t.textSecondary,
+          fontSize: 13, fontWeight: 600, cursor: 'pointer', transition: t.ease, whiteSpace: 'nowrap',
+        }}
+          onMouseEnter={e => (e.currentTarget.style.color = t.textPrimary)}
+          onMouseLeave={e => (e.currentTarget.style.color = t.textSecondary)}
+        >
+          Изменить ✎
+        </button>
+      </div>
+
+      {/* Cashback stats */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, marginBottom: 20 }}>
+        {[
+          { label: 'Кэшбэк за март', value: '1 234 ₽', color: t.purple },
+          { label: 'Всего накоплено', value: '8 760 ₽', color: t.green },
+          { label: 'Операций',        value: '47',       color: t.blue  },
+        ].map(s => (
+          <div key={s.label} style={{
+            background: t.surface, border: `1px solid ${t.border}`,
+            borderRadius: t.r16, padding: '16px 14px', textAlign: 'center',
+          }}>
+            <div style={{ fontSize: 18, fontWeight: 800, color: s.color, marginBottom: 4 }}>{s.value}</div>
+            <div style={{ fontSize: 11, color: t.textTertiary, fontWeight: 500 }}>{s.label}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Security */}
+      <SectionCard title="Безопасность">
+        <SettingRow icon="👆" label="Биометрия" sub="Touch ID / Face ID" right={<Toggle on={security.biometric} onToggle={() => toggle('security', 'biometric')} />} />
+        <Divider />
+        <SettingRow icon="🔐" label="Двухфакторная аутентификация" sub={security.twofa ? 'Включена' : 'Выключена'} right={<Toggle on={security.twofa} onToggle={() => toggle('security', 'twofa')} />} />
+        <Divider />
+        <SettingRow icon="🔔" label="Уведомления о входе" sub="На номер телефона" right={<Toggle on={security.loginAlerts} onToggle={() => toggle('security', 'loginAlerts')} />} />
+        <Divider />
+        <SettingRow icon="📱" label="Активная сессия" sub="iPhone 14 · Москва · Сейчас" right={<span style={{ fontSize: 12, color: t.green, fontWeight: 600 }}>●&nbsp;Онлайн</span>} />
+      </SectionCard>
+
+      {/* Limits */}
+      <SectionCard title="Лимиты">
+        {[
+          { label: 'Дневной лимит', used: dailyUsed, limit: dailyLimit },
+          { label: 'Месячный лимит', used: monthUsed, limit: monthLimit },
+        ].map(lim => (
+          <div key={lim.label} style={{ padding: '16px 20px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
+              <span style={{ fontSize: 13, fontWeight: 600, color: t.textPrimary }}>{lim.label}</span>
+              <span style={{ fontSize: 13, color: t.textTertiary }}>
+                {lim.used.toLocaleString('ru-RU')} / {lim.limit.toLocaleString('ru-RU')} ₽
+              </span>
+            </div>
+            <div style={{ height: 6, borderRadius: 3, background: t.surfaceHover, overflow: 'hidden' }}>
+              <div style={{
+                height: '100%', borderRadius: 3,
+                width: `${(lim.used / lim.limit) * 100}%`,
+                background: 'linear-gradient(90deg, #a78bfa, #60a5fa)',
+                transition: 'width 0.6s ease',
+              }} />
+            </div>
+          </div>
+        ))}
+      </SectionCard>
+
+      {/* Notifications */}
+      <SectionCard title="Уведомления">
+        <SettingRow icon="📲" label="Push-уведомления" sub="Операции, переводы, акции" right={<Toggle on={notifs.push} onToggle={() => toggle('notifs', 'push')} />} />
+        <Divider />
+        <SettingRow icon="💬" label="SMS-уведомления" sub="Подтверждение операций" right={<Toggle on={notifs.sms} onToggle={() => toggle('notifs', 'sms')} />} />
+        <Divider />
+        <SettingRow icon="📧" label="Email-рассылка" sub="Выписки и предложения" right={<Toggle on={notifs.email} onToggle={() => toggle('notifs', 'email')} />} />
+      </SectionCard>
+
+      {/* Referral */}
+      <SectionCard title="Реферальная программа">
+        <div style={{ padding: '20px 20px 16px' }}>
+          <div style={{ fontSize: 14, fontWeight: 600, color: t.textPrimary, marginBottom: 4 }}>
+            Пригласи друга — получи 500 ₽
+          </div>
+          <div style={{ fontSize: 13, color: t.textSecondary, marginBottom: 16 }}>
+            Поделись кодом. Друг откроет счёт — вы оба получите бонус.
+          </div>
+          <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+            <div style={{
+              flex: 1, background: t.bg, border: `1px solid ${t.border}`,
+              borderRadius: t.r12, padding: '12px 16px',
+              fontFamily: 'monospace', fontSize: 16, fontWeight: 700,
+              color: t.purple, letterSpacing: '0.08em',
+            }}>{refCode}</div>
+            <button onClick={copy} style={{
+              height: 46, padding: '0 18px', borderRadius: t.r12, border: 'none',
+              background: copied ? 'rgba(74,222,128,0.15)' : t.surfaceHover,
+              color: copied ? t.green : t.textPrimary,
+              fontSize: 13, fontWeight: 700, cursor: 'pointer', transition: t.ease,
+              whiteSpace: 'nowrap', flexShrink: 0,
+            }}>
+              {copied ? '✓ Скопировано' : 'Копировать'}
+            </button>
+          </div>
+        </div>
+      </SectionCard>
+
+      {/* Support */}
+      <SectionCard title="Поддержка и документы">
+        {[
+          { icon: '📞', label: 'Горячая линия', sub: '8 800 100-00-00 · Бесплатно', arrow: true },
+          { icon: '💬', label: 'Написать в чат', sub: 'Среднее время ответа — 2 мин', arrow: true },
+          { icon: '📄', label: 'Договор на обслуживание', sub: 'PDF · 1.2 MB', arrow: true },
+          { icon: '📋', label: 'Тарифы и условия', sub: 'Актуальная версия', arrow: true },
+        ].map((item, i, arr) => (
+          <div key={item.label}>
+            <SettingRow
+              icon={item.icon}
+              label={item.label}
+              sub={item.sub}
+              right={<span style={{ color: t.textTertiary, fontSize: 16 }}>›</span>}
+            />
+            {i < arr.length - 1 && <Divider />}
+          </div>
+        ))}
+      </SectionCard>
+
+      {/* Logout */}
+      <button onClick={logout} style={{
+        width: '100%', height: 50,
+        background: 'none', border: `1px solid rgba(248,113,113,0.25)`,
+        borderRadius: t.r16, color: '#f87171',
+        fontSize: 14, fontWeight: 700, cursor: 'pointer', transition: t.ease, marginBottom: 8,
+      }}
+        onMouseEnter={e => { e.currentTarget.style.background = 'rgba(248,113,113,0.07)'; e.currentTarget.style.borderColor = 'rgba(248,113,113,0.5)' }}
+        onMouseLeave={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.borderColor = 'rgba(248,113,113,0.25)' }}
+      >
+        Выйти из аккаунта
+      </button>
+    </div>
+  )
 }
 
 export default function Dashboard() {
@@ -213,41 +465,7 @@ export default function Dashboard() {
             </div>
           </>
         ) : (
-          /* Profile tab */
-          <div style={{ maxWidth: 480 }}>
-            <h1 style={{ fontSize: 28, fontWeight: 800, color: t.textPrimary, marginBottom: 32 }}>Профиль</h1>
-
-            <div style={{ background: t.surface, border: `1px solid ${t.border}`, borderRadius: t.r24, overflow: 'hidden' }}>
-              {[
-                { label: 'Имя', value: user?.name },
-                { label: 'Телефон', value: user?.phone },
-                { label: 'Статус', value: 'Верифицирован ✓' },
-                { label: 'Тариф', value: cards[activeCard].title },
-                { label: 'Дата регистрации', value: '1 января 2024' },
-              ].map((row, i, arr) => (
-                <div key={row.label} style={{
-                  display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                  padding: '18px 24px',
-                  borderBottom: i < arr.length - 1 ? `1px solid ${t.border}` : 'none',
-                }}>
-                  <span style={{ fontSize: 13, color: t.textTertiary, fontWeight: 500 }}>{row.label}</span>
-                  <span style={{ fontSize: 14, color: t.textPrimary, fontWeight: 600 }}>{row.value}</span>
-                </div>
-              ))}
-            </div>
-
-            <button onClick={logout} style={{
-              marginTop: 24, width: '100%', height: 48,
-              background: 'none', border: `1px solid rgba(248,113,113,0.3)`,
-              borderRadius: t.r12, color: '#f87171',
-              fontSize: 14, fontWeight: 700, cursor: 'pointer', transition: t.ease,
-            }}
-              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(248,113,113,0.08)'; e.currentTarget.style.borderColor = '#f87171' }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.borderColor = 'rgba(248,113,113,0.3)' }}
-            >
-              Выйти из аккаунта
-            </button>
-          </div>
+          <ProfileTab user={user} activeCard={activeCard} logout={logout} />
         )}
       </main>
     </div>
