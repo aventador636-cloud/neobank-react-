@@ -6,19 +6,19 @@ interface Card3DProps { card: CardProduct }
 
 function BrandLogo({ brand, size = 'card' }: { brand: string; size?: 'card' | 'label' }) {
   if (brand === 'VISA') {
+    const h = size === 'label' ? 22 : 18
+    const w = Math.round(h * 2.8)
     return (
-      <span style={{
-        fontFamily: '"Times New Roman", Georgia, serif',
-        fontSize: size === 'label' ? 22 : 18,
-        fontWeight: 900,
-        fontStyle: 'italic',
-        letterSpacing: '0.02em',
-        background: 'linear-gradient(135deg, #1565C0 0%, #1E88E5 50%, #90CAF9 100%)',
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
-        backgroundClip: 'text',
-        lineHeight: 1,
-      }}>VISA</span>
+      <div style={{ position: 'relative', display: 'inline-block', overflow: 'hidden', borderRadius: 2 }}>
+        <svg width={w} height={h} viewBox="0 0 78 25" fill="none" style={{ display: 'block' }}>
+          <path d="M30.5 1.5 L24 23.5 H18L24.5 1.5 H30.5Z" fill="#1A1F71"/>
+          <path d="M52.5 2C51 1.4 48.6 0.8 45.6 0.8C39.7 0.8 35.5 3.8 35.5 8.1C35.5 11.3 38.5 13.1 40.8 14.2C43.1 15.3 43.9 16 43.9 17C43.9 18.5 42 19.1 40.3 19.1C37.9 19.1 36.6 18.7 34.6 17.9L33.8 17.5L33 22.2C34.7 23 37.9 23.6 41.2 23.6C47.5 23.6 51.6 20.6 51.6 16C51.6 13.4 49.9 11.5 46.3 9.9C44.3 8.9 43.1 8.2 43.1 7.1C43.1 6.1 44.2 5.1 46.5 5.1C48.4 5.1 49.8 5.5 50.9 5.9L51.5 6.2L52.5 2Z" fill="#1A1F71"/>
+          <path d="M60.5 1.5H55.8C54.4 1.5 53.3 1.9 52.7 3.3L44 23.5H50.3C50.3 23.5 51.3 20.9 51.5 20.3C52.2 20.3 58.3 20.3 59.2 20.3C59.4 21.1 59.9 23.5 59.9 23.5H65.5L60.5 1.5ZM53.3 15.7C53.8 14.4 55.9 8.9 55.9 8.9C55.9 8.9 56.5 7.3 56.8 6.3L57.2 8.7C57.2 8.7 58.5 14.5 58.8 15.7H53.3Z" fill="#1A1F71"/>
+          <path d="M14.5 1.5L8.7 16.4L8.1 13.4C7.1 10.2 4 6.7 0.5 4.9L5.8 23.5H12.2L21.5 1.5H14.5Z" fill="#1A1F71"/>
+          <path d="M4 1.5H-5.5L-5.6 1.9C1.9 3.7 6.9 7.9 8.1 13.4L6.8 3.3C6.6 2 5.4 1.5 4 1.5Z" fill="#F7A600" transform="translate(5.5, 0)"/>
+        </svg>
+        <div className="logo-shimmer" />
+      </div>
     )
   }
 
@@ -30,26 +30,32 @@ function BrandLogo({ brand, size = 'card' }: { brand: string; size?: 'card' | 'l
     const h  = Math.ceil(r * 2 + 4)
     const cy = h / 2
     return (
-      <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} fill="none" style={{ display: 'block' }}>
-        <circle cx={cx1} cy={cy} r={r} fill="#EB001B" />
-        <circle cx={cx2} cy={cy} r={r} fill="#F79E1B" />
-        {/* overlap lens — простая аппроксимация */}
-        <path
-          d={`M${(cx1+cx2)/2} ${cy - r * 0.85} A${r} ${r} 0 0 1 ${(cx1+cx2)/2} ${cy + r * 0.85} A${r} ${r} 0 0 1 ${(cx1+cx2)/2} ${cy - r * 0.85}`}
-          fill="#FF5F00"
-        />
-      </svg>
+      <div style={{ position: 'relative', display: 'inline-block', overflow: 'hidden', borderRadius: 2 }}>
+        <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} fill="none" style={{ display: 'block' }}>
+          <circle cx={cx1} cy={cy} r={r} fill="#EB001B" />
+          <circle cx={cx2} cy={cy} r={r} fill="#F79E1B" />
+          {/* overlap lens — простая аппроксимация */}
+          <path
+            d={`M${(cx1+cx2)/2} ${cy - r * 0.85} A${r} ${r} 0 0 1 ${(cx1+cx2)/2} ${cy + r * 0.85} A${r} ${r} 0 0 1 ${(cx1+cx2)/2} ${cy - r * 0.85}`}
+            fill="#FF5F00"
+          />
+        </svg>
+        <div className="logo-shimmer" />
+      </div>
     )
   }
 
   if (brand === 'Diners Club') {
     const s = size === 'label' ? 28 : 22
     return (
-      <svg width={s} height={s} viewBox="0 0 28 28" fill="none" style={{ display: 'block' }}>
-        <circle cx="14" cy="14" r="12.5" stroke="#d4a853" strokeWidth="1.5" />
-        <path d="M14 1.5 A12.5 12.5 0 0 1 14 26.5" fill="rgba(212,168,83,0.15)" />
-        <line x1="14" y1="1.5" x2="14" y2="26.5" stroke="#d4a853" strokeWidth="1.5" />
-      </svg>
+      <div style={{ position: 'relative', display: 'inline-block', overflow: 'hidden', borderRadius: '50%' }}>
+        <svg width={s} height={s} viewBox="0 0 28 28" fill="none" style={{ display: 'block' }}>
+          <circle cx="14" cy="14" r="12.5" stroke="#d4a853" strokeWidth="1.5" />
+          <path d="M14 1.5 A12.5 12.5 0 0 1 14 26.5" fill="rgba(212,168,83,0.15)" />
+          <line x1="14" y1="1.5" x2="14" y2="26.5" stroke="#d4a853" strokeWidth="1.5" />
+        </svg>
+        <div className="logo-shimmer logo-shimmer--gold" />
+      </div>
     )
   }
 
@@ -223,6 +229,21 @@ export default function Card3D({ card }: Card3DProps) {
       </div>
 
       <style>{`
+        @keyframes logoShimmer {
+          0%   { transform: translateX(-150%); }
+          100% { transform: translateX(250%); }
+        }
+        .logo-shimmer {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.55) 50%, transparent 70%);
+          animation: logoShimmer 2.8s ease-in-out infinite;
+          pointer-events: none;
+        }
+        .logo-shimmer--gold {
+          background: linear-gradient(105deg, transparent 30%, rgba(255,220,120,0.6) 50%, transparent 70%);
+        }
+
         @keyframes cardFloat {
           0%,100% { transform: translateY(0px) rotateX(1deg) rotateY(-3deg); }
           50%      { transform: translateY(-14px) rotateX(-1deg) rotateY(3deg); }
