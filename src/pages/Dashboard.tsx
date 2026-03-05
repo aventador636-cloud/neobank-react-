@@ -356,7 +356,7 @@ export default function Dashboard() {
             <div style={{ marginBottom: 40 }}>
               <p style={{ fontSize: 14, color: t.textTertiary, marginBottom: 4 }}>{getGreeting()},</p>
               <h1 style={{ fontSize: 32, fontWeight: 800, letterSpacing: '-0.03em', color: t.textPrimary }}>
-                {user?.name.split(' ')[1]} 👋
+                {user?.name.split(' ').reverse().join(' ')} 👋
               </h1>
             </div>
 
