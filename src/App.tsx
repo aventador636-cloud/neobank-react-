@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import type { CardType } from './data/cards'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import Header from './components/Header'
@@ -22,13 +22,11 @@ function AppInner() {
   const openModal = (type: CardType = 'standard') => setModal({ open: true, cardType: type })
   const closeModal = () => setModal(p => ({ ...p, open: false }))
 
-  if (user && view === 'dashboard') return <Dashboard onGoHome={() => setView('home')} />
+  useEffect(() => {
+    if (user) setView('dashboard')
+  }, [user])
 
-  // auto-switch to dashboard after login
-  if (user && view === 'home') {
-    setView('dashboard')
-    return null
-  }
+  if (user && view === 'dashboard') return <Dashboard onGoHome={() => setView('home')} />
 
   return (
     <>
