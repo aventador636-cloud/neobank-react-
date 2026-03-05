@@ -20,7 +20,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return (
     <AuthContext.Provider value={{
       user,
-      login: (phone) => setUser({ phone, name: 'Алексей Смирнов' }),
+      login: (phone) => setUser({ phone, name: 'Vlasov Andrei' }),
       logout: () => setUser(null),
     }}>
       {children}
