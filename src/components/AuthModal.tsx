@@ -74,6 +74,17 @@ export default function AuthModal({ onClose }: AuthModalProps) {
     }
   }
 
+  const handleOtpPaste = (e: React.ClipboardEvent) => {
+    e.preventDefault()
+    const digits = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 4)
+    if (!digits) return
+    setOtp(digits)
+    setError('')
+    const focusIdx = Math.min(digits.length, 3)
+    otpRefs[focusIdx].current?.focus()
+    if (digits.length === 4) verifyOtp(digits)
+  }
+
   const verifyOtp = (code: string) => {
     if (code === '1234') {
       login(formatPhone(phone))
@@ -193,6 +204,7 @@ export default function AuthModal({ onClose }: AuthModalProps) {
                   value={otp[i] || ''}
                   onChange={e => handleOtpChange(i, e.target.value)}
                   onKeyDown={e => handleOtpKey(i, e)}
+                  onPaste={handleOtpPaste}
                   style={{
                     width: 64, height: 64, textAlign: 'center',
                     fontSize: 24, fontWeight: 700, fontFamily: 'monospace',
