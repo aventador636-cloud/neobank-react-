@@ -45,11 +45,11 @@ const TRANSACTIONS: Transaction[] = [
 
 const ALL_CATEGORIES = ['Все', 'Входящий', 'Покупки', 'Супермаркеты', 'Рестораны', 'Подписки', 'Транспорт', 'Здоровье', 'Путешествия', 'Вознаграждение']
 
-function HistoryModal({ onClose }: { onClose: () => void }) {
+function HistoryModal({ onClose, transactions }: { onClose: () => void; transactions: Transaction[] }) {
   const [search, setSearch]   = useState('')
   const [filter, setFilter]   = useState('Все')
 
-  const filtered = TRANSACTIONS.filter(tx => {
+  const filtered = transactions.filter(tx => {
     const matchCat    = filter === 'Все' || tx.category === filter
     const matchSearch = tx.name.toLowerCase().includes(search.toLowerCase()) || tx.category.toLowerCase().includes(search.toLowerCase())
     return matchCat && matchSearch
@@ -346,49 +346,68 @@ function FigmaIcon() {
   )
 }
 
-interface Service { name: string; price: string; icon: React.ReactNode; tag?: string }
+interface Service { name: string; price: string; priceRub: number; icon: React.ReactNode; tag?: string; serviceIcon: string }
 interface ServiceGroup { category: string; items: Service[] }
 
 const SERVICE_GROUPS: ServiceGroup[] = [
   {
     category: '🤖 ИИ-сервисы',
     items: [
-      { name: 'ChatGPT Plus',    price: '$20 / мес', icon: <ChatGPTIcon />,      tag: 'Популярно' },
-      { name: 'Claude Pro',      price: '$20 / мес', icon: <ClaudeIcon />,       tag: 'Новинка'   },
-      { name: 'Midjourney',      price: '$10 / мес', icon: <MidjourneyIcon />                    },
-      { name: 'GitHub Copilot',  price: '$10 / мес', icon: <GithubCopilotIcon />                 },
+      { name: 'ChatGPT Plus',   price: '$20 / мес',    priceRub: 1840,  icon: <ChatGPTIcon />,      serviceIcon: '🤖', tag: 'Популярно' },
+      { name: 'Claude Pro',     price: '$20 / мес',    priceRub: 1840,  icon: <ClaudeIcon />,       serviceIcon: '🤖', tag: 'Новинка'   },
+      { name: 'Midjourney',     price: '$10 / мес',    priceRub: 920,   icon: <MidjourneyIcon />,   serviceIcon: '🎨'                  },
+      { name: 'GitHub Copilot', price: '$10 / мес',    priceRub: 920,   icon: <GithubCopilotIcon />,serviceIcon: '💻'                  },
     ],
   },
   {
     category: '🎬 Видео',
     items: [
-      { name: 'Netflix',          price: '$15.49 / мес', icon: <NetflixIcon />,   tag: 'Хит' },
-      { name: 'YouTube Premium',  price: '$13.99 / мес', icon: <YoutubeIcon />              },
+      { name: 'Netflix',         price: '$15.49 / мес', priceRub: 1425, icon: <NetflixIcon />,  serviceIcon: '🎬', tag: 'Хит' },
+      { name: 'YouTube Premium', price: '$13.99 / мес', priceRub: 1287, icon: <YoutubeIcon />,  serviceIcon: '▶️'             },
     ],
   },
   {
     category: '🎵 Музыка',
     items: [
-      { name: 'Spotify Premium', price: '$9.99 / мес', icon: <SpotifyIcon /> },
-      { name: 'Apple Music',     price: '$10.99 / мес', icon: <AppleMusicIcon /> },
+      { name: 'Spotify Premium', price: '$9.99 / мес',  priceRub: 919,  icon: <SpotifyIcon />,     serviceIcon: '🎵' },
+      { name: 'Apple Music',     price: '$10.99 / мес', priceRub: 1011, icon: <AppleMusicIcon />,  serviceIcon: '🎵' },
     ],
   },
   {
     category: '🎮 Игры и творчество',
     items: [
-      { name: 'Steam',                  price: 'по счёту',    icon: <SteamIcon />    },
-      { name: 'Discord Nitro',          price: '$9.99 / мес', icon: <DiscordIcon />  },
-      { name: 'Adobe Creative Cloud',   price: '$54.99 / мес', icon: <AdobeIcon />   },
-      { name: 'Figma Professional',     price: '$15 / мес',   icon: <FigmaIcon />    },
+      { name: 'Steam',                price: 'по счёту',     priceRub: 2990,  icon: <SteamIcon />,   serviceIcon: '🎮' },
+      { name: 'Discord Nitro',        price: '$9.99 / мес',  priceRub: 919,   icon: <DiscordIcon />, serviceIcon: '💬' },
+      { name: 'Adobe Creative Cloud', price: '$54.99 / мес', priceRub: 5059,  icon: <AdobeIcon />,   serviceIcon: '🎨' },
+      { name: 'Figma Professional',   price: '$15 / мес',    priceRub: 1380,  icon: <FigmaIcon />,   serviceIcon: '🎨' },
     ],
   },
 ]
 
-function PayModal({ onClose }: { onClose: () => void }) {
-  const [selected, setSelected] = useState<string | null>(null)
+function todayLabel(): { date: string; month: string } {
+  const now    = new Date()
+  const d      = now.getDate()
+  const months = ['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек']
+  const mFull  = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь']
+  return { date: `${d} ${months[now.getMonth()]}`, month: `${mFull[now.getMonth()]} ${now.getFullYear()}` }
+}
+
+function PayModal({ onClose, onPaid }: { onClose: () => void; onPaid: (tx: Transaction) => void }) {
+  const [selected, setSelected] = useState<Service | null>(null)
   const [paid, setPaid] = useState(false)
 
   const handlePay = () => {
+    if (!selected) return
+    const { date, month } = todayLabel()
+    onPaid({
+      id:       Date.now(),
+      name:     selected.name,
+      category: 'Подписки',
+      amount:   -selected.priceRub,
+      date,
+      month,
+      icon:     selected.serviceIcon,
+    })
     setPaid(true)
     setTimeout(onClose, 1800)
   }
@@ -438,9 +457,9 @@ function PayModal({ onClose }: { onClose: () => void }) {
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                 {group.items.map(item => {
-                  const isSelected = selected === item.name
+                  const isSelected = selected?.name === item.name
                   return (
-                    <button key={item.name} onClick={() => setSelected(isSelected ? null : item.name)} style={{
+                    <button key={item.name} onClick={() => setSelected(isSelected ? null : item)} style={{
                       display: 'flex', alignItems: 'center', gap: 14,
                       padding: '12px 14px', borderRadius: t.r16, cursor: 'pointer',
                       background: isSelected ? 'rgba(167,139,250,0.1)' : t.surfaceHover,
@@ -501,7 +520,7 @@ function PayModal({ onClose }: { onClose: () => void }) {
             fontSize: 15, fontWeight: 700, cursor: selected && !paid ? 'pointer' : 'default',
             transition: t.ease, opacity: selected ? 1 : 0.5,
           }}>
-            {paid ? '✓ Оплачено' : selected ? `Оплатить ${selected}` : 'Выберите сервис'}
+            {paid ? '✓ Оплачено' : selected ? `Оплатить ${selected.name} · ${selected.priceRub.toLocaleString('ru-RU')} ₽` : 'Выберите сервис'}
           </button>
         </div>
       </div>
@@ -762,10 +781,15 @@ function ProfileTab({ user, activeCard, logout }: { user: { name: string; phone:
 
 export default function Dashboard() {
   const { user, logout } = useAuth()
-  const [activeCard, setActiveCard] = useState(0)
-  const [tab, setTab] = useState<'overview' | 'profile'>('overview')
+  const [activeCard, setActiveCard]   = useState(0)
+  const [tab, setTab]                 = useState<'overview' | 'profile'>('overview')
   const [payOpen, setPayOpen]         = useState(false)
   const [historyOpen, setHistoryOpen] = useState(false)
+  const [transactions, setTransactions] = useState<Transaction[]>(TRANSACTIONS)
+
+  const addTransaction = useCallback((tx: Transaction) => {
+    setTransactions(prev => [tx, ...prev])
+  }, [])
 
   const userCard: CardProduct = {
     ...cards[activeCard],
@@ -892,7 +916,7 @@ export default function Dashboard() {
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                {TRANSACTIONS.map((tx, i) => (
+                {transactions.slice(0, 8).map((tx, i) => (
                   <div key={tx.id} style={{
                     display: 'flex', alignItems: 'center', gap: 16,
                     padding: '14px 16px', borderRadius: t.r16,
@@ -933,8 +957,8 @@ export default function Dashboard() {
           <ProfileTab user={user} activeCard={activeCard} logout={logout} />
         )}
       </main>
-      {payOpen && <PayModal onClose={() => setPayOpen(false)} />}
-      {historyOpen && <HistoryModal onClose={() => setHistoryOpen(false)} />}
+      {payOpen && <PayModal onClose={() => setPayOpen(false)} onPaid={addTransaction} />}
+      {historyOpen && <HistoryModal onClose={() => setHistoryOpen(false)} transactions={transactions} />}
     </div>
   )
 }
