@@ -2,9 +2,9 @@ import { t } from '../styles/tokens'
 import { Btn } from './Layout'
 import { useResponsive } from '../hooks/useResponsive'
 
-interface HeaderProps { onCta: () => void }
+interface HeaderProps { onCta: () => void; onLogin: () => void }
 
-export default function Header({ onCta }: HeaderProps) {
+export default function Header({ onCta, onLogin }: HeaderProps) {
   const { isMobile } = useResponsive()
   return (
     <header style={{
@@ -31,7 +31,7 @@ export default function Header({ onCta }: HeaderProps) {
         )}
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          {!isMobile && <Btn variant="ghost" style={{ height: 40, fontSize: 14 }}>Войти</Btn>}
+          {!isMobile && <Btn variant="ghost" onClick={onLogin} style={{ height: 40, fontSize: 14 }}>Войти</Btn>}
           <Btn onClick={onCta} style={{ height: 40, fontSize: 14 }}>Открыть счёт</Btn>
         </div>
 
