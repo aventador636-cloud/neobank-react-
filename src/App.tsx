@@ -17,11 +17,18 @@ function AppInner() {
   const { user } = useAuth()
   const [modal, setModal] = useState<{ open: boolean; cardType: CardType }>({ open: false, cardType: 'standard' })
   const [authOpen, setAuthOpen] = useState(false)
+  const [view, setView] = useState<'home' | 'dashboard'>('home')
 
   const openModal = (type: CardType = 'standard') => setModal({ open: true, cardType: type })
   const closeModal = () => setModal(p => ({ ...p, open: false }))
 
-  if (user) return <Dashboard />
+  if (user && view === 'dashboard') return <Dashboard onGoHome={() => setView('home')} />
+
+  // auto-switch to dashboard after login
+  if (user && view === 'home') {
+    setView('dashboard')
+    return null
+  }
 
   return (
     <>

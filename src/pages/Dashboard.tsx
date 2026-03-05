@@ -781,7 +781,7 @@ function ProfileTab({ user, activeCard, logout }: { user: { name: string; phone:
   )
 }
 
-export default function Dashboard() {
+export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
   const { user, logout } = useAuth()
   const [activeCard, setActiveCard]   = useState(0)
   const [tab, setTab]                 = useState<'overview' | 'profile'>('overview')
@@ -810,7 +810,7 @@ export default function Dashboard() {
         borderBottom: `1px solid ${t.border}`,
       }}>
         <div style={{ maxWidth: 1000, margin: '0 auto', padding: '0 24px', height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <span className="shimmer" style={{ fontSize: 18, fontWeight: 800, letterSpacing: '-0.02em' }}>NeoBank</span>
+          <span onClick={onGoHome} className="shimmer" style={{ fontSize: 18, fontWeight: 800, letterSpacing: '-0.02em', cursor: 'pointer' }}>NeoBank</span>
 
           <div style={{ display: 'flex', gap: 8 }}>
             {(['overview', 'profile'] as const).map(tp => (
