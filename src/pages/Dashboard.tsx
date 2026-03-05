@@ -556,7 +556,9 @@ function SettingRow({ icon, label, sub, right }: { icon: string; label: string; 
         width: 38, height: 38, borderRadius: t.r12, flexShrink: 0,
         background: t.surfaceHover, display: 'flex', alignItems: 'center',
         justifyContent: 'center', fontSize: 17,
-      }}>{icon}</div>
+      }}>
+        <span className="setting-icon" style={{ display: 'inline-block' }}>{icon}</span>
+      </div>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ fontSize: 14, fontWeight: 600, color: t.textPrimary }}>{label}</div>
         {sub && <div style={{ fontSize: 12, color: t.textTertiary, marginTop: 1 }}>{sub}</div>}
@@ -845,7 +847,7 @@ export default function Dashboard() {
             <div style={{ marginBottom: 40 }}>
               <p style={{ fontSize: 14, color: t.textTertiary, marginBottom: 4 }}>{getGreeting()},</p>
               <h1 style={{ fontSize: 32, fontWeight: 800, letterSpacing: '-0.03em', color: t.textPrimary }}>
-                {user?.name.split(' ').reverse().join(' ')} 👋
+                {user?.name.split(' ').reverse().join(' ')} <span className="wave-hand">👋</span>
               </h1>
             </div>
 
@@ -895,7 +897,7 @@ export default function Dashboard() {
                       onMouseEnter={e => { e.currentTarget.style.borderColor = t.borderHover; e.currentTarget.style.background = '#1e2025' }}
                       onMouseLeave={e => { e.currentTarget.style.borderColor = t.border; e.currentTarget.style.background = t.surfaceHover }}
                     >
-                      <span style={{ fontSize: 18 }}>{a.icon}</span>
+                      <span className="action-icon" style={{ fontSize: 18, display: 'inline-block' }}>{a.icon}</span>
                       <span style={{ fontSize: 11, fontWeight: 600, color: t.textSecondary }}>{a.label}</span>
                     </button>
                   ))}
@@ -927,13 +929,13 @@ export default function Dashboard() {
                     onMouseEnter={e => (e.currentTarget.style.background = t.surfaceHover)}
                     onMouseLeave={e => (e.currentTarget.style.background = t.surface)}
                   >
-                    <div style={{
+                    <div className="tx-icon-wrap" style={{
                       width: 42, height: 42, borderRadius: '50%',
                       background: t.surfaceHover, display: 'flex',
                       alignItems: 'center', justifyContent: 'center', fontSize: 18,
                       flexShrink: 0,
                     }}>
-                      {tx.icon}
+                      <span className="tx-icon" style={{ display: 'inline-block' }}>{tx.icon}</span>
                     </div>
 
                     <div style={{ flex: 1 }}>
@@ -959,6 +961,48 @@ export default function Dashboard() {
       </main>
       {payOpen && <PayModal onClose={() => setPayOpen(false)} onPaid={addTransaction} />}
       {historyOpen && <HistoryModal onClose={() => setHistoryOpen(false)} transactions={transactions} />}
+
+      <style>{`
+        @keyframes wave {
+          0%        { transform: rotate(0deg);   }
+          10%       { transform: rotate(18deg);  }
+          20%       { transform: rotate(-10deg); }
+          30%       { transform: rotate(18deg);  }
+          40%       { transform: rotate(-6deg);  }
+          50%,100%  { transform: rotate(0deg);   }
+        }
+        .wave-hand {
+          display: inline-block;
+          transform-origin: 70% 80%;
+          animation: wave 2.4s ease-in-out infinite;
+          animation-delay: 0.6s;
+        }
+
+        @keyframes iconBounce {
+          0%, 100% { transform: translateY(0);    }
+          40%      { transform: translateY(-6px); }
+          70%      { transform: translateY(-2px); }
+        }
+        .action-icon { transition: transform 0.15s ease; }
+        button:hover .action-icon { animation: iconBounce 0.5s ease; }
+
+        @keyframes iconWiggle {
+          0%, 100% { transform: rotate(0deg);   }
+          20%      { transform: rotate(-12deg); }
+          50%      { transform: rotate(12deg);  }
+          75%      { transform: rotate(-6deg);  }
+        }
+        .tx-icon { transition: transform 0.15s ease; }
+        .tx-icon-wrap:hover .tx-icon { animation: iconWiggle 0.5s ease; }
+
+        @keyframes iconPop {
+          0%   { transform: scale(1);    }
+          50%  { transform: scale(1.35); }
+          100% { transform: scale(1);    }
+        }
+        .setting-icon { transition: transform 0.2s ease; }
+        div:hover > .setting-icon { animation: iconPop 0.4s ease; }
+      `}</style>
     </div>
   )
 }
