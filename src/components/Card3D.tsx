@@ -4,6 +4,58 @@ import { t } from '../styles/tokens'
 
 interface Card3DProps { card: CardProduct }
 
+function BrandLogo({ brand, size = 'card' }: { brand: string; size?: 'card' | 'label' }) {
+  if (brand === 'VISA') {
+    return (
+      <span style={{
+        fontFamily: '"Times New Roman", Georgia, serif',
+        fontSize: size === 'label' ? 22 : 18,
+        fontWeight: 900,
+        fontStyle: 'italic',
+        letterSpacing: '0.02em',
+        background: 'linear-gradient(135deg, #1565C0 0%, #1E88E5 50%, #90CAF9 100%)',
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        backgroundClip: 'text',
+        lineHeight: 1,
+      }}>VISA</span>
+    )
+  }
+
+  if (brand === 'Mastercard') {
+    const r  = size === 'label' ? 11 : 9
+    const cx1 = r + 2
+    const cx2 = cx1 + r * 1.3
+    const w  = Math.ceil(cx2 + r + 2)
+    const h  = Math.ceil(r * 2 + 4)
+    const cy = h / 2
+    return (
+      <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} fill="none" style={{ display: 'block' }}>
+        <circle cx={cx1} cy={cy} r={r} fill="#EB001B" />
+        <circle cx={cx2} cy={cy} r={r} fill="#F79E1B" />
+        {/* overlap lens — простая аппроксимация */}
+        <path
+          d={`M${(cx1+cx2)/2} ${cy - r * 0.85} A${r} ${r} 0 0 1 ${(cx1+cx2)/2} ${cy + r * 0.85} A${r} ${r} 0 0 1 ${(cx1+cx2)/2} ${cy - r * 0.85}`}
+          fill="#FF5F00"
+        />
+      </svg>
+    )
+  }
+
+  if (brand === 'Diners Club') {
+    const s = size === 'label' ? 28 : 22
+    return (
+      <svg width={s} height={s} viewBox="0 0 28 28" fill="none" style={{ display: 'block' }}>
+        <circle cx="14" cy="14" r="12.5" stroke="#d4a853" strokeWidth="1.5" />
+        <path d="M14 1.5 A12.5 12.5 0 0 1 14 26.5" fill="rgba(212,168,83,0.15)" />
+        <line x1="14" y1="1.5" x2="14" y2="26.5" stroke="#d4a853" strokeWidth="1.5" />
+      </svg>
+    )
+  }
+
+  return <span style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.35)' }}>{brand}</span>
+}
+
 export default function Card3D({ card }: Card3DProps) {
   const wrapRef  = useRef<HTMLDivElement>(null)
   const glareRef = useRef<HTMLDivElement>(null)
