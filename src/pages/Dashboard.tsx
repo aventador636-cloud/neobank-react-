@@ -12,19 +12,191 @@ interface Transaction {
   category: string
   amount: number
   date: string
+  month: string
   icon: string
 }
 
 const TRANSACTIONS: Transaction[] = [
-  { id: 1, name: 'Лента',            category: 'Супермаркеты', amount: -2340,  date: '5 мар',  icon: '🛒' },
-  { id: 2, name: 'Пополнение счёта', category: 'Входящий',     amount: +50000, date: '4 мар',  icon: '💰' },
-  { id: 3, name: 'Netflix',          category: 'Подписки',      amount: -699,   date: '3 мар',  icon: '🎬' },
-  { id: 4, name: 'Яндекс Еда',       category: 'Рестораны',     amount: -1850,  date: '3 мар',  icon: '🍕' },
-  { id: 5, name: 'Кэшбэк',           category: 'Вознаграждение',amount: +450,   date: '2 мар',  icon: '💎' },
-  { id: 6, name: 'М.Видео',          category: 'Покупки',       amount: -15990, date: '1 мар',  icon: '🛍️' },
-  { id: 7, name: 'Такси',            category: 'Транспорт',     amount: -380,   date: '28 фев', icon: '🚕' },
-  { id: 8, name: 'Аптека 36.6',      category: 'Здоровье',      amount: -1240,  date: '27 фев', icon: '💊' },
+  { id:  1, name: 'Лента',            category: 'Супермаркеты',  amount: -2340,   date: '5 мар',  month: 'Март 2026',    icon: '🛒' },
+  { id:  2, name: 'Пополнение счёта', category: 'Входящий',      amount: +50000,  date: '4 мар',  month: 'Март 2026',    icon: '💰' },
+  { id:  3, name: 'Netflix',          category: 'Подписки',      amount: -699,    date: '3 мар',  month: 'Март 2026',    icon: '🎬' },
+  { id:  4, name: 'Яндекс Еда',       category: 'Рестораны',     amount: -1850,   date: '3 мар',  month: 'Март 2026',    icon: '🍕' },
+  { id:  5, name: 'Кэшбэк',           category: 'Вознаграждение',amount: +450,    date: '2 мар',  month: 'Март 2026',    icon: '💎' },
+  { id:  6, name: 'М.Видео',          category: 'Покупки',       amount: -15990,  date: '1 мар',  month: 'Март 2026',    icon: '🛍️' },
+  { id:  7, name: 'Spotify',          category: 'Подписки',      amount: -899,    date: '1 мар',  month: 'Март 2026',    icon: '🎵' },
+  { id:  8, name: 'Такси',            category: 'Транспорт',     amount: -380,    date: '28 фев', month: 'Февраль 2026', icon: '🚕' },
+  { id:  9, name: 'Аптека 36.6',      category: 'Здоровье',      amount: -1240,   date: '27 фев', month: 'Февраль 2026', icon: '💊' },
+  { id: 10, name: 'Зарплата',         category: 'Входящий',      amount: +120000, date: '25 фев', month: 'Февраль 2026', icon: '💰' },
+  { id: 11, name: 'Ашан',             category: 'Супермаркеты',  amount: -4560,   date: '24 фев', month: 'Февраль 2026', icon: '🛒' },
+  { id: 12, name: 'Steam',            category: 'Подписки',      amount: -2990,   date: '22 фев', month: 'Февраль 2026', icon: '🎮' },
+  { id: 13, name: 'Кофемания',        category: 'Рестораны',     amount: -890,    date: '20 фев', month: 'Февраль 2026', icon: '☕' },
+  { id: 14, name: 'Кэшбэк',          category: 'Вознаграждение',amount: +1200,   date: '18 фев', month: 'Февраль 2026', icon: '💎' },
+  { id: 15, name: 'Авиабилеты',       category: 'Путешествия',   amount: -34500,  date: '15 фев', month: 'Февраль 2026', icon: '✈️' },
+  { id: 16, name: 'ChatGPT Plus',     category: 'Подписки',      amount: -1840,   date: '10 фев', month: 'Февраль 2026', icon: '🤖' },
+  { id: 17, name: 'Wildberries',      category: 'Покупки',       amount: -3200,   date: '5 фев',  month: 'Февраль 2026', icon: '🛍️' },
+  { id: 18, name: 'Пополнение счёта', category: 'Входящий',      amount: +50000,  date: '31 янв', month: 'Январь 2026',  icon: '💰' },
+  { id: 19, name: 'Яндекс Маркет',   category: 'Покупки',       amount: -5600,   date: '28 янв', month: 'Январь 2026',  icon: '🛍️' },
+  { id: 20, name: 'Ресторан Белуга',  category: 'Рестораны',     amount: -8900,   date: '25 янв', month: 'Январь 2026',  icon: '🍽️' },
+  { id: 21, name: 'Убер',             category: 'Транспорт',     amount: -560,    date: '20 янв', month: 'Январь 2026',  icon: '🚕' },
+  { id: 22, name: 'Кэшбэк',          category: 'Вознаграждение',amount: +890,    date: '15 янв', month: 'Январь 2026',  icon: '💎' },
+  { id: 23, name: 'Apple Music',      category: 'Подписки',      amount: -999,    date: '10 янв', month: 'Январь 2026',  icon: '🎵' },
+  { id: 24, name: 'Лента',            category: 'Супермаркеты',  amount: -1890,   date: '5 янв',  month: 'Январь 2026',  icon: '🛒' },
 ]
+
+const ALL_CATEGORIES = ['Все', 'Входящий', 'Покупки', 'Супермаркеты', 'Рестораны', 'Подписки', 'Транспорт', 'Здоровье', 'Путешествия', 'Вознаграждение']
+
+function HistoryModal({ onClose }: { onClose: () => void }) {
+  const [search, setSearch]   = useState('')
+  const [filter, setFilter]   = useState('Все')
+
+  const filtered = TRANSACTIONS.filter(tx => {
+    const matchCat    = filter === 'Все' || tx.category === filter
+    const matchSearch = tx.name.toLowerCase().includes(search.toLowerCase()) || tx.category.toLowerCase().includes(search.toLowerCase())
+    return matchCat && matchSearch
+  })
+
+  const grouped = filtered.reduce<Record<string, Transaction[]>>((acc, tx) => {
+    if (!acc[tx.month]) acc[tx.month] = []
+    acc[tx.month].push(tx)
+    return acc
+  }, {})
+
+  const totalIncome  = filtered.filter(tx => tx.amount > 0).reduce((s, tx) => s + tx.amount, 0)
+  const totalExpense = filtered.filter(tx => tx.amount < 0).reduce((s, tx) => s + Math.abs(tx.amount), 0)
+
+  return (
+    <div style={{
+      position: 'fixed', inset: 0, zIndex: 300,
+      display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
+      background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)',
+      animation: 'fadeIn 0.2s ease',
+    }} onClick={e => { if (e.target === e.currentTarget) onClose() }}>
+
+      <div style={{
+        width: '100%', maxWidth: 680, height: '90vh',
+        background: t.surface, borderRadius: `${t.r24} ${t.r24} 0 0`,
+        border: `1px solid ${t.border}`, borderBottom: 'none',
+        display: 'flex', flexDirection: 'column',
+        boxShadow: '0 -20px 60px rgba(0,0,0,0.5)',
+        animation: 'drawerUp 0.3s ease',
+      }}>
+
+        {/* Handle */}
+        <div style={{ display: 'flex', justifyContent: 'center', padding: '12px 0 0' }}>
+          <div style={{ width: 36, height: 4, borderRadius: 2, background: t.border }} />
+        </div>
+
+        {/* Header */}
+        <div style={{ padding: '16px 24px 0', flexShrink: 0 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+            <div style={{ fontSize: 20, fontWeight: 700, color: t.textPrimary }}>История операций</div>
+            <button onClick={onClose} style={{
+              background: 'none', border: 'none', cursor: 'pointer',
+              color: t.textTertiary, fontSize: 22, lineHeight: 1, transition: t.ease,
+            }}
+              onMouseEnter={e => (e.currentTarget.style.color = t.textPrimary)}
+              onMouseLeave={e => (e.currentTarget.style.color = t.textTertiary)}
+            >×</button>
+          </div>
+
+          {/* Stats */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 16 }}>
+            <div style={{ background: 'rgba(74,222,128,0.08)', border: '1px solid rgba(74,222,128,0.15)', borderRadius: t.r16, padding: '12px 16px' }}>
+              <div style={{ fontSize: 11, color: t.green, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 4 }}>Поступления</div>
+              <div style={{ fontSize: 20, fontWeight: 800, color: t.green }}>+{totalIncome.toLocaleString('ru-RU')} ₽</div>
+            </div>
+            <div style={{ background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.15)', borderRadius: t.r16, padding: '12px 16px' }}>
+              <div style={{ fontSize: 11, color: '#f87171', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 4 }}>Расходы</div>
+              <div style={{ fontSize: 20, fontWeight: 800, color: '#f87171' }}>−{totalExpense.toLocaleString('ru-RU')} ₽</div>
+            </div>
+          </div>
+
+          {/* Search */}
+          <input
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder="🔍  Поиск по операциям..."
+            style={{
+              width: '100%', boxSizing: 'border-box',
+              background: t.bg, border: `1px solid ${t.border}`,
+              borderRadius: t.r12, padding: '10px 14px',
+              color: t.textPrimary, fontSize: 14, fontFamily: t.fontFamily,
+              outline: 'none', transition: t.ease, marginBottom: 12,
+            }}
+            onFocus={e => (e.currentTarget.style.borderColor = 'rgba(167,139,250,0.4)')}
+            onBlur={e => (e.currentTarget.style.borderColor = t.border)}
+          />
+
+          {/* Category filters */}
+          <div style={{ display: 'flex', gap: 6, overflowX: 'auto', paddingBottom: 12, scrollbarWidth: 'none' }}>
+            {ALL_CATEGORIES.map(cat => (
+              <button key={cat} onClick={() => setFilter(cat)} style={{
+                flexShrink: 0, padding: '5px 12px', borderRadius: t.r999, border: 'none',
+                background: filter === cat ? 'linear-gradient(90deg, #a78bfa, #60a5fa)' : t.surfaceHover,
+                color: filter === cat ? '#fff' : t.textSecondary,
+                fontSize: 12, fontWeight: 600, cursor: 'pointer', transition: t.ease,
+              }}>
+                {cat}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* List */}
+        <div style={{ flex: 1, overflowY: 'auto', padding: '0 24px 24px', scrollbarWidth: 'thin', scrollbarColor: `${t.border} transparent` }}>
+          {Object.keys(grouped).length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '40px 0', color: t.textTertiary, fontSize: 14 }}>
+              Операции не найдены
+            </div>
+          ) : (
+            Object.entries(grouped).map(([month, txs]) => (
+              <div key={month} style={{ marginBottom: 24 }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: t.textTertiary, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 8 }}>
+                  {month}
+                </div>
+                <div style={{ background: t.bg, borderRadius: t.r16, overflow: 'hidden', border: `1px solid ${t.border}` }}>
+                  {txs.map((tx, i) => (
+                    <div key={tx.id} style={{
+                      display: 'flex', alignItems: 'center', gap: 14,
+                      padding: '13px 16px',
+                      borderTop: i > 0 ? `1px solid ${t.border}` : 'none',
+                      transition: t.ease, cursor: 'default',
+                    }}
+                      onMouseEnter={e => (e.currentTarget.style.background = t.surfaceHover)}
+                      onMouseLeave={e => (e.currentTarget.style.background = 'none')}
+                    >
+                      <div style={{
+                        width: 40, height: 40, borderRadius: '50%', flexShrink: 0,
+                        background: t.surfaceHover, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17,
+                      }}>{tx.icon}</div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: 14, fontWeight: 600, color: t.textPrimary, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{tx.name}</div>
+                        <div style={{ fontSize: 12, color: t.textTertiary }}>{tx.category} · {tx.date}</div>
+                      </div>
+                      <div style={{
+                        fontSize: 14, fontWeight: 700, whiteSpace: 'nowrap',
+                        color: tx.amount > 0 ? t.green : t.textPrimary,
+                      }}>
+                        {formatAmount(tx.amount)}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+
+      <style>{`
+        @keyframes drawerUp {
+          from { transform: translateY(40px); opacity: 0; }
+          to   { transform: translateY(0);    opacity: 1; }
+        }
+      `}</style>
+    </div>
+  )
+}
 
 const QUICK_ACTIONS = [
   { label: 'Перевести',  icon: '↑' },
@@ -592,7 +764,8 @@ export default function Dashboard() {
   const { user, logout } = useAuth()
   const [activeCard, setActiveCard] = useState(0)
   const [tab, setTab] = useState<'overview' | 'profile'>('overview')
-  const [payOpen, setPayOpen] = useState(false)
+  const [payOpen, setPayOpen]         = useState(false)
+  const [historyOpen, setHistoryOpen] = useState(false)
 
   const userCard: CardProduct = {
     ...cards[activeCard],
@@ -689,7 +862,7 @@ export default function Dashboard() {
                 {/* Quick actions */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>
                   {QUICK_ACTIONS.map(a => (
-                    <button key={a.label} onClick={a.label === 'Оплатить' ? () => setPayOpen(true) : undefined} style={{
+                    <button key={a.label} onClick={a.label === 'Оплатить' ? () => setPayOpen(true) : a.label === 'История' ? () => setHistoryOpen(true) : undefined} style={{
                       background: t.surfaceHover, border: `1px solid ${t.border}`,
                       borderRadius: t.r16, padding: '14px 8px',
                       display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
@@ -710,7 +883,7 @@ export default function Dashboard() {
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
                 <h2 style={{ fontSize: 18, fontWeight: 700, color: t.textPrimary }}>Последние операции</h2>
-                <button style={{
+                <button onClick={() => setHistoryOpen(true)} style={{
                   background: 'none', border: 'none', cursor: 'pointer',
                   color: t.purple, fontSize: 13, fontWeight: 600,
                 }}>
@@ -761,6 +934,7 @@ export default function Dashboard() {
         )}
       </main>
       {payOpen && <PayModal onClose={() => setPayOpen(false)} />}
+      {historyOpen && <HistoryModal onClose={() => setHistoryOpen(false)} />}
     </div>
   )
 }
