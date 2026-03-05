@@ -85,7 +85,12 @@ export default function AuthModal({ onClose }: AuthModalProps) {
     if (digits.length === 4) verifyOtp(digits)
   }
 
-  const verifyOtp = (code: string) => {
+  const [verifying, setVerifying] = useState(false)
+
+  const verifyOtp = async (code: string) => {
+    setVerifying(true)
+    await new Promise(r => setTimeout(r, 1500))
+    setVerifying(false)
     if (code === '1234') {
       login(formatPhone(phone))
       onClose()
@@ -192,33 +197,45 @@ export default function AuthModal({ onClose }: AuthModalProps) {
               Код отправлен на <span style={{ color: t.textPrimary, fontWeight: 600 }}>{formatPhone(phone)}</span>
             </p>
 
-            {/* OTP inputs */}
-            <div style={{ display: 'flex', gap: 12, justifyContent: 'center', marginBottom: 16 }}>
-              {[0, 1, 2, 3].map(i => (
-                <input
-                  key={i}
-                  ref={otpRefs[i]}
-                  type="text"
-                  inputMode="numeric"
-                  maxLength={1}
-                  value={otp[i] || ''}
-                  onChange={e => handleOtpChange(i, e.target.value)}
-                  onKeyDown={e => handleOtpKey(i, e)}
-                  onPaste={handleOtpPaste}
-                  style={{
-                    width: 64, height: 64, textAlign: 'center',
-                    fontSize: 24, fontWeight: 700, fontFamily: 'monospace',
-                    background: t.bg, border: `1px solid ${error ? '#f87171' : otp[i] ? 'rgba(167,139,250,0.5)' : t.border}`,
-                    borderRadius: t.r12, color: t.textPrimary, outline: 'none',
-                    transition: t.ease,
-                  }}
-                  onFocus={e => (e.currentTarget.style.borderColor = error ? '#f87171' : 'rgba(167,139,250,0.5)')}
-                  onBlur={e => (e.currentTarget.style.borderColor = error ? '#f87171' : otp[i] ? 'rgba(167,139,250,0.3)' : t.border)}
-                />
-              ))}
-            </div>
+            {/* OTP inputs / spinner */}
+            {verifying ? (
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, marginBottom: 16, padding: '8px 0' }}>
+                <div style={{
+                  width: 52, height: 52, borderRadius: '50%',
+                  border: '3px solid rgba(167,139,250,0.15)',
+                  borderTopColor: '#a78bfa',
+                  animation: 'otpSpin 0.8s linear infinite',
+                }} />
+                <p style={{ fontSize: 14, color: t.textSecondary, fontWeight: 500 }}>Проверка кода...</p>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', gap: 12, justifyContent: 'center', marginBottom: 16 }}>
+                {[0, 1, 2, 3].map(i => (
+                  <input
+                    key={i}
+                    ref={otpRefs[i]}
+                    type="text"
+                    inputMode="numeric"
+                    maxLength={1}
+                    value={otp[i] || ''}
+                    onChange={e => handleOtpChange(i, e.target.value)}
+                    onKeyDown={e => handleOtpKey(i, e)}
+                    onPaste={handleOtpPaste}
+                    style={{
+                      width: 64, height: 64, textAlign: 'center',
+                      fontSize: 24, fontWeight: 700, fontFamily: 'monospace',
+                      background: t.bg, border: `1px solid ${error ? '#f87171' : otp[i] ? 'rgba(167,139,250,0.5)' : t.border}`,
+                      borderRadius: t.r12, color: t.textPrimary, outline: 'none',
+                      transition: t.ease,
+                    }}
+                    onFocus={e => (e.currentTarget.style.borderColor = error ? '#f87171' : 'rgba(167,139,250,0.5)')}
+                    onBlur={e => (e.currentTarget.style.borderColor = error ? '#f87171' : otp[i] ? 'rgba(167,139,250,0.3)' : t.border)}
+                  />
+                ))}
+              </div>
+            )}
 
-            {error && (
+            {!verifying && error && (
               <p style={{ fontSize: 13, color: '#f87171', textAlign: 'center', marginBottom: 12 }}>{error}</p>
             )}
 
@@ -238,6 +255,7 @@ export default function AuthModal({ onClose }: AuthModalProps) {
       <style>{`
         @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
         @keyframes modalSlide { from { opacity: 0; transform: translateY(20px) } to { opacity: 1; transform: translateY(0) } }
+        @keyframes otpSpin { to { transform: rotate(360deg) } }
       `}</style>
     </div>
   )
