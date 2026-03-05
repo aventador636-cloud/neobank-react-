@@ -7,6 +7,7 @@ import Security from './components/Security'
 import FAQ from './components/FAQ'
 import Modal from './components/Modal'
 import Footer from './components/Footer'
+import Chat from './components/Chat'
 import './index.css'
 
 export default function App() {
@@ -24,6 +25,7 @@ export default function App() {
       <FAQ />
       <Footer />
       <Modal open={modal.open} cardType={modal.cardType} onClose={closeModal} />
+      <Chat />
     </>
   )
 }
