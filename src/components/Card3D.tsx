@@ -219,9 +219,7 @@ export default function Card3D({ card }: Card3DProps) {
         <span style={{ fontSize: 12, fontWeight: 600, color: t.textTertiary, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
           {isDiners ? 'Exclusive' : isPremium ? 'Premium' : 'Standard'}
         </span>
-        <span style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.35)', letterSpacing: '0.04em' }}>
-          {card.brand}
-        </span>
+        <BrandLogo brand={card.brand} size="label" />
       </div>
 
       <style>{`
