@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { t } from '../styles/tokens'
 import { useAuth } from '../context/AuthContext'
+import { useResponsive } from '../hooks/useResponsive'
 
 interface AuthModalProps {
   onClose: () => void
@@ -21,6 +22,7 @@ function formatPhone(raw: string): string {
 
 export default function AuthModal({ onClose }: AuthModalProps) {
   const { login } = useAuth()
+  const { isMobile } = useResponsive()
   const [step, setStep] = useState<Step>('phone')
   const [phone, setPhone] = useState('')
   const [otp, setOtp] = useState('')
@@ -110,9 +112,9 @@ export default function AuthModal({ onClose }: AuthModalProps) {
     }} onClick={e => { if (e.target === e.currentTarget) onClose() }}>
 
       <div style={{
-        width: 400, background: t.surface,
+        width: isMobile ? '92vw' : 400, background: t.surface,
         border: `1px solid ${t.border}`, borderRadius: t.r24,
-        padding: '40px 36px', position: 'relative',
+        padding: isMobile ? '32px 24px' : '40px 36px', position: 'relative',
         animation: 'modalSlide 0.25s ease',
         boxShadow: '0 40px 80px rgba(0,0,0,0.6)',
       }}>

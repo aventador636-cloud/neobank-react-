@@ -1,12 +1,14 @@
 import { t } from '../styles/tokens'
 import { Container } from './Layout'
 import BrandAnimation from './BrandAnimation'
+import { useResponsive } from '../hooks/useResponsive'
 
 export default function BrandSection() {
+  const { isMobile, isTablet } = useResponsive()
   return (
     <section style={{ borderTop: `1px solid ${t.border}`, borderBottom: `1px solid ${t.border}` }}>
       <Container>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', alignItems: 'center', gap: 80 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile || isTablet ? '1fr' : '1fr 1fr', alignItems: 'center', gap: isMobile || isTablet ? 40 : 80 }}>
 
           {/* Left: animation */}
           <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -21,7 +23,7 @@ export default function BrandSection() {
             }}>О нас</p>
 
             <h2 style={{
-              fontSize: 48, fontWeight: 900, lineHeight: 1.05,
+              fontSize: isMobile ? 34 : 48, fontWeight: 900, lineHeight: 1.05,
               letterSpacing: '-0.035em', color: t.textPrimary, marginBottom: 24,
             }}>
               Финансы<br />нового<br />времени

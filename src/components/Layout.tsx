@@ -36,7 +36,12 @@ export function Label({ children, style }: { children: ReactNode; style?: CSSPro
 }
 
 export function Heading({ children, size = 'xl', style }: { children: ReactNode; size?: 'lg' | 'xl' | 'xxl'; style?: CSSProperties }) {
-  const sizes = { lg: 36, xl: 52, xxl: 72 }
+  const { isMobile, isTablet } = useResponsive()
+  const sizes = {
+    lg:  isMobile ? 26 : isTablet ? 30 : 36,
+    xl:  isMobile ? 32 : isTablet ? 42 : 52,
+    xxl: isMobile ? 40 : isTablet ? 56 : 72,
+  }
   return (
     <h2 className="shimmer" style={{
       fontSize: sizes[size], fontWeight: 800, lineHeight: 1.05,

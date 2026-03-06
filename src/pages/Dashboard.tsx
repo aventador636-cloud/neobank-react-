@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext'
 import { cards } from '../data/cards'
 import type { CardProduct } from '../data/cards'
 import Card3D from '../components/Card3D'
+import { useResponsive } from '../hooks/useResponsive'
 
 interface Transaction {
   id: number
@@ -395,6 +396,7 @@ function todayLabel(): { date: string; month: string } {
 function PayModal({ onClose, onPaid }: { onClose: () => void; onPaid: (tx: Transaction) => void }) {
   const [selected, setSelected] = useState<Service | null>(null)
   const [paid, setPaid] = useState(false)
+  const { isMobile } = useResponsive()
 
   const handlePay = () => {
     if (!selected) return
@@ -421,7 +423,7 @@ function PayModal({ onClose, onPaid }: { onClose: () => void; onPaid: (tx: Trans
     }} onClick={e => { if (e.target === e.currentTarget) onClose() }}>
 
       <div style={{
-        width: 480, maxHeight: '85vh',
+        width: isMobile ? '94vw' : 480, maxHeight: '85vh',
         background: t.surface, border: `1px solid ${t.border}`,
         borderRadius: t.r24, display: 'flex', flexDirection: 'column',
         boxShadow: '0 40px 80px rgba(0,0,0,0.6)',
@@ -589,6 +591,7 @@ function ProfileTab({ user, activeCard, logout }: { user: { name: string; phone:
   const [security, setSecurity] = useState({ biometric: true, twofa: false, loginAlerts: true })
   const [notifs, setNotifs]     = useState({ push: true, sms: false, email: true })
   const [copied, setCopied]     = useState(false)
+  const { isMobile } = useResponsive()
 
   const refCode = 'NEO-ALEX-2024'
   const initials = user?.name.split(' ').map(w => w[0]).join('') ?? 'НА'
@@ -618,8 +621,9 @@ function ProfileTab({ user, activeCard, logout }: { user: { name: string; phone:
       {/* Hero */}
       <div style={{
         background: t.surface, border: `1px solid ${t.border}`,
-        borderRadius: t.r24, padding: '28px 24px', marginBottom: 20,
-        display: 'flex', alignItems: 'center', gap: 20,
+        borderRadius: t.r24, padding: isMobile ? '20px 16px' : '28px 24px', marginBottom: 20,
+        display: 'flex', alignItems: isMobile ? 'flex-start' : 'center', gap: 16,
+        flexWrap: isMobile ? 'wrap' : 'nowrap',
       }}>
         <div style={{
           width: 72, height: 72, borderRadius: '50%', flexShrink: 0,
@@ -783,6 +787,7 @@ function ProfileTab({ user, activeCard, logout }: { user: { name: string; phone:
 
 export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
   const { user, logout } = useAuth()
+  const { isMobile } = useResponsive()
   const [activeCard, setActiveCard]   = useState(0)
   const [tab, setTab]                 = useState<'overview' | 'profile'>('overview')
   const [payOpen, setPayOpen]         = useState(false)
@@ -809,7 +814,7 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
         background: 'rgba(8,9,10,0.9)', backdropFilter: 'blur(20px)',
         borderBottom: `1px solid ${t.border}`,
       }}>
-        <div style={{ maxWidth: 1000, margin: '0 auto', padding: '0 24px', height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ maxWidth: 1000, margin: '0 auto', padding: isMobile ? '0 16px' : '0 24px', height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <span onClick={onGoHome} className="shimmer" style={{ fontSize: 18, fontWeight: 800, letterSpacing: '-0.02em', cursor: 'pointer' }}>NeoBank</span>
 
           <div style={{ display: 'flex', gap: 8 }}>
@@ -839,7 +844,7 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
         </div>
       </header>
 
-      <main style={{ maxWidth: 1000, margin: '0 auto', padding: '40px 24px 80px' }}>
+      <main style={{ maxWidth: 1000, margin: '0 auto', padding: isMobile ? '24px 16px 80px' : '40px 24px 80px' }}>
 
         {tab === 'overview' ? (
           <>
@@ -852,7 +857,7 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
             </div>
 
             {/* Card + Balance */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, marginBottom: 40, alignItems: 'start' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? 20 : 32, marginBottom: 40, alignItems: 'start' }}>
 
               {/* Card picker */}
               <div>
@@ -874,7 +879,7 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
               </div>
 
               {/* Balance & actions */}
-              <div style={{ paddingTop: 52 }}>
+              <div style={{ paddingTop: isMobile ? 0 : 52 }}>
                 <p style={{ fontSize: 12, fontWeight: 600, color: t.textTertiary, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>
                   Текущий баланс
                 </p>
@@ -886,7 +891,7 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
                 </p>
 
                 {/* Quick actions */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', gap: 10 }}>
                   {QUICK_ACTIONS.map(a => (
                     <button key={a.label} onClick={a.label === 'Оплатить' ? () => setPayOpen(true) : a.label === 'История' ? () => setHistoryOpen(true) : undefined} style={{
                       background: t.surfaceHover, border: `1px solid ${t.border}`,
