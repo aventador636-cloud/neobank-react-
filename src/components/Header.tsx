@@ -22,7 +22,7 @@ export default function Header({ onCta, onLogin }: HeaderProps) {
           <nav style={{ display: 'flex', gap: 32 }}>
             {['Карты', 'Кредиты', 'Вклады', 'О банке'].map(item => (
               <a key={item} href="#" style={{ fontSize: 14, fontWeight: 500, color: t.textSecondary, transition: t.ease }}
-                onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
+                onMouseEnter={e => (e.currentTarget.style.color = t.textPrimary)}
                 onMouseLeave={e => (e.currentTarget.style.color = t.textSecondary)}>
                 {item}
               </a>

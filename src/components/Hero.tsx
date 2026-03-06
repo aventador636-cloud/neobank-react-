@@ -1,4 +1,4 @@
-import { Users, Percent, BadgeDollarSign, Globe } from 'lucide-react'
+import { Users, Percent, BadgeDollarSign } from 'lucide-react'
 import { t } from '../styles/tokens'
 import { Container, Btn } from './Layout'
 import BrandAnimation from './BrandAnimation'
@@ -77,58 +77,6 @@ export default function Hero({ onCta }: HeroProps) {
             ))}
           </div>
 
-          {/* ── Announcement card ── */}
-          <div style={{
-            position: 'relative', overflow: 'hidden',
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            flexWrap: 'wrap', gap: 16,
-            padding: isMobile ? '20px 24px' : '24px 32px',
-            borderRadius: t.r24, marginBottom: 64,
-            background: '#0d0e11',
-            animation: 'trustFadeUp 0.6s cubic-bezier(0.16,1,0.3,1) 0.3s both',
-          }}>
-            {/* Glow */}
-            <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'radial-gradient(ellipse at 10% 50%, rgba(167,139,250,0.07) 0%, transparent 55%)' }} />
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: 16, position: 'relative', zIndex: 1 }}>
-              <div style={{
-                width: 48, height: 48, borderRadius: t.r12, flexShrink: 0,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                background: 'rgba(167,139,250,0.1)',
-              }}>
-                <Globe size={22} strokeWidth={1.5} color="#a78bfa" style={{ animation: 'globeSpin 6s linear infinite' }} />
-              </div>
-              <div>
-                <div className="shimmer" style={{ fontSize: isMobile ? 16 : 18, fontWeight: 700, letterSpacing: '-0.02em' }}>
-                  Переводы за рубеж
-                </div>
-                <div className="shimmer" style={{ fontSize: 13, marginTop: 2, opacity: 0.6 }}>
-                  Отправляйте деньги в любую точку мира мгновенно
-                </div>
-              </div>
-            </div>
-
-            <div style={{ position: 'relative', zIndex: 1, flexShrink: 0 }}>
-              <button style={{
-                padding: '10px 20px', borderRadius: t.r12, border: 'none',
-                background: 'rgba(167,139,250,0.08)', color: '#a78bfa',
-                fontSize: 13, fontWeight: 600, cursor: 'pointer',
-                transition: 'background 0.2s ease',
-              }}
-                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(167,139,250,0.15)' }}
-                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(167,139,250,0.08)' }}
-              >
-                <span className="shimmer">Узнать первым</span>
-              </button>
-            </div>
-          </div>
-
-          <style>{`
-            @keyframes globeSpin {
-              from { transform: rotate(0deg); }
-              to   { transform: rotate(360deg); }
-            }
-          `}</style>
 
           <style>{`
             @keyframes trustFadeUp {

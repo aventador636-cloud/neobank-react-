@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { ChevronDown } from 'lucide-react'
 import { t } from '../styles/tokens'
-import { Section } from './Layout'
+import { Section, Heading, Label, Sub } from './Layout'
 import { faqItems } from '../data/cards'
 import { useResponsive } from '../hooks/useResponsive'
 
@@ -15,10 +15,11 @@ export default function FAQ() {
 
         {/* Left — sticky */}
         <div style={{ position: isTablet ? 'static' : 'sticky', top: 100, alignSelf: 'start' }}>
-          <h2 className="shimmer" style={{ fontSize: 32, fontWeight: 800, lineHeight: 1.15, letterSpacing: '-0.03em', marginBottom: 20 }}>Частые<br />вопросы</h2>
-          <p style={{ fontSize: 15, color: t.textSecondary, lineHeight: 1.7, marginBottom: 36 }}>
+          <Label>Поддержка</Label>
+          <Heading size="lg" style={{ marginBottom: 16 }}>Частые вопросы</Heading>
+          <Sub style={{ marginBottom: 36 }}>
             Не нашли ответ? Напишите нам — поможем разобраться.
-          </p>
+          </Sub>
           <a href="#" style={{
             display: 'inline-flex', alignItems: 'center', gap: 8,
             fontSize: 14, fontWeight: 600,
@@ -26,7 +27,7 @@ export default function FAQ() {
             background: '#0d0e11', color: t.textSecondary,
             transition: 'color 0.2s ease, background 0.2s ease',
           }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#fff'; (e.currentTarget as HTMLElement).style.background = 'rgba(129,140,248,0.12)' }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = t.textPrimary; (e.currentTarget as HTMLElement).style.background = 'rgba(129,140,248,0.12)' }}
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = t.textSecondary; (e.currentTarget as HTMLElement).style.background = '#0d0e11' }}
           >
             <span className="shimmer">Написать в поддержку →</span>
@@ -75,7 +76,14 @@ export default function FAQ() {
                     position: 'relative', zIndex: 1,
                   }}
                 >
-                  <span className="shimmer" style={{ fontSize: 18, fontWeight: 600, lineHeight: 1.4 }}>
+                  <span
+                    className={isOpen ? undefined : 'shimmer'}
+                    style={{
+                      fontSize: 18, fontWeight: 600, lineHeight: 1.4,
+                      color: isOpen ? '#ffffff' : undefined,
+                      WebkitTextFillColor: isOpen ? '#ffffff' : undefined,
+                    }}
+                  >
                     {item.question}
                   </span>
                   <div style={{
@@ -104,7 +112,7 @@ export default function FAQ() {
                   position: 'relative', zIndex: 1,
                 }}>
                   <p style={{
-                    fontSize: 16, color: t.textSecondary, lineHeight: 1.8,
+                    fontSize: 16, color: '#ede9fe', lineHeight: 1.8,
                     padding: '0 28px 32px',
                   }}>
                     {item.answer}

@@ -7,8 +7,8 @@ export const t = {
   borderHover:'rgba(255,255,255,0.14)',
 
   textPrimary:   '#ffffff',
-  textSecondary: 'rgba(255,255,255,0.5)',
-  textTertiary:  'rgba(255,255,255,0.3)',
+  textSecondary: 'rgba(255,255,255,0.72)',
+  textTertiary:  'rgba(255,255,255,0.45)',
 
   purple: '#a78bfa',
   blue:   '#60a5fa',

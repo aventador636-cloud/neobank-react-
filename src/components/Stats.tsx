@@ -36,7 +36,7 @@ function StatItem({ value, suffix, label }: { value: number; suffix: string; lab
       <div className="shimmer" style={{ fontSize: 48, fontWeight: 900, letterSpacing: '-0.04em', lineHeight: 1, marginBottom: 8 }}>
         {val}{suffix}
       </div>
-      <div style={{ fontSize: 14, color: t.textTertiary, lineHeight: 1.4 }}>{label}</div>
+      <div style={{ fontSize: 14, color: t.textSecondary, lineHeight: 1.4 }}>{label}</div>
     </div>
   )
 }

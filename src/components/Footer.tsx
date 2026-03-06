@@ -85,7 +85,7 @@ export default function Footer() {
               <div className="shimmer" style={{ fontSize: 20, fontWeight: 900, marginBottom: 14, letterSpacing: '-0.03em' }}>
                 NeoBank
               </div>
-              <p style={{ fontSize: 14, color: t.textTertiary, lineHeight: 1.7, maxWidth: 200, marginBottom: 28 }}>
+              <p style={{ fontSize: 14, color: t.textSecondary, lineHeight: 1.7, maxWidth: 200, marginBottom: 28 }}>
                 Современный банк для тех, кто ценит удобство и выгоду каждый день.
               </p>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
@@ -96,7 +96,7 @@ export default function Footer() {
                     background: t.surface, color: t.textTertiary,
                     transition: 'color 0.2s ease, background 0.2s ease',
                   }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#fff'; (e.currentTarget as HTMLElement).style.background = 'rgba(129,140,248,0.15)' }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = t.textPrimary; (e.currentTarget as HTMLElement).style.background = 'rgba(129,140,248,0.15)' }}
                     onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = t.textTertiary; (e.currentTarget as HTMLElement).style.background = t.surface }}
                   >
                     {s.icon}
@@ -117,9 +117,9 @@ export default function Footer() {
                 <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 14 }}>
                   {col.links.map(link => (
                     <li key={link}>
-                      <a href="#" style={{ fontSize: 14, color: t.textTertiary, transition: 'color 0.2s ease' }}
-                        onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
-                        onMouseLeave={e => (e.currentTarget.style.color = t.textTertiary)}>
+                      <a href="#" style={{ fontSize: 14, color: t.textSecondary, transition: 'color 0.2s ease' }}
+                        onMouseEnter={e => (e.currentTarget.style.color = t.textPrimary)}
+                        onMouseLeave={e => (e.currentTarget.style.color = t.textSecondary)}>
                         {link}
                       </a>
                     </li>

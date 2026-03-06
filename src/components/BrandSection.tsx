@@ -47,7 +47,7 @@ export default function BrandSection() {
               ].map(s => (
                 <div key={s.val}>
                   <div style={{ fontSize: 22, fontWeight: 800, color: t.textPrimary, letterSpacing: '-0.02em' }}>{s.val}</div>
-                  <div style={{ fontSize: 13, color: t.textTertiary, marginTop: 4 }}>{s.label}</div>
+                  <div style={{ fontSize: 13, color: t.textSecondary, marginTop: 4 }}>{s.label}</div>
                 </div>
               ))}
             </div>
