@@ -48,9 +48,9 @@ export default function Security() {
   return (
     <Section>
       <div style={{ textAlign: 'center', marginBottom: 56 }}>
-        <Label style={{ fontSize: 15, letterSpacing: '0.08em', marginBottom: 12 }}>Безопасность</Label>
-        <Heading size="lg" style={{ marginBottom: 16 }}>Ваши деньги под защитой</Heading>
-        <p style={{ fontSize: 13, color: t.textTertiary, maxWidth: 420, margin: '0 auto' }}>
+        <Label style={{ fontSize: 13, letterSpacing: '0.10em', marginBottom: 14 }}>Безопасность</Label>
+        <Heading size="lg" style={{ marginBottom: 18 }}>Ваши деньги под защитой</Heading>
+        <p style={{ fontSize: 15, color: t.textSecondary, maxWidth: 480, margin: '0 auto', lineHeight: 1.65 }}>
           Современные стандарты защиты на каждом уровне — от авторизации до транзакции.
         </p>
       </div>

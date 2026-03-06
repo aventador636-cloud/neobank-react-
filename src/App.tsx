@@ -4,7 +4,6 @@ import { AuthProvider, useAuth } from './context/AuthContext'
 import Header from './components/Header'
 import Hero from './components/Hero'
 import CardsSection from './components/CardsSection'
-import Security from './components/Security'
 import FAQ from './components/FAQ'
 import Modal from './components/Modal'
 import Footer from './components/Footer'
@@ -33,7 +32,6 @@ function AppInner() {
       <Header onCta={() => openModal()} onLogin={() => setAuthOpen(true)} />
       <Hero onCta={() => openModal()} />
       <CardsSection onOrder={openModal} />
-      <Security />
       <FAQ />
       <Footer />
       <Modal open={modal.open} cardType={modal.cardType} onClose={closeModal} />
