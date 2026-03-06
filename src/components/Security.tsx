@@ -1,6 +1,6 @@
 import { ShieldCheck, ScanFace, Zap } from 'lucide-react'
 import { t } from '../styles/tokens'
-import { Section, Heading, Label, Sub } from './Layout'
+import { Section, Heading, Label } from './Layout'
 import { useResponsive } from '../hooks/useResponsive'
 
 const items = [
@@ -48,11 +48,11 @@ export default function Security() {
   return (
     <Section>
       <div style={{ textAlign: 'center', marginBottom: 56 }}>
-        <Label>Безопасность</Label>
+        <Label style={{ fontSize: 15, letterSpacing: '0.08em', marginBottom: 12 }}>Безопасность</Label>
         <Heading size="lg" style={{ marginBottom: 16 }}>Ваши деньги под защитой</Heading>
-        <Sub style={{ maxWidth: 520, margin: '0 auto' }}>
+        <p style={{ fontSize: 13, color: t.textTertiary, maxWidth: 420, margin: '0 auto' }}>
           Современные стандарты защиты на каждом уровне — от авторизации до транзакции.
-        </Sub>
+        </p>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: 24, alignItems: 'stretch' }}>
