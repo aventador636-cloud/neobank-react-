@@ -1,6 +1,6 @@
 import { Check } from 'lucide-react'
 import { t } from '../styles/tokens'
-import { Section, Heading, Sub } from './Layout'
+import { Section, Heading } from './Layout'
 import Card3D from './Card3D'
 import { cards } from '../data/cards'
 import type { CardType } from '../data/cards'
@@ -14,10 +14,7 @@ export default function CardsSection({ onOrder }: CardsSectionProps) {
   return (
     <Section id="cards">
       <div style={{ textAlign: 'center', marginBottom: 56 }}>
-        <Heading size="lg" style={{ marginBottom: 16 }}>Выберите свою NEOкарту</Heading>
-        <Sub style={{ maxWidth: 480, margin: '0 auto' }}>
-          Два продукта под любые задачи — сравните и выберите то, что подходит именно вам.
-        </Sub>
+        <Heading size="lg">Выберите свою NEOкарту</Heading>
       </div>
 
       <div style={{
