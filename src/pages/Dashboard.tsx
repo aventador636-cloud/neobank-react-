@@ -1625,6 +1625,65 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
                   ))}
                 </div>
                 <Card3D card={userCard} />
+
+                {/* Card details — под картой, та же ширина */}
+                <div style={{ marginTop: 16, background: t.surface, border: `1px solid ${t.border}`, borderRadius: t.r20, overflow: 'hidden' }}>
+                  <button onClick={() => setDetailsOpen(p => !p)} style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 18px', background: 'none', border: 'none', cursor: 'pointer', transition: t.ease }}>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: t.textPrimary }}>Реквизиты и управление</span>
+                    <span style={{ color: t.textTertiary, fontSize: 14, display: 'inline-block', transition: 'transform 0.25s ease', transform: detailsOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>▾</span>
+                  </button>
+                  {detailsOpen && (
+                    <div style={{ borderTop: `1px solid ${t.border}`, padding: '0 18px', display: 'flex', flexDirection: 'column' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: `1px solid ${t.border}` }}>
+                        <span style={{ fontSize: 12, color: t.textTertiary }}>Номер карты</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <span style={{ fontSize: 12, fontWeight: 600, color: t.textPrimary, fontFamily: 'monospace', letterSpacing: '0.05em' }}>{userCard.number}</span>
+                          <button onClick={copyCardNumber} style={{ background: copied ? 'rgba(74,222,128,0.12)' : t.surfaceHover, border: `1px solid ${copied ? 'rgba(74,222,128,0.3)' : t.border}`, borderRadius: t.r999, padding: '2px 8px', cursor: 'pointer', fontSize: 10, fontWeight: 700, color: copied ? t.green : t.textSecondary, transition: t.ease }}>{copied ? '✓' : 'Копировать'}</button>
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: `1px solid ${t.border}` }}>
+                        <span style={{ fontSize: 12, color: t.textTertiary }}>Держатель</span>
+                        <span style={{ fontSize: 12, fontWeight: 600, color: t.textPrimary }}>{userCard.holder}</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: `1px solid ${t.border}` }}>
+                        <span style={{ fontSize: 12, color: t.textTertiary }}>Срок действия</span>
+                        <span style={{ fontSize: 12, fontWeight: 600, color: t.textPrimary, fontFamily: 'monospace' }}>12/29</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: `1px solid ${t.border}` }}>
+                        <span style={{ fontSize: 12, color: t.textTertiary }}>CVV</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <span style={{ fontSize: 14, fontWeight: 700, color: t.textPrimary, fontFamily: 'monospace', letterSpacing: '0.2em' }}>{showCvv ? CVV_MOCK[activeCard] : '•••'}</span>
+                          <button onClick={revealCvv} disabled={showCvv} style={{ background: t.surfaceHover, border: `1px solid ${t.border}`, borderRadius: t.r999, padding: '2px 8px', cursor: showCvv ? 'default' : 'pointer', fontSize: 10, fontWeight: 700, color: showCvv ? t.textTertiary : t.purple, transition: t.ease }}>{showCvv ? `${cvvCountdown}с` : 'Показать'}</button>
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: `1px solid ${t.border}` }}>
+                        <div>
+                          <div style={{ fontSize: 12, fontWeight: 600, color: cardBlocked[activeCard] ? '#f87171' : t.textPrimary }}>{cardBlocked[activeCard] ? '🔒 Заблокирована' : '🔓 Активна'}</div>
+                          <div style={{ fontSize: 10, color: t.textTertiary, marginTop: 1 }}>{cardBlocked[activeCard] ? 'Операции недоступны' : 'Все операции разрешены'}</div>
+                        </div>
+                        <button onClick={() => setCardBlocked(prev => { const n = [...prev]; n[activeCard] = !n[activeCard]; return n })} style={{ height: 28, padding: '0 12px', borderRadius: t.r999, border: 'none', cursor: 'pointer', background: cardBlocked[activeCard] ? 'rgba(74,222,128,0.12)' : 'rgba(248,113,113,0.12)', color: cardBlocked[activeCard] ? t.green : '#f87171', fontSize: 11, fontWeight: 700, transition: t.ease }}>
+                          {cardBlocked[activeCard] ? 'Разблокировать' : 'Заблокировать'}
+                        </button>
+                      </div>
+                      <div style={{ padding: '10px 0' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: limitDraft ? 8 : 0 }}>
+                          <div>
+                            <div style={{ fontSize: 12, fontWeight: 600, color: t.textPrimary }}>Дневной лимит</div>
+                            <div style={{ fontSize: 10, color: t.textTertiary, marginTop: 1 }}>{cardLimits[activeCard].toLocaleString('ru-RU')} ₽</div>
+                          </div>
+                          {!limitDraft && <button onClick={() => setLimitDraft(String(cardLimits[activeCard]))} style={{ background: t.surfaceHover, border: `1px solid ${t.border}`, borderRadius: t.r999, padding: '2px 8px', cursor: 'pointer', fontSize: 10, fontWeight: 700, color: t.textSecondary }}>Изменить</button>}
+                        </div>
+                        {limitDraft && (
+                          <div style={{ display: 'flex', gap: 6 }}>
+                            <input autoFocus value={limitDraft} onChange={e => setLimitDraft(e.target.value.replace(/\D/g, ''))} onKeyDown={e => { if (e.key === 'Enter' && limitDraft) { setCardLimits(prev => { const n = [...prev]; n[activeCard] = parseInt(limitDraft); return n }); setLimitDraft('') } if (e.key === 'Escape') setLimitDraft('') }} placeholder="Введите лимит" style={{ flex: 1, background: t.bg, border: `1px solid rgba(167,139,250,0.4)`, borderRadius: t.r999, padding: '5px 12px', color: t.textPrimary, fontSize: 12, fontFamily: t.fontFamily, outline: 'none' }} />
+                            <button onClick={() => { if (limitDraft) { setCardLimits(prev => { const n = [...prev]; n[activeCard] = parseInt(limitDraft); return n }); setLimitDraft('') } }} style={{ height: 28, padding: '0 12px', borderRadius: t.r999, border: 'none', background: 'linear-gradient(90deg, #a78bfa, #60a5fa)', color: '#fff', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>OK</button>
+                            <button onClick={() => setLimitDraft('')} style={{ height: 28, padding: '0 10px', borderRadius: t.r999, border: `1px solid ${t.border}`, background: 'none', color: t.textTertiary, fontSize: 11, cursor: 'pointer' }}>✕</button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Balance & actions */}
@@ -1664,70 +1723,6 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
                 </div>
               </div>
             </div>}
-
-            {/* Card details */}
-            <div style={{ marginBottom: 40, background: t.surface, border: `1px solid ${t.border}`, borderRadius: t.r20, overflow: 'hidden' }}>
-              <button onClick={() => setDetailsOpen(p => !p)} style={{
-                width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                padding: '16px 20px', background: 'none', border: 'none', cursor: 'pointer', transition: t.ease,
-              }}>
-                <span style={{ fontSize: 14, fontWeight: 700, color: t.textPrimary }}>Реквизиты и управление</span>
-                <span style={{ color: t.textTertiary, fontSize: 16, display: 'inline-block', transition: 'transform 0.25s ease', transform: detailsOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>▾</span>
-              </button>
-              {detailsOpen && (
-                <div style={{ borderTop: `1px solid ${t.border}`, padding: '0 20px', display: 'flex', flexDirection: 'column' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0', borderBottom: `1px solid ${t.border}` }}>
-                    <span style={{ fontSize: 13, color: t.textTertiary }}>Номер карты</span>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                      <span style={{ fontSize: 13, fontWeight: 600, color: t.textPrimary, fontFamily: 'monospace', letterSpacing: '0.05em' }}>{userCard.number}</span>
-                      <button onClick={copyCardNumber} style={{ background: copied ? 'rgba(74,222,128,0.12)' : t.surfaceHover, border: `1px solid ${copied ? 'rgba(74,222,128,0.3)' : t.border}`, borderRadius: t.r999, padding: '3px 10px', cursor: 'pointer', fontSize: 11, fontWeight: 700, color: copied ? t.green : t.textSecondary, transition: t.ease }}>{copied ? '✓' : 'Копировать'}</button>
-                    </div>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0', borderBottom: `1px solid ${t.border}` }}>
-                    <span style={{ fontSize: 13, color: t.textTertiary }}>Держатель</span>
-                    <span style={{ fontSize: 13, fontWeight: 600, color: t.textPrimary }}>{userCard.holder}</span>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0', borderBottom: `1px solid ${t.border}` }}>
-                    <span style={{ fontSize: 13, color: t.textTertiary }}>Срок действия</span>
-                    <span style={{ fontSize: 13, fontWeight: 600, color: t.textPrimary, fontFamily: 'monospace' }}>12/29</span>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0', borderBottom: `1px solid ${t.border}` }}>
-                    <span style={{ fontSize: 13, color: t.textTertiary }}>CVV</span>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                      <span style={{ fontSize: 15, fontWeight: 700, color: t.textPrimary, fontFamily: 'monospace', letterSpacing: '0.2em' }}>{showCvv ? CVV_MOCK[activeCard] : '•••'}</span>
-                      <button onClick={revealCvv} disabled={showCvv} style={{ background: t.surfaceHover, border: `1px solid ${t.border}`, borderRadius: t.r999, padding: '3px 10px', cursor: showCvv ? 'default' : 'pointer', fontSize: 11, fontWeight: 700, color: showCvv ? t.textTertiary : t.purple, transition: t.ease }}>
-                        {showCvv ? `${cvvCountdown}с` : 'Показать'}
-                      </button>
-                    </div>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0', borderBottom: `1px solid ${t.border}` }}>
-                    <div>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: cardBlocked[activeCard] ? '#f87171' : t.textPrimary }}>{cardBlocked[activeCard] ? '🔒 Карта заблокирована' : '🔓 Карта активна'}</div>
-                      <div style={{ fontSize: 11, color: t.textTertiary, marginTop: 2 }}>{cardBlocked[activeCard] ? 'Операции недоступны' : 'Все операции разрешены'}</div>
-                    </div>
-                    <button onClick={() => setCardBlocked(prev => { const n = [...prev]; n[activeCard] = !n[activeCard]; return n })} style={{ height: 32, padding: '0 16px', borderRadius: t.r999, border: 'none', cursor: 'pointer', background: cardBlocked[activeCard] ? 'rgba(74,222,128,0.12)' : 'rgba(248,113,113,0.12)', color: cardBlocked[activeCard] ? t.green : '#f87171', fontSize: 12, fontWeight: 700, transition: t.ease }}>
-                      {cardBlocked[activeCard] ? 'Разблокировать' : 'Заблокировать'}
-                    </button>
-                  </div>
-                  <div style={{ padding: '12px 0' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: limitDraft ? 10 : 0 }}>
-                      <div>
-                        <div style={{ fontSize: 13, fontWeight: 600, color: t.textPrimary }}>Дневной лимит</div>
-                        <div style={{ fontSize: 11, color: t.textTertiary, marginTop: 2 }}>{cardLimits[activeCard].toLocaleString('ru-RU')} ₽</div>
-                      </div>
-                      {!limitDraft && <button onClick={() => setLimitDraft(String(cardLimits[activeCard]))} style={{ background: t.surfaceHover, border: `1px solid ${t.border}`, borderRadius: t.r999, padding: '3px 10px', cursor: 'pointer', fontSize: 11, fontWeight: 700, color: t.textSecondary }}>Изменить</button>}
-                    </div>
-                    {limitDraft && (
-                      <div style={{ display: 'flex', gap: 8 }}>
-                        <input autoFocus value={limitDraft} onChange={e => setLimitDraft(e.target.value.replace(/\D/g, ''))} onKeyDown={e => { if (e.key === 'Enter' && limitDraft) { setCardLimits(prev => { const n = [...prev]; n[activeCard] = parseInt(limitDraft); return n }); setLimitDraft('') } if (e.key === 'Escape') setLimitDraft('') }} placeholder="Введите лимит" style={{ flex: 1, background: t.bg, border: `1px solid rgba(167,139,250,0.4)`, borderRadius: t.r999, padding: '6px 14px', color: t.textPrimary, fontSize: 13, fontFamily: t.fontFamily, outline: 'none' }} />
-                        <button onClick={() => { if (limitDraft) { setCardLimits(prev => { const n = [...prev]; n[activeCard] = parseInt(limitDraft); return n }); setLimitDraft('') } }} style={{ height: 32, padding: '0 14px', borderRadius: t.r999, border: 'none', background: 'linear-gradient(90deg, #a78bfa, #60a5fa)', color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>OK</button>
-                        <button onClick={() => setLimitDraft('')} style={{ height: 32, padding: '0 12px', borderRadius: t.r999, border: `1px solid ${t.border}`, background: 'none', color: t.textTertiary, fontSize: 12, cursor: 'pointer' }}>✕</button>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
 
             {/* Transactions */}
             <div>
