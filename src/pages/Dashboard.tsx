@@ -1395,8 +1395,9 @@ function polarPoint(cx: number, cy: number, r: number, angleDeg: number) {
   return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) }
 }
 
-function AnalyticsSection({ transactions }: { transactions: Transaction[] }) {
+function AnalyticsSection({ transactions, collapsible }: { transactions: Transaction[]; collapsible?: boolean }) {
   const [hovered, setHovered] = useState<number | null>(null)
+  const [open, setOpen] = useState(false)
   const { isMobile } = useResponsive()
 
   const currentMonth = transactions[0]?.month ?? ''
@@ -1432,11 +1433,20 @@ function AnalyticsSection({ transactions }: { transactions: Transaction[] }) {
   if (!segments.length) return null
 
   return (
-    <div style={{ background: t.surface, border: `1px solid ${t.border}`, borderRadius: t.r24, padding: '20px 24px', marginBottom: 32 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 20 }}>
-        <h2 style={{ fontSize: 16, fontWeight: 700, color: t.textPrimary }}>Расходы · {currentMonth}</h2>
-        <span style={{ fontSize: 16, fontWeight: 800, color: '#f87171' }}>−{total.toLocaleString('ru-RU')} ₽</span>
-      </div>
+    <div style={{ background: t.surface, border: `1px solid ${t.border}`, borderRadius: t.r20, overflow: 'hidden', marginTop: 16 }}>
+      <button onClick={() => collapsible && setOpen(p => !p)} style={{
+        width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+        padding: '14px 18px', background: 'none', border: 'none',
+        cursor: collapsible ? 'pointer' : 'default', transition: t.ease,
+      }}>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 10 }}>
+          <span style={{ fontSize: 13, fontWeight: 700, color: t.textPrimary }}>Аналитика расходов</span>
+          {(!collapsible || open) && <span style={{ fontSize: 12, color: '#f87171', fontWeight: 700 }}>−{total.toLocaleString('ru-RU')} ₽</span>}
+        </div>
+        {collapsible && <span style={{ color: t.textTertiary, fontSize: 14, display: 'inline-block', transition: 'transform 0.25s ease', transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }}>▾</span>}
+      </button>
+
+      {(!collapsible || open) && <div style={{ borderTop: `1px solid ${t.border}`, padding: '16px 18px 18px' }}>
 
       <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 24, alignItems: isMobile ? 'center' : 'center' }}>
         {/* Donut */}
@@ -1483,6 +1493,7 @@ function AnalyticsSection({ transactions }: { transactions: Transaction[] }) {
           ))}
         </div>
       </div>
+      </div>}
     </div>
   )
 }
@@ -1868,6 +1879,9 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
                     </div>
                   )}
                 </div>
+
+                {/* Analytics — раскрывающаяся, та же ширина */}
+                <AnalyticsSection transactions={transactions} collapsible />
               </div>
 
               {/* Balance & actions */}
@@ -1907,9 +1921,6 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
                 </div>
               </div>
             </div>}
-
-            {/* Analytics */}
-            <AnalyticsSection transactions={transactions} />
 
             {/* Transactions */}
             <div>
