@@ -1498,8 +1498,8 @@ function AnalyticsSection({ transactions, collapsible }: { transactions: Transac
   )
 }
 
-function NavIcon({ type, active }: { type: 'home' | 'cards' | 'history' | 'profile'; active: boolean }) {
-  const c = active ? '#a78bfa' : 'rgba(255,255,255,0.4)'
+function NavIcon({ type, active, accentColor = '#a78bfa' }: { type: 'home' | 'cards' | 'history' | 'profile'; active: boolean; accentColor?: string }) {
+  const c = active ? accentColor : 'rgba(255,255,255,0.4)'
   if (type === 'home') return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
       <path d="M3 10L12 3l9 7v10a1 1 0 01-1 1H5a1 1 0 01-1-1V10z" stroke={c} strokeWidth="1.8" strokeLinejoin="round"/>
@@ -1689,6 +1689,15 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
     })
   }, [addTransaction, activeCard])
 
+  const CARD_THEMES = [
+    { color: '#60a5fa', color2: '#818cf8' }, // Standard — blue
+    { color: '#a78bfa', color2: '#c084fc' }, // Premium  — purple
+    { color: '#d4a853', color2: '#f0c96a' }, // Diners   — gold
+  ]
+  const cardTheme   = CARD_THEMES[activeCard]
+  const accentColor = cardTheme.color
+  const accentGrad  = `linear-gradient(90deg, ${cardTheme.color}, ${cardTheme.color2})`
+
   const userCard: CardProduct = {
     ...cards[activeCard],
     holder: user?.name?.toUpperCase() ?? 'КЛИЕНТ',
@@ -1713,11 +1722,11 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
           <div style={{ display: 'flex', gap: 8 }}>
             {!isMobile && (['overview', 'profile'] as const).map(tp => (
               <button key={tp} onClick={() => setTab(tp)} style={{
-                background: tab === tp ? t.surfaceHover : 'none',
-                border: `1px solid ${tab === tp ? t.borderHover : 'transparent'}`,
+                background: tab === tp ? `${accentColor}15` : 'none',
+                border: `1px solid ${tab === tp ? `${accentColor}50` : 'transparent'}`,
                 borderRadius: t.r999, padding: '6px 16px',
-                color: tab === tp ? t.textPrimary : t.textSecondary,
-                fontSize: 13, fontWeight: 600, cursor: 'pointer', transition: t.ease,
+                color: tab === tp ? accentColor : t.textSecondary,
+                fontSize: 13, fontWeight: 600, cursor: 'pointer', transition: 'all 0.4s ease',
               }}>
                 {tp === 'overview' ? 'Обзор' : 'Профиль'}
               </button>
@@ -1750,10 +1759,10 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
               {cards.map((c, i) => (
                 <button key={c.id} onClick={() => setActiveCard(i)} style={{
                   flex: 1, padding: '6px 4px', borderRadius: t.r8,
-                  background: activeCard === i ? t.surfaceHover : 'none',
-                  border: `1px solid ${activeCard === i ? t.borderHover : 'transparent'}`,
-                  color: activeCard === i ? t.textPrimary : t.textTertiary,
-                  fontSize: 11, fontWeight: 600, cursor: 'pointer', transition: t.ease, textAlign: 'center',
+                  background: activeCard === i ? `${CARD_THEMES[i].color}15` : 'none',
+                  border: `1px solid ${activeCard === i ? `${CARD_THEMES[i].color}50` : 'transparent'}`,
+                  color: activeCard === i ? CARD_THEMES[i].color : t.textTertiary,
+                  fontSize: 11, fontWeight: 600, cursor: 'pointer', transition: 'all 0.3s ease', textAlign: 'center',
                 }}>
                   {c.id === 'standard' ? 'Standard' : c.id === 'premium' ? 'Premium' : 'Diners'}
                 </button>
@@ -1871,7 +1880,7 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
                         {limitDraft && (
                           <div style={{ display: 'flex', gap: 6 }}>
                             <input autoFocus value={limitDraft} onChange={e => setLimitDraft(e.target.value.replace(/\D/g, ''))} onKeyDown={e => { if (e.key === 'Enter' && limitDraft) { setCardLimits(prev => { const n = [...prev]; n[activeCard] = parseInt(limitDraft); return n }); setLimitDraft('') } if (e.key === 'Escape') setLimitDraft('') }} placeholder="Введите лимит" style={{ flex: 1, background: t.bg, border: `1px solid rgba(167,139,250,0.4)`, borderRadius: t.r999, padding: '5px 12px', color: t.textPrimary, fontSize: 12, fontFamily: t.fontFamily, outline: 'none' }} />
-                            <button onClick={() => { if (limitDraft) { setCardLimits(prev => { const n = [...prev]; n[activeCard] = parseInt(limitDraft); return n }); setLimitDraft('') } }} style={{ height: 28, padding: '0 12px', borderRadius: t.r999, border: 'none', background: 'linear-gradient(90deg, #a78bfa, #60a5fa)', color: '#fff', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>OK</button>
+                            <button onClick={() => { if (limitDraft) { setCardLimits(prev => { const n = [...prev]; n[activeCard] = parseInt(limitDraft); return n }); setLimitDraft('') } }} style={{ height: 28, padding: '0 12px', borderRadius: t.r999, border: 'none', background: accentGrad, color: '#fff', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>OK</button>
                             <button onClick={() => setLimitDraft('')} style={{ height: 28, padding: '0 10px', borderRadius: t.r999, border: `1px solid ${t.border}`, background: 'none', color: t.textTertiary, fontSize: 11, cursor: 'pointer' }}>✕</button>
                           </div>
                         )}
@@ -1889,7 +1898,11 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
                 <p style={{ fontSize: 12, fontWeight: 600, color: t.textTertiary, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>
                   Текущий баланс
                 </p>
-                <div className="shimmer" style={{ fontSize: 40, fontWeight: 800, letterSpacing: '-0.03em', marginBottom: 4 }}>
+                <div style={{
+                  fontSize: 40, fontWeight: 800, letterSpacing: '-0.03em', marginBottom: 4,
+                  background: accentGrad, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text', transition: 'background 0.5s ease',
+                }}>
                   {balance.toLocaleString('ru-RU')} ₽
                 </div>
                 <p style={{ fontSize: 13, color: t.textTertiary, marginBottom: 32 }}>
@@ -1911,7 +1924,7 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
                       display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
                       cursor: 'pointer', transition: t.ease, color: t.textPrimary,
                     }}
-                      onMouseEnter={e => { e.currentTarget.style.borderColor = t.borderHover; e.currentTarget.style.background = '#1e2025' }}
+                      onMouseEnter={e => { e.currentTarget.style.borderColor = `${accentColor}60`; e.currentTarget.style.background = `${accentColor}08` }}
                       onMouseLeave={e => { e.currentTarget.style.borderColor = t.border; e.currentTarget.style.background = t.surfaceHover }}
                     >
                       <span className="action-icon" style={{ fontSize: 18, display: 'inline-block' }}>{a.icon}</span>
@@ -1928,7 +1941,7 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
                 <h2 style={{ fontSize: 18, fontWeight: 700, color: t.textPrimary }}>Последние операции</h2>
                 <button onClick={() => setHistoryOpen(true)} style={{
                   background: 'none', border: 'none', cursor: 'pointer',
-                  color: t.purple, fontSize: 13, fontWeight: 600,
+                  color: accentColor, fontSize: 13, fontWeight: 600, transition: 'color 0.4s ease',
                 }}>
                   Все операции →
                 </button>
@@ -2000,11 +2013,11 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
               alignItems: 'center', justifyContent: 'center', gap: 4,
               background: 'none', border: 'none', cursor: 'pointer', transition: t.ease,
             }}>
-              <NavIcon type={item.icon} active={tab === item.id} />
+              <NavIcon type={item.icon} active={tab === item.id} accentColor={accentColor} />
               <span style={{
                 fontSize: 10, fontWeight: 600,
-                color: tab === item.id ? '#a78bfa' : 'rgba(255,255,255,0.4)',
-                transition: t.ease,
+                color: tab === item.id ? accentColor : 'rgba(255,255,255,0.4)',
+                transition: 'color 0.4s ease',
               }}>{item.label}</span>
             </button>
           ))}
