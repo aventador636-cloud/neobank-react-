@@ -479,6 +479,183 @@ function TransferModal({ onClose, onTransferred, balance }: {
   )
 }
 
+const TOPUP_METHODS = [
+  { id: 'sbp',   label: 'СБП',               sub: 'Мгновенно · Бесплатно',    icon: '⚡', color: '#4ade80' },
+  { id: 'card',  label: 'Банковская карта',   sub: 'Мгновенно · Без комиссии', icon: '💳', color: '#60a5fa' },
+  { id: 'bank',  label: 'Банковский перевод', sub: '1–2 рабочих дня',          icon: '🏦', color: '#a78bfa' },
+  { id: 'cash',  label: 'Наличные в банкомате',sub: 'Ближайший банкомат',      icon: '💵', color: '#f472b6' },
+]
+
+function TopUpModal({ onClose, onTopUp }: {
+  onClose: () => void
+  onTopUp: (amount: number) => void
+}) {
+  const [step, setStep]     = useState<'method' | 'amount' | 'success'>('method')
+  const [method, setMethod] = useState<typeof TOPUP_METHODS[0] | null>(null)
+  const [amount, setAmount] = useState('')
+  const { isMobile } = useResponsive()
+
+  const amountNum     = parseInt(amount.replace(/\D/g, ''), 10) || 0
+  const isAmountValid = amountNum >= 100
+
+  const handleConfirm = () => {
+    setStep('success')
+    const { date, month } = todayLabel()
+    onTopUp(amountNum)
+    setTimeout(onClose, 2000)
+  }
+
+  return (
+    <div style={{
+      position: 'fixed', inset: 0, zIndex: 300,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)',
+      animation: 'fadeIn 0.2s ease',
+    }} onClick={e => { if (e.target === e.currentTarget) onClose() }}>
+
+      <div style={{
+        width: isMobile ? '94vw' : 420,
+        background: t.surface, border: `1px solid ${t.border}`,
+        borderRadius: t.r24, display: 'flex', flexDirection: 'column',
+        boxShadow: '0 40px 80px rgba(0,0,0,0.6)',
+        animation: 'modalSlide 0.25s ease', overflow: 'hidden',
+      }}>
+
+        {/* Header */}
+        {step !== 'success' && (
+          <div style={{
+            padding: '22px 24px 18px', borderBottom: `1px solid ${t.border}`,
+            display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0,
+          }}>
+            {step === 'amount' && (
+              <button onClick={() => setStep('method')} style={{
+                background: t.surfaceHover, border: `1px solid ${t.border}`,
+                borderRadius: '50%', width: 32, height: 32, flexShrink: 0,
+                cursor: 'pointer', color: t.textSecondary, fontSize: 18,
+                display: 'flex', alignItems: 'center', justifyContent: 'center', transition: t.ease,
+              }}>‹</button>
+            )}
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 18, fontWeight: 700, color: t.textPrimary }}>
+                {step === 'method' ? 'Пополнение счёта' : 'Сумма'}
+              </div>
+              <div style={{ fontSize: 12, color: t.textTertiary, marginTop: 2 }}>
+                {step === 'method' ? 'Выберите способ пополнения' : `Способ: ${method?.label}`}
+              </div>
+            </div>
+            <button onClick={onClose} style={{
+              background: 'none', border: 'none', cursor: 'pointer',
+              color: t.textTertiary, fontSize: 22, lineHeight: 1, padding: 4, transition: t.ease,
+            }}
+              onMouseEnter={e => (e.currentTarget.style.color = t.textPrimary)}
+              onMouseLeave={e => (e.currentTarget.style.color = t.textTertiary)}
+            >×</button>
+          </div>
+        )}
+
+        {/* Step: method */}
+        {step === 'method' && (
+          <div style={{ padding: '20px 24px 24px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {TOPUP_METHODS.map(m => (
+              <button key={m.id} onClick={() => { setMethod(m); setStep('amount') }} style={{
+                display: 'flex', alignItems: 'center', gap: 14,
+                padding: '14px 16px', borderRadius: t.r16, cursor: 'pointer',
+                background: t.surfaceHover, border: `1px solid transparent`,
+                transition: t.ease, textAlign: 'left',
+              }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = t.border; e.currentTarget.style.background = '#1e2025' }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = 'transparent'; e.currentTarget.style.background = t.surfaceHover }}
+              >
+                <div style={{
+                  width: 44, height: 44, borderRadius: t.r12, flexShrink: 0,
+                  background: `${m.color}15`, border: `1px solid ${m.color}30`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20,
+                }}>{m.icon}</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: t.textPrimary }}>{m.label}</div>
+                  <div style={{ fontSize: 12, color: t.textTertiary, marginTop: 2 }}>{m.sub}</div>
+                </div>
+                <span style={{ color: t.textTertiary, fontSize: 18 }}>›</span>
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Step: amount */}
+        {step === 'amount' && (
+          <div style={{ padding: '20px 24px 24px' }}>
+            <div style={{ textAlign: 'center', padding: '24px 0 28px' }}>
+              <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 8 }}>
+                <input
+                  autoFocus
+                  value={amount}
+                  onChange={e => setAmount(e.target.value.replace(/\D/g, ''))}
+                  placeholder="0"
+                  style={{
+                    background: 'none', border: 'none', outline: 'none',
+                    fontSize: 52, fontWeight: 800, color: t.textPrimary,
+                    fontFamily: t.fontFamily, textAlign: 'right',
+                    width: `${Math.max(1, amount.length) * 32}px`, maxWidth: '80%',
+                    letterSpacing: '-0.03em', transition: 'width 0.1s',
+                  }}
+                  onKeyDown={e => { if (e.key === 'Enter' && isAmountValid) handleConfirm() }}
+                />
+                <span style={{ fontSize: 28, color: t.textTertiary, fontWeight: 700 }}>₽</span>
+              </div>
+              <div style={{ fontSize: 13, color: t.textTertiary, marginTop: 6 }}>
+                Минимальная сумма: 100 ₽
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
+              {[1000, 5000, 10000, 50000].map(v => (
+                <button key={v} onClick={() => setAmount(String(v))} style={{
+                  flex: 1, padding: '8px 4px', borderRadius: t.r12,
+                  background: amountNum === v ? `${method?.color ?? t.purple}20` : t.surfaceHover,
+                  border: `1px solid ${amountNum === v ? `${method?.color ?? t.purple}50` : 'transparent'}`,
+                  color: amountNum === v ? (method?.color ?? t.purple) : t.textSecondary,
+                  fontSize: 12, fontWeight: 600, cursor: 'pointer', transition: t.ease,
+                }}>
+                  {v >= 1000 ? `${v / 1000}к` : v}
+                </button>
+              ))}
+            </div>
+
+            <button onClick={handleConfirm} disabled={!isAmountValid} style={{
+              width: '100%', height: 50, borderRadius: t.r16, border: 'none',
+              background: isAmountValid ? `linear-gradient(90deg, ${method?.color ?? '#a78bfa'}, ${method?.color ?? '#60a5fa'}aa)` : t.surfaceHover,
+              color: t.textPrimary, fontSize: 15, fontWeight: 700,
+              cursor: isAmountValid ? 'pointer' : 'default',
+              transition: t.ease, opacity: isAmountValid ? 1 : 0.5,
+            }}>
+              {isAmountValid ? `Пополнить на ${amountNum.toLocaleString('ru-RU')} ₽` : 'Введите сумму'}
+            </button>
+          </div>
+        )}
+
+        {/* Step: success */}
+        {step === 'success' && (
+          <div style={{
+            padding: '56px 24px 52px', display: 'flex', flexDirection: 'column',
+            alignItems: 'center', gap: 16, textAlign: 'center',
+          }}>
+            <div style={{
+              width: 80, height: 80, borderRadius: '50%',
+              background: `${method?.color ?? t.green}18`, border: `2px solid ${method?.color ?? t.green}40`,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 36, animation: 'successPop 0.4s ease',
+            }}>✓</div>
+            <div style={{ fontSize: 22, fontWeight: 800, color: t.textPrimary }}>Счёт пополнен</div>
+            <div style={{ fontSize: 14, color: t.textTertiary }}>
+              +{amountNum.toLocaleString('ru-RU')} ₽ через {method?.label}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 const QUICK_ACTIONS = [
   { label: 'Перевести',  icon: '↑' },
   { label: 'Оплатить',   icon: '⚡' },
@@ -1073,6 +1250,7 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
   const [payOpen, setPayOpen]         = useState(false)
   const [historyOpen, setHistoryOpen] = useState(false)
   const [transferOpen, setTransferOpen] = useState(false)
+  const [topUpOpen, setTopUpOpen]       = useState(false)
   const [transactions, setTransactions] = useState<Transaction[]>(TRANSACTIONS)
   const [balances, setBalances]         = useState([45_230, 128_450, 2_400_000])
 
@@ -1085,6 +1263,16 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
     setBalances(prev => {
       const next = [...prev]
       next[activeCard] += tx.amount
+      return next
+    })
+  }, [addTransaction, activeCard])
+
+  const handleTopUp = useCallback((amount: number) => {
+    const { date, month } = todayLabel()
+    addTransaction({ id: Date.now(), name: 'Пополнение счёта', category: 'Входящий', amount: +amount, date, month, icon: '💰' })
+    setBalances(prev => {
+      const next = [...prev]
+      next[activeCard] += amount
       return next
     })
   }, [addTransaction, activeCard])
@@ -1187,6 +1375,7 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
                     <button key={a.label} onClick={
                       a.label === 'Перевести' ? () => setTransferOpen(true) :
                       a.label === 'Оплатить'  ? () => setPayOpen(true) :
+                      a.label === 'Пополнить' ? () => setTopUpOpen(true) :
                       a.label === 'История'   ? () => setHistoryOpen(true) :
                       undefined
                     } style={{
@@ -1260,6 +1449,7 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
           <ProfileTab user={user} activeCard={activeCard} logout={logout} />
         )}
       </main>
+      {topUpOpen && <TopUpModal onClose={() => setTopUpOpen(false)} onTopUp={handleTopUp} />}
       {transferOpen && <TransferModal onClose={() => setTransferOpen(false)} onTransferred={handleTransferred} balance={balance} />}
       {payOpen && <PayModal onClose={() => setPayOpen(false)} onPaid={addTransaction} />}
       {historyOpen && <HistoryModal onClose={() => setHistoryOpen(false)} transactions={transactions} />}
