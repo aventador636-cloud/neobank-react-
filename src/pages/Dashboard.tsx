@@ -1044,10 +1044,29 @@ function Divider() {
   return <div style={{ height: 1, background: t.border, margin: '0 20px' }} />
 }
 
-function ProfileTab({ user, activeCard, logout }: { user: { name: string | null; phone: string } | null; activeCard: number; logout: () => void }) {
+function ProfileTab({ user, activeCard, logout, updateProfile }: {
+  user: { name: string | null; phone: string; email: string | null } | null
+  activeCard: number
+  logout: () => void
+  updateProfile: (data: { name?: string; email?: string }) => void
+}) {
   const [security, setSecurity] = useState({ biometric: true, twofa: false, loginAlerts: true })
   const [notifs, setNotifs]     = useState({ push: true, sms: false, email: true })
   const [copied, setCopied]     = useState(false)
+  const [editing, setEditing]   = useState(false)
+  const [draftName, setDraftName]   = useState('')
+  const [draftEmail, setDraftEmail] = useState('')
+
+  const startEdit = () => {
+    setDraftName(user?.name ?? '')
+    setDraftEmail(user?.email ?? '')
+    setEditing(true)
+  }
+
+  const saveEdit = () => {
+    updateProfile({ name: draftName.trim() || undefined, email: draftEmail.trim() || undefined })
+    setEditing(false)
+  }
   const { isMobile } = useResponsive()
 
   const refCode = 'NEO-ALEX-2024'
@@ -1089,30 +1108,79 @@ function ProfileTab({ user, activeCard, logout }: { user: { name: string | null;
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           fontSize: 24, fontWeight: 800, color: tierColor,
         }}>{initials}</div>
-        <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 20, fontWeight: 800, color: t.textPrimary, marginBottom: 4 }}>{user?.name}</div>
-          <div style={{ fontSize: 14, color: t.textSecondary, marginBottom: 10 }}>{user?.phone}</div>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <span style={{
-              fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: t.r999,
-              background: `${tierColor}22`, color: tierColor, letterSpacing: '0.05em',
-            }}>{tierName}</span>
-            <span style={{
-              fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: t.r999,
-              background: 'rgba(74,222,128,0.12)', color: t.green, letterSpacing: '0.05em',
-            }}>✓ Верифицирован</span>
-          </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          {editing ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <input
+                autoFocus
+                value={draftName}
+                onChange={e => setDraftName(e.target.value)}
+                placeholder="Имя"
+                style={{
+                  background: t.bg, border: `1px solid rgba(167,139,250,0.4)`,
+                  borderRadius: t.r8, padding: '8px 12px',
+                  color: t.textPrimary, fontSize: 14, fontFamily: t.fontFamily,
+                  outline: 'none', width: '100%', boxSizing: 'border-box',
+                }}
+              />
+              <input
+                value={draftEmail}
+                onChange={e => setDraftEmail(e.target.value)}
+                placeholder="Email"
+                type="email"
+                style={{
+                  background: t.bg, border: `1px solid ${t.border}`,
+                  borderRadius: t.r8, padding: '8px 12px',
+                  color: t.textPrimary, fontSize: 14, fontFamily: t.fontFamily,
+                  outline: 'none', width: '100%', boxSizing: 'border-box',
+                }}
+                onFocus={e => (e.currentTarget.style.borderColor = 'rgba(167,139,250,0.4)')}
+                onBlur={e  => (e.currentTarget.style.borderColor = t.border)}
+                onKeyDown={e => { if (e.key === 'Enter') saveEdit() }}
+              />
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button onClick={saveEdit} style={{
+                  flex: 1, height: 34, borderRadius: t.r8, border: 'none',
+                  background: 'linear-gradient(90deg, #a78bfa, #60a5fa)',
+                  color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer',
+                }}>Сохранить</button>
+                <button onClick={() => setEditing(false)} style={{
+                  height: 34, padding: '0 14px', borderRadius: t.r8,
+                  border: `1px solid ${t.border}`, background: 'none',
+                  color: t.textSecondary, fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                }}>Отмена</button>
+              </div>
+            </div>
+          ) : (
+            <>
+              <div style={{ fontSize: 20, fontWeight: 800, color: t.textPrimary, marginBottom: 2 }}>{user?.name ?? '—'}</div>
+              {user?.email && <div style={{ fontSize: 13, color: t.textTertiary, marginBottom: 6 }}>{user.email}</div>}
+              <div style={{ fontSize: 14, color: t.textSecondary, marginBottom: 10 }}>{user?.phone}</div>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <span style={{
+                  fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: t.r999,
+                  background: `${tierColor}22`, color: tierColor, letterSpacing: '0.05em',
+                }}>{tierName}</span>
+                <span style={{
+                  fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: t.r999,
+                  background: 'rgba(74,222,128,0.12)', color: t.green, letterSpacing: '0.05em',
+                }}>✓ Верифицирован</span>
+              </div>
+            </>
+          )}
         </div>
-        <button style={{
-          background: t.surfaceHover, border: `1px solid ${t.border}`,
-          borderRadius: t.r12, padding: '8px 14px', color: t.textSecondary,
-          fontSize: 13, fontWeight: 600, cursor: 'pointer', transition: t.ease, whiteSpace: 'nowrap',
-        }}
-          onMouseEnter={e => (e.currentTarget.style.color = t.textPrimary)}
-          onMouseLeave={e => (e.currentTarget.style.color = t.textSecondary)}
-        >
-          Изменить ✎
-        </button>
+        {!editing && (
+          <button onClick={startEdit} style={{
+            background: t.surfaceHover, border: `1px solid ${t.border}`,
+            borderRadius: t.r12, padding: '8px 14px', color: t.textSecondary,
+            fontSize: 13, fontWeight: 600, cursor: 'pointer', transition: t.ease, whiteSpace: 'nowrap', flexShrink: 0,
+          }}
+            onMouseEnter={e => (e.currentTarget.style.color = t.textPrimary)}
+            onMouseLeave={e => (e.currentTarget.style.color = t.textSecondary)}
+          >
+            Изменить ✎
+          </button>
+        )}
       </div>
 
       {/* Cashback stats */}
@@ -1243,7 +1311,7 @@ function ProfileTab({ user, activeCard, logout }: { user: { name: string | null;
 }
 
 export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
-  const { user, logout } = useAuth()
+  const { user, logout, updateProfile } = useAuth()
   const { isMobile } = useResponsive()
   const [activeCard, setActiveCard]   = useState(0)
   const [tab, setTab]                 = useState<'overview' | 'profile'>('overview')
@@ -1448,7 +1516,7 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
             </div>
           </>
         ) : (
-          <ProfileTab user={user} activeCard={activeCard} logout={logout} />
+          <ProfileTab user={user} activeCard={activeCard} logout={logout} updateProfile={updateProfile} />
         )}
       </main>
       {topUpOpen && <TopUpModal onClose={() => setTopUpOpen(false)} onTopUp={handleTopUp} />}
