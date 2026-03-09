@@ -30,9 +30,9 @@ export default function Header({ onCta, onLogin }: HeaderProps) {
           </nav>
         )}
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <Btn variant="ghost" onClick={onLogin} style={{ height: 40, fontSize: 14 }}>Войти</Btn>
-          <Btn onClick={onCta} style={{ height: 40, fontSize: 14 }}>{isMobile ? 'Счёт' : 'Открыть счёт'}</Btn>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+          <Btn variant="ghost" onClick={onLogin} style={{ height: 40, fontSize: 14, padding: isMobile ? '0 16px' : '0 24px' }}>Войти</Btn>
+          <Btn onClick={onCta} style={{ height: 40, fontSize: 14, padding: isMobile ? '0 16px' : '0 24px' }}>{isMobile ? 'Счёт' : 'Открыть счёт'}</Btn>
         </div>
 
       </div>
