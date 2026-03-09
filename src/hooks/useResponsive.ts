@@ -12,6 +12,8 @@ export function useResponsive() {
   }, [])
 
   return {
+    width,
+    isSmallMobile: width < 420,
     isMobile: width < 640,
     isTablet: width < 1024,
   }

@@ -1,6 +1,6 @@
 import { ShieldCheck, Zap, Lock, Eye } from 'lucide-react'
 import { t } from '../styles/tokens'
-import { Section, Heading, Label } from './Layout'
+import { Section, Heading } from './Layout'
 import { useResponsive } from '../hooks/useResponsive'
 
 const items = [

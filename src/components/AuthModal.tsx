@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { t } from '../styles/tokens'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../context/useAuth'
 import { useResponsive } from '../hooks/useResponsive'
 
 interface AuthModalProps {
@@ -22,23 +22,22 @@ function formatPhone(raw: string): string {
 
 export default function AuthModal({ onClose }: AuthModalProps) {
   const { login } = useAuth()
-  const { isMobile } = useResponsive()
+  const { isMobile, isSmallMobile } = useResponsive()
   const [step, setStep] = useState<Step>('phone')
   const [phone, setPhone] = useState('')
   const [otp, setOtp] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const otpRefs = [
-    useRef<HTMLInputElement>(null),
-    useRef<HTMLInputElement>(null),
-    useRef<HTMLInputElement>(null),
-    useRef<HTMLInputElement>(null),
-  ]
+  const otpRef0 = useRef<HTMLInputElement>(null)
+  const otpRef1 = useRef<HTMLInputElement>(null)
+  const otpRef2 = useRef<HTMLInputElement>(null)
+  const otpRef3 = useRef<HTMLInputElement>(null)
+  const otpRefs = [otpRef0, otpRef1, otpRef2, otpRef3]
 
   useEffect(() => {
-    if (step === 'otp') {
-      setTimeout(() => otpRefs[0].current?.focus(), 100)
-    }
+    if (step !== 'otp') return
+    const id = window.setTimeout(() => otpRef0.current?.focus(), 100)
+    return () => window.clearTimeout(id)
   }, [step])
 
   const phoneDigits = phone.replace(/\D/g, '')
@@ -99,22 +98,23 @@ export default function AuthModal({ onClose }: AuthModalProps) {
     } else {
       setError('Неверный код. Попробуйте 1234')
       setOtp('')
-      otpRefs[0].current?.focus()
+      otpRef0.current?.focus()
     }
   }
 
   return (
     <div style={{
       position: 'fixed', inset: 0, zIndex: 200,
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      display: 'flex', alignItems: isMobile ? 'flex-end' : 'center', justifyContent: 'center',
       background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)',
       animation: 'fadeIn 0.2s ease',
     }} onClick={e => { if (e.target === e.currentTarget) onClose() }}>
 
       <div style={{
-        width: isMobile ? '92vw' : 400, background: t.surface,
-        border: `1px solid ${t.border}`, borderRadius: t.r24,
-        padding: isMobile ? '32px 24px' : '40px 36px', position: 'relative',
+        width: isMobile ? '100%' : 400, maxWidth: 400, background: t.surface,
+        border: `1px solid ${t.border}`, borderRadius: isMobile ? '24px 24px 0 0' : t.r24,
+        padding: isMobile ? (isSmallMobile ? '24px 16px' : '28px 20px') : '40px 36px', position: 'relative',
+        maxHeight: isMobile ? '90vh' : 'none', overflowY: 'auto',
         animation: 'modalSlide 0.25s ease',
         boxShadow: '0 40px 80px rgba(0,0,0,0.6)',
       }}>
@@ -211,7 +211,7 @@ export default function AuthModal({ onClose }: AuthModalProps) {
                 <p style={{ fontSize: 14, color: t.textSecondary, fontWeight: 500 }}>Проверка кода...</p>
               </div>
             ) : (
-              <div style={{ display: 'flex', gap: 12, justifyContent: 'center', marginBottom: 16 }}>
+              <div style={{ display: 'flex', gap: isSmallMobile ? 8 : 12, justifyContent: 'center', marginBottom: 16 }}>
                 {[0, 1, 2, 3].map(i => (
                   <input
                     key={i}
@@ -224,8 +224,8 @@ export default function AuthModal({ onClose }: AuthModalProps) {
                     onKeyDown={e => handleOtpKey(i, e)}
                     onPaste={handleOtpPaste}
                     style={{
-                      width: 64, height: 64, textAlign: 'center',
-                      fontSize: 24, fontWeight: 700, fontFamily: 'monospace',
+                      width: isSmallMobile ? 52 : 64, height: isSmallMobile ? 52 : 64, textAlign: 'center',
+                      fontSize: isSmallMobile ? 20 : 24, fontWeight: 700, fontFamily: 'monospace',
                       background: t.bg, border: `1px solid ${error ? '#f87171' : otp[i] ? 'rgba(167,139,250,0.5)' : t.border}`,
                       borderRadius: t.r12, color: t.textPrimary, outline: 'none',
                       transition: t.ease,

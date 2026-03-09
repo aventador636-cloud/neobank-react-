@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { t } from '../styles/tokens'
+import { useResponsive } from '../hooks/useResponsive'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -40,6 +41,7 @@ export default function Chat() {
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
+  const { isMobile, isSmallMobile } = useResponsive()
 
   useEffect(() => {
     if (open) bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -69,8 +71,8 @@ export default function Chat() {
       {/* Chat window */}
       {open && (
         <div style={{
-          position: 'fixed', bottom: 90, right: 24, zIndex: 1000,
-          width: 360, height: 520,
+          position: 'fixed', bottom: isMobile ? 84 : 90, right: isMobile ? 12 : 24, left: isMobile ? 12 : 'auto', zIndex: 1000,
+          width: isMobile ? 'auto' : 360, height: isMobile ? 'min(70vh, 560px)' : 520,
           background: t.surface,
           border: `1px solid ${t.border}`,
           borderRadius: t.r24,
@@ -82,7 +84,7 @@ export default function Chat() {
 
           {/* Header */}
           <div style={{
-            padding: '16px 20px',
+            padding: isSmallMobile ? '12px 14px' : '16px 20px',
             borderBottom: `1px solid ${t.border}`,
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
             background: t.surfaceHover,
@@ -125,7 +127,7 @@ export default function Chat() {
                 justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start',
               }}>
                 <div style={{
-                  maxWidth: '80%',
+                  maxWidth: isMobile ? '88%' : '80%',
                   padding: '10px 14px',
                   borderRadius: m.role === 'user' ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
                   background: m.role === 'user'
@@ -165,7 +167,7 @@ export default function Chat() {
 
           {/* Input */}
           <div style={{
-            padding: '12px 16px',
+            padding: isSmallMobile ? '10px 12px' : '12px 16px',
             borderTop: `1px solid ${t.border}`,
             display: 'flex', gap: 8, alignItems: 'flex-end',
             background: t.surfaceHover,
@@ -209,8 +211,8 @@ export default function Chat() {
 
       {/* Floating button */}
       <button onClick={() => setOpen(o => !o)} style={{
-        position: 'fixed', bottom: 24, right: 24, zIndex: 1000,
-        width: 56, height: 56, borderRadius: '50%', border: 'none',
+        position: 'fixed', bottom: isMobile ? 16 : 24, right: isMobile ? 16 : 24, zIndex: 1000,
+        width: isMobile ? 52 : 56, height: isMobile ? 52 : 56, borderRadius: '50%', border: 'none',
         background: 'linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%)',
         cursor: 'pointer', boxShadow: '0 8px 32px rgba(167,139,250,0.4)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
