@@ -500,7 +500,6 @@ function TopUpModal({ onClose, onTopUp }: {
 
   const handleConfirm = () => {
     setStep('success')
-    const { date, month } = todayLabel()
     onTopUp(amountNum)
     setTimeout(onClose, 2000)
   }

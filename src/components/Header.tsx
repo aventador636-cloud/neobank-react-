@@ -5,8 +5,8 @@ import { useResponsive } from '../hooks/useResponsive'
 interface HeaderProps { onCta: () => void; onLogin: () => void }
 
 const SEGMENTS = [
-  { id: 'login' as const, label: 'Войти',        hint: 'Личный кабинет' },
-  { id: 'open'  as const, label: 'Открыть счёт', hint: 'Бесплатно · 5 минут' },
+  { id: 'login' as const, label: 'Войти'         },
+  { id: 'open'  as const, label: 'Открыть счёт'  },
 ]
 
 export default function Header({ onCta, onLogin }: HeaderProps) {
@@ -49,7 +49,7 @@ export default function Header({ onCta, onLogin }: HeaderProps) {
           transition: 'border-color 0.25s ease',
           boxShadow: hovered ? '0 0 16px rgba(167,139,250,0.12)' : 'none',
         }}>
-          {SEGMENTS.map(({ id, label, hint }) => {
+          {SEGMENTS.map(({ id, label }) => {
             const isActive  = active  === id
             const isHovered = hovered === id
 
