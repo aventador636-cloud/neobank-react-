@@ -479,11 +479,47 @@ function TransferModal({ onClose, onTransferred, balance }: {
   )
 }
 
+function SbpIcon({ color }: { color: string }) {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="topup-icon-sbp">
+      <path d="M13 2L3 14h8l-1 8 11-12h-8z" fill={color} />
+    </svg>
+  )
+}
+function CardIcon({ color }: { color: string }) {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="topup-icon-card">
+      <rect x="2" y="5" width="20" height="14" rx="3" stroke={color} strokeWidth="1.8"/>
+      <path d="M2 10h20" stroke={color} strokeWidth="2"/>
+      <rect x="5" y="14" width="5" height="2" rx="1" fill={color}/>
+      <circle cx="18" cy="15" r="1.5" fill={color} opacity="0.5"/>
+      <circle cx="15" cy="15" r="1.5" fill={color}/>
+    </svg>
+  )
+}
+function TransferIcon({ color }: { color: string }) {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path className="topup-icon-arrow-up" d="M7 14V5M7 5L4 8M7 5l3 3" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+      <path className="topup-icon-arrow-down" d="M17 10v9m0 0l-3-3m3 3l3-3" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+function CashIcon({ color }: { color: string }) {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="topup-icon-cash">
+      <rect x="2" y="7" width="20" height="10" rx="2" stroke={color} strokeWidth="1.8"/>
+      <circle cx="12" cy="12" r="2.5" stroke={color} strokeWidth="1.8"/>
+      <path d="M6 10v4M18 10v4" stroke={color} strokeWidth="1.8" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
 const TOPUP_METHODS = [
-  { id: 'sbp',   label: 'СБП',               sub: 'Мгновенно · Бесплатно',    icon: '⚡', color: '#4ade80' },
-  { id: 'card',  label: 'Банковская карта',   sub: 'Мгновенно · Без комиссии', icon: '💳', color: '#60a5fa' },
-  { id: 'bank',  label: 'Банковский перевод', sub: '1–2 рабочих дня',          icon: '🏦', color: '#a78bfa' },
-  { id: 'cash',  label: 'Наличные в банкомате',sub: 'Ближайший банкомат',      icon: '💵', color: '#f472b6' },
+  { id: 'sbp',   label: 'СБП',                sub: 'Мгновенно · Бесплатно',    Icon: SbpIcon,      color: '#4ade80' },
+  { id: 'card',  label: 'Банковская карта',    sub: 'Мгновенно · Без комиссии', Icon: CardIcon,     color: '#60a5fa' },
+  { id: 'bank',  label: 'Банковский перевод',  sub: '1–2 рабочих дня',          Icon: TransferIcon, color: '#a78bfa' },
+  { id: 'cash',  label: 'Наличные в банкомате',sub: 'Ближайший банкомат',       Icon: CashIcon,     color: '#f472b6' },
 ]
 
 function TopUpModal({ onClose, onTopUp }: {
@@ -555,28 +591,67 @@ function TopUpModal({ onClose, onTopUp }: {
         {/* Step: method */}
         {step === 'method' && (
           <div style={{ padding: '20px 24px 24px', display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {TOPUP_METHODS.map(m => (
+            {TOPUP_METHODS.map((m, i) => (
               <button key={m.id} onClick={() => { setMethod(m); setStep('amount') }} style={{
                 display: 'flex', alignItems: 'center', gap: 14,
                 padding: '14px 16px', borderRadius: t.r16, cursor: 'pointer',
                 background: t.surfaceHover, border: `1px solid transparent`,
-                transition: t.ease, textAlign: 'left',
+                textAlign: 'left', animation: `methodIn 0.3s ease both`,
+                animationDelay: `${i * 60}ms`,
               }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = t.border; e.currentTarget.style.background = '#1e2025' }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = 'transparent'; e.currentTarget.style.background = t.surfaceHover }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.borderColor = `${m.color}40`
+                  e.currentTarget.style.background = `${m.color}08`
+                  const icon = e.currentTarget.querySelector('.method-icon') as HTMLElement
+                  if (icon) { icon.style.boxShadow = `0 0 16px ${m.color}50`; icon.style.transform = 'scale(1.08)' }
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.borderColor = 'transparent'
+                  e.currentTarget.style.background = t.surfaceHover
+                  const icon = e.currentTarget.querySelector('.method-icon') as HTMLElement
+                  if (icon) { icon.style.boxShadow = 'none'; icon.style.transform = 'scale(1)' }
+                }}
               >
-                <div style={{
-                  width: 44, height: 44, borderRadius: t.r12, flexShrink: 0,
-                  background: `${m.color}15`, border: `1px solid ${m.color}30`,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20,
-                }}>{m.icon}</div>
+                <div className="method-icon" style={{
+                  width: 48, height: 48, borderRadius: t.r16, flexShrink: 0,
+                  background: `${m.color}12`, border: `1px solid ${m.color}30`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  transition: 'all 0.25s ease',
+                }}>
+                  <m.Icon color={m.color} />
+                </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 14, fontWeight: 600, color: t.textPrimary }}>{m.label}</div>
                   <div style={{ fontSize: 12, color: t.textTertiary, marginTop: 2 }}>{m.sub}</div>
                 </div>
-                <span style={{ color: t.textTertiary, fontSize: 18 }}>›</span>
+                <svg width="7" height="12" viewBox="0 0 7 12" fill="none">
+                  <path d="M1 1l5 5-5 5" stroke={t.textTertiary} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
               </button>
             ))}
+            <style>{`
+              @keyframes methodIn {
+                from { opacity: 0; transform: translateY(10px); }
+                to   { opacity: 1; transform: translateY(0); }
+              }
+              @keyframes topup-sbp-flash {
+                0%,100% { opacity: 1; } 50% { opacity: 0.5; }
+              }
+              .topup-icon-sbp { animation: topup-sbp-flash 1.8s ease-in-out infinite; }
+              @keyframes topup-card-shine {
+                0%,100% { filter: brightness(1); } 50% { filter: brightness(1.4); }
+              }
+              .topup-icon-card { animation: topup-card-shine 2.4s ease-in-out infinite; }
+              @keyframes topup-arrow-bounce {
+                0%,100% { transform: translateY(0); } 50% { transform: translateY(-2px); }
+              }
+              .topup-icon-arrow-up   { animation: topup-arrow-bounce 1.4s ease-in-out infinite; }
+              .topup-icon-arrow-down { animation: topup-arrow-bounce 1.4s ease-in-out infinite 0.7s; }
+              @keyframes topup-cash-pulse {
+                0%,100% { transform: scale(1); } 50% { transform: scale(1.06); }
+              }
+              .topup-icon-cash { animation: topup-cash-pulse 2s ease-in-out infinite; }
+            `}</style>
           </div>
         )}
 
