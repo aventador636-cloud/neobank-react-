@@ -1108,65 +1108,73 @@ function ProfileTab({ user, activeCard, logout, updateProfile }: {
           fontSize: 24, fontWeight: 800, color: tierColor,
         }}>{initials}</div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          {editing && (
-            <div style={{
-              position: 'fixed', inset: 0, zIndex: 300,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(6px)',
-            }} onClick={e => { if (e.target === e.currentTarget) setEditing(false) }}>
-              <div style={{
-                width: isMobile ? '90vw' : 360,
-                background: t.surface, border: `1px solid ${t.border}`,
-                borderRadius: t.r24, padding: '24px',
-                boxShadow: '0 40px 80px rgba(0,0,0,0.5)',
-                animation: 'modalSlide 0.2s ease',
-              }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-                  <span style={{ fontSize: 16, fontWeight: 700, color: t.textPrimary }}>Редактировать профиль</span>
-                  <button onClick={() => setEditing(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: t.textTertiary, fontSize: 20, lineHeight: 1 }}>×</button>
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                  <input autoFocus value={draftName} onChange={e => setDraftName(e.target.value)} placeholder="Имя"
-                    style={{ background: t.bg, border: `1px solid rgba(167,139,250,0.4)`, borderRadius: t.r12, padding: '10px 14px', color: t.textPrimary, fontSize: 14, fontFamily: t.fontFamily, outline: 'none', width: '100%', boxSizing: 'border-box' }} />
-                  <input value={draftEmail} onChange={e => setDraftEmail(e.target.value)} placeholder="Email" type="email"
-                    onKeyDown={e => { if (e.key === 'Enter') saveEdit() }}
-                    style={{ background: t.bg, border: `1px solid ${t.border}`, borderRadius: t.r12, padding: '10px 14px', color: t.textPrimary, fontSize: 14, fontFamily: t.fontFamily, outline: 'none', width: '100%', boxSizing: 'border-box' }}
-                    onFocus={e => (e.currentTarget.style.borderColor = 'rgba(167,139,250,0.4)')}
-                    onBlur={e  => (e.currentTarget.style.borderColor = t.border)} />
-                  <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
-                    <button onClick={saveEdit} style={{ flex: 1, height: 42, borderRadius: t.r12, border: 'none', background: 'linear-gradient(90deg, #a78bfa, #60a5fa)', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>Сохранить</button>
-                    <button onClick={() => setEditing(false)} style={{ height: 42, padding: '0 16px', borderRadius: t.r12, border: `1px solid ${t.border}`, background: 'none', color: t.textSecondary, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>Отмена</button>
-                  </div>
-                </div>
+          {editing ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <input
+                autoFocus
+                value={draftName}
+                onChange={e => setDraftName(e.target.value)}
+                placeholder="Имя"
+                style={{
+                  background: 'rgba(167,139,250,0.07)', border: `1px solid rgba(167,139,250,0.3)`,
+                  borderRadius: t.r999, padding: '6px 14px',
+                  color: t.textPrimary, fontSize: 14, fontFamily: t.fontFamily,
+                  outline: 'none', width: '100%', boxSizing: 'border-box',
+                }}
+              />
+              <input
+                value={draftEmail}
+                onChange={e => setDraftEmail(e.target.value)}
+                placeholder="Email"
+                type="email"
+                onKeyDown={e => { if (e.key === 'Enter') saveEdit() }}
+                style={{
+                  background: t.surfaceHover, border: `1px solid ${t.border}`,
+                  borderRadius: t.r999, padding: '6px 14px',
+                  color: t.textPrimary, fontSize: 14, fontFamily: t.fontFamily,
+                  outline: 'none', width: '100%', boxSizing: 'border-box',
+                }}
+                onFocus={e => (e.currentTarget.style.borderColor = 'rgba(167,139,250,0.3)')}
+                onBlur={e  => (e.currentTarget.style.borderColor = t.border)}
+              />
+              <div style={{ display: 'flex', gap: 6, marginTop: 2 }}>
+                <button onClick={saveEdit} style={{
+                  height: 28, padding: '0 14px', borderRadius: t.r999, border: 'none',
+                  background: 'linear-gradient(90deg, #a78bfa, #60a5fa)',
+                  color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer',
+                }}>Сохранить</button>
+                <button onClick={() => setEditing(false)} style={{
+                  height: 28, padding: '0 12px', borderRadius: t.r999,
+                  border: `1px solid ${t.border}`, background: 'none',
+                  color: t.textTertiary, fontSize: 12, fontWeight: 600, cursor: 'pointer',
+                }}>Отмена</button>
               </div>
             </div>
-          )}
-          <>
-            <div style={{ fontSize: 20, fontWeight: 800, color: t.textPrimary, marginBottom: 2 }}>{user?.name ?? '—'}</div>
-            {user?.email && <div style={{ fontSize: 13, color: t.textTertiary, marginBottom: 6 }}>{user.email}</div>}
-            <div style={{ fontSize: 14, color: t.textSecondary, marginBottom: 10 }}>{user?.phone}</div>
-            <div style={{ display: 'flex', gap: 8 }}>
-              <span style={{
-                  fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: t.r999,
-                  background: `${tierColor}22`, color: tierColor, letterSpacing: '0.05em',
-                }}>{tierName}</span>
-                <span style={{
-                  fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: t.r999,
-                  background: 'rgba(74,222,128,0.12)', color: t.green, letterSpacing: '0.05em',
-                }}>✓ Верифицирован</span>
+          ) : (
+            <>
+              <div style={{ fontSize: 20, fontWeight: 800, color: t.textPrimary, marginBottom: 2 }}>{user?.name ?? '—'}</div>
+              {user?.email && <div style={{ fontSize: 13, color: t.textTertiary, marginBottom: 6 }}>{user.email}</div>}
+              <div style={{ fontSize: 14, color: t.textSecondary, marginBottom: 10 }}>{user?.phone}</div>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: t.r999, background: `${tierColor}22`, color: tierColor, letterSpacing: '0.05em' }}>{tierName}</span>
+                <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: t.r999, background: 'rgba(74,222,128,0.12)', color: t.green, letterSpacing: '0.05em' }}>✓ Верифицирован</span>
               </div>
             </>
+          )}
         </div>
-        <button onClick={startEdit} style={{
-            background: t.surfaceHover, border: `1px solid ${t.border}`,
-            borderRadius: t.r12, padding: '8px 14px', color: t.textSecondary,
-            fontSize: 13, fontWeight: 600, cursor: 'pointer', transition: t.ease, whiteSpace: 'nowrap', flexShrink: 0,
+        {!editing && (
+          <button onClick={startEdit} style={{
+            background: 'rgba(255,255,255,0.05)', border: `1px solid ${t.border}`,
+            borderRadius: t.r999, padding: '7px 16px', color: t.textSecondary,
+            fontSize: 12, fontWeight: 700, cursor: 'pointer', transition: t.ease,
+            whiteSpace: 'nowrap', flexShrink: 0, letterSpacing: '0.02em',
           }}
-            onMouseEnter={e => (e.currentTarget.style.color = t.textPrimary)}
-            onMouseLeave={e => (e.currentTarget.style.color = t.textSecondary)}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(167,139,250,0.4)'; e.currentTarget.style.color = t.purple }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = t.border; e.currentTarget.style.color = t.textSecondary }}
           >
             Изменить ✎
           </button>
+        )}
       </div>
 
       {/* Cashback stats */}
