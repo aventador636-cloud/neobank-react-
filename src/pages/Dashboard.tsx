@@ -1781,64 +1781,13 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
         ) : tab === 'overview' ? (
           <>
             {/* Greeting */}
-            <div style={{ marginBottom: 24 }}>
+            <div style={{ marginBottom: 40 }}>
               <p style={{ fontSize: 14, color: t.textTertiary, marginBottom: 4 }}>{getGreeting()},</p>
               <h1 style={{ fontSize: 32, fontWeight: 800, letterSpacing: '-0.03em', color: t.textPrimary }}>
                 {user?.name?.split(' ').reverse().join(' ')} <span className="wave-hand">👋</span>
               </h1>
             </div>
 
-            {/* Категория месяца */}
-            {(() => {
-              const currentMonth = transactions[0]?.month ?? ''
-              const expenses = transactions.filter(tx =>
-                tx.amount < 0 && tx.month === currentMonth &&
-                tx.category !== 'Входящий' && tx.category !== 'Вознаграждение'
-              )
-              const catMap: Record<string, number> = {}
-              expenses.forEach(tx => { catMap[tx.category] = (catMap[tx.category] || 0) + Math.abs(tx.amount) })
-              const top = Object.entries(catMap).sort((a, b) => b[1] - a[1])[0]
-              if (!top) return null
-              const [name, amount] = top
-              const color = CATEGORY_COLORS[name] ?? '#a78bfa'
-              const total = Object.values(catMap).reduce((s, v) => s + v, 0)
-              const pct = Math.round(amount / total * 100)
-              const icons: Record<string, string> = { 'Супермаркеты': '🛒', 'Рестораны': '🍕', 'Подписки': '📱', 'Транспорт': '🚕', 'Покупки': '🛍️', 'Здоровье': '💊', 'Путешествия': '✈️', 'Переводы': '↑' }
-              return (
-                <div style={{
-                  marginBottom: 32, borderRadius: t.r20, padding: '16px 20px',
-                  background: `linear-gradient(135deg, ${color}12, ${color}06)`,
-                  border: `1px solid ${color}30`,
-                  display: 'flex', alignItems: 'center', gap: 16,
-                  animation: 'fadeIn 0.4s ease',
-                }}>
-                  <div style={{
-                    width: 48, height: 48, borderRadius: t.r16, flexShrink: 0,
-                    background: `${color}20`, border: `1px solid ${color}35`,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22,
-                  }}>
-                    {icons[name] ?? '📊'}
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 11, fontWeight: 700, color, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 3 }}>
-                      Категория месяца
-                    </div>
-                    <div style={{ fontSize: 15, fontWeight: 700, color: t.textPrimary }}>
-                      {name} · <span style={{ color }}>{amount.toLocaleString('ru-RU')} ₽</span>
-                    </div>
-                    <div style={{ fontSize: 12, color: t.textTertiary, marginTop: 2 }}>
-                      {pct}% всех расходов за {currentMonth.split(' ')[0].toLowerCase()}
-                    </div>
-                  </div>
-                  <div style={{
-                    fontSize: 28, fontWeight: 900, color, opacity: 0.25,
-                    letterSpacing: '-0.03em', flexShrink: 0,
-                  }}>
-                    {pct}%
-                  </div>
-                </div>
-              )
-            })()}
 
             {/* Card + Balance — скрыто на мобильном (есть вкладка Карты) */}
             {!isMobile && <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, marginBottom: 40, alignItems: 'start' }}>
