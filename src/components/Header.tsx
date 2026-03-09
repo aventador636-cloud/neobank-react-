@@ -4,9 +4,17 @@ import { useResponsive } from '../hooks/useResponsive'
 
 interface HeaderProps { onCta: () => void; onLogin: () => void }
 
+const SEGMENTS = [
+  { id: 'login' as const, label: 'Войти',        hint: 'Личный кабинет' },
+  { id: 'open'  as const, label: 'Открыть счёт', hint: 'Бесплатно · 5 минут' },
+]
+
 export default function Header({ onCta, onLogin }: HeaderProps) {
   const { isMobile } = useResponsive()
-  const [active, setActive] = useState<'login' | 'open'>('login')
+  const [active,  setActive]  = useState<'login' | 'open'>('login')
+  const [hovered, setHovered] = useState<'login' | 'open' | null>(null)
+
+  const actions = { login: onLogin, open: onCta }
 
   return (
     <header style={{
@@ -32,31 +40,45 @@ export default function Header({ onCta, onLogin }: HeaderProps) {
           </nav>
         )}
 
-        {/* Segmented button */}
+        {/* Segmented pill */}
         <div style={{
-          display: 'flex', alignItems: 'center',
-          background: 'rgba(255,255,255,0.06)',
-          border: `1px solid ${t.border}`,
-          borderRadius: t.r999, padding: 3, gap: 2, flexShrink: 0,
+          display: 'flex', alignItems: 'center', flexShrink: 0,
+          background: 'rgba(255,255,255,0.05)',
+          border: `1px solid ${hovered ? 'rgba(167,139,250,0.35)' : t.border}`,
+          borderRadius: t.r999, padding: 3, gap: 2,
+          transition: 'border-color 0.25s ease',
+          boxShadow: hovered ? '0 0 16px rgba(167,139,250,0.12)' : 'none',
         }}>
-          {([
-            { id: 'login', label: 'Войти',                          action: onLogin },
-            { id: 'open',  label: isMobile ? 'Счёт' : 'Открыть счёт', action: onCta   },
-          ] as const).map(({ id, label, action }) => {
-            const isActive = active === id
+          {SEGMENTS.map(({ id, label, hint }) => {
+            const isActive  = active  === id
+            const isHovered = hovered === id
+            const showHint  = isHovered && !isMobile
+
             return (
               <button
                 key={id}
-                onClick={() => { setActive(id); action() }}
+                onClick={() => { setActive(id); actions[id]() }}
+                onMouseEnter={() => setHovered(id)}
+                onMouseLeave={() => setHovered(null)}
                 style={{
-                  height: 34, padding: '0 16px', borderRadius: t.r999, border: 'none',
-                  cursor: 'pointer', fontSize: 13, fontWeight: 700, transition: 'all 0.2s ease',
-                  background: isActive ? 'linear-gradient(90deg, #a78bfa, #60a5fa)' : 'none',
-                  color: isActive ? '#fff' : t.textSecondary,
+                  position: 'relative',
+                  height: 34,
+                  padding: showHint ? '0 18px' : '0 16px',
+                  borderRadius: t.r999, border: 'none', cursor: 'pointer',
+                  fontSize: 13, fontWeight: 700,
+                  transition: 'all 0.22s ease',
+                  background: isActive
+                    ? 'linear-gradient(90deg, #a78bfa, #60a5fa)'
+                    : isHovered
+                    ? 'rgba(255,255,255,0.08)'
+                    : 'none',
+                  color: isActive ? '#fff' : isHovered ? t.textPrimary : t.textSecondary,
                   whiteSpace: 'nowrap',
+                  transform: isHovered && !isActive ? 'scale(1.04)' : 'scale(1)',
+                  boxShadow: isActive ? '0 2px 12px rgba(167,139,250,0.35)' : 'none',
                 }}
               >
-                {label}
+                {showHint ? hint : (isMobile && id === 'open' ? 'Счёт' : label)}
               </button>
             )
           })}
