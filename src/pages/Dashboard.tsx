@@ -1310,11 +1310,134 @@ function ProfileTab({ user, activeCard, logout, updateProfile }: {
   )
 }
 
+function NavIcon({ type, active }: { type: 'home' | 'history' | 'profile'; active: boolean }) {
+  const c = active ? '#a78bfa' : 'rgba(255,255,255,0.4)'
+  if (type === 'home') return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <path d="M3 10L12 3l9 7v10a1 1 0 01-1 1H5a1 1 0 01-1-1V10z" stroke={c} strokeWidth="1.8" strokeLinejoin="round"/>
+      <path d="M9 21V12h6v9" stroke={c} strokeWidth="1.8" strokeLinejoin="round"/>
+    </svg>
+  )
+  if (type === 'history') return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="9" stroke={c} strokeWidth="1.8"/>
+      <path d="M12 7v5l3.5 3.5" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="8" r="3.5" stroke={c} strokeWidth="1.8"/>
+      <path d="M5 20c0-3.9 3.1-7 7-7s7 3.1 7 7" stroke={c} strokeWidth="1.8" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+function HistoryInline({ transactions }: { transactions: Transaction[] }) {
+  const [search, setSearch] = useState('')
+  const [filter, setFilter] = useState('Все')
+
+  const filtered = transactions.filter(tx => {
+    const matchCat    = filter === 'Все' || tx.category === filter
+    const matchSearch = tx.name.toLowerCase().includes(search.toLowerCase()) || tx.category.toLowerCase().includes(search.toLowerCase())
+    return matchCat && matchSearch
+  })
+
+  const grouped = filtered.reduce<Record<string, Transaction[]>>((acc, tx) => {
+    if (!acc[tx.month]) acc[tx.month] = []
+    acc[tx.month].push(tx)
+    return acc
+  }, {})
+
+  const totalIncome  = filtered.filter(tx => tx.amount > 0).reduce((s, tx) => s + tx.amount, 0)
+  const totalExpense = filtered.filter(tx => tx.amount < 0).reduce((s, tx) => s + Math.abs(tx.amount), 0)
+
+  return (
+    <div>
+      <h2 style={{ fontSize: 22, fontWeight: 800, color: t.textPrimary, marginBottom: 20 }}>История операций</h2>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 16 }}>
+        <div style={{ background: 'rgba(74,222,128,0.08)', border: '1px solid rgba(74,222,128,0.15)', borderRadius: t.r16, padding: '12px 16px' }}>
+          <div style={{ fontSize: 11, color: '#4ade80', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 4 }}>Поступления</div>
+          <div style={{ fontSize: 18, fontWeight: 800, color: '#4ade80' }}>+{totalIncome.toLocaleString('ru-RU')} ₽</div>
+        </div>
+        <div style={{ background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.15)', borderRadius: t.r16, padding: '12px 16px' }}>
+          <div style={{ fontSize: 11, color: '#f87171', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 4 }}>Расходы</div>
+          <div style={{ fontSize: 18, fontWeight: 800, color: '#f87171' }}>−{totalExpense.toLocaleString('ru-RU')} ₽</div>
+        </div>
+      </div>
+
+      <input
+        value={search}
+        onChange={e => setSearch(e.target.value)}
+        placeholder="🔍  Поиск по операциям..."
+        style={{
+          width: '100%', boxSizing: 'border-box',
+          background: t.surface, border: `1px solid ${t.border}`,
+          borderRadius: t.r12, padding: '10px 14px',
+          color: t.textPrimary, fontSize: 14, fontFamily: t.fontFamily,
+          outline: 'none', transition: t.ease, marginBottom: 12,
+        }}
+        onFocus={e => (e.currentTarget.style.borderColor = 'rgba(167,139,250,0.4)')}
+        onBlur={e  => (e.currentTarget.style.borderColor = t.border)}
+      />
+
+      <div style={{ display: 'flex', gap: 6, overflowX: 'auto', paddingBottom: 16, scrollbarWidth: 'none' }}>
+        {ALL_CATEGORIES.map(cat => (
+          <button key={cat} onClick={() => setFilter(cat)} style={{
+            flexShrink: 0, padding: '5px 12px', borderRadius: t.r999, border: 'none',
+            background: filter === cat ? 'linear-gradient(90deg, #a78bfa, #60a5fa)' : t.surfaceHover,
+            color: filter === cat ? '#fff' : t.textSecondary,
+            fontSize: 12, fontWeight: 600, cursor: 'pointer', transition: t.ease,
+          }}>
+            {cat}
+          </button>
+        ))}
+      </div>
+
+      {Object.keys(grouped).length === 0 ? (
+        <div style={{ textAlign: 'center', padding: '40px 0', color: t.textTertiary, fontSize: 14 }}>
+          Операции не найдены
+        </div>
+      ) : (
+        Object.entries(grouped).map(([month, txs]) => (
+          <div key={month} style={{ marginBottom: 24 }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: t.textTertiary, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 8 }}>
+              {month}
+            </div>
+            <div style={{ background: t.surface, borderRadius: t.r16, overflow: 'hidden', border: `1px solid ${t.border}` }}>
+              {txs.map((tx, i) => (
+                <div key={tx.id} style={{
+                  display: 'flex', alignItems: 'center', gap: 14,
+                  padding: '13px 16px',
+                  borderTop: i > 0 ? `1px solid ${t.border}` : 'none',
+                  transition: t.ease,
+                }}>
+                  <div style={{
+                    width: 40, height: 40, borderRadius: '50%', flexShrink: 0,
+                    background: t.surfaceHover, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17,
+                  }}>{tx.icon}</div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: t.textPrimary, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{tx.name}</div>
+                    <div style={{ fontSize: 12, color: t.textTertiary }}>{tx.category} · {tx.date}</div>
+                  </div>
+                  <div style={{ fontSize: 14, fontWeight: 700, whiteSpace: 'nowrap', color: tx.amount > 0 ? t.green : t.textPrimary }}>
+                    {formatAmount(tx.amount)}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))
+      )}
+    </div>
+  )
+}
+
 export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
   const { user, logout, updateProfile } = useAuth()
   const { isMobile } = useResponsive()
   const [activeCard, setActiveCard]   = useState(0)
-  const [tab, setTab]                 = useState<'overview' | 'profile'>('overview')
+  const [tab, setTab]                 = useState<'overview' | 'history' | 'profile'>('overview')
   const [payOpen, setPayOpen]         = useState(false)
   const [historyOpen, setHistoryOpen] = useState(false)
   const [transferOpen, setTransferOpen] = useState(false)
@@ -1367,7 +1490,7 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
           <span onClick={onGoHome} className="shimmer" style={{ fontSize: 18, fontWeight: 800, letterSpacing: '-0.02em', cursor: 'pointer' }}>NeoBank</span>
 
           <div style={{ display: 'flex', gap: 8 }}>
-            {(['overview', 'profile'] as const).map(tp => (
+            {!isMobile && (['overview', 'profile'] as const).map(tp => (
               <button key={tp} onClick={() => setTab(tp)} style={{
                 background: tab === tp ? t.surfaceHover : 'none',
                 border: `1px solid ${tab === tp ? t.borderHover : 'transparent'}`,
@@ -1378,24 +1501,28 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
                 {tp === 'overview' ? 'Обзор' : 'Профиль'}
               </button>
             ))}
-            <button onClick={logout} style={{
-              background: 'none', border: `1px solid ${t.border}`,
-              borderRadius: t.r999, padding: '6px 16px',
-              color: t.textSecondary, fontSize: 13, fontWeight: 600,
-              cursor: 'pointer', transition: t.ease,
-            }}
-              onMouseEnter={e => (e.currentTarget.style.color = '#f87171')}
-              onMouseLeave={e => (e.currentTarget.style.color = t.textSecondary)}
-            >
-              Выйти
-            </button>
+            {!isMobile && (
+              <button onClick={logout} style={{
+                background: 'none', border: `1px solid ${t.border}`,
+                borderRadius: t.r999, padding: '6px 16px',
+                color: t.textSecondary, fontSize: 13, fontWeight: 600,
+                cursor: 'pointer', transition: t.ease,
+              }}
+                onMouseEnter={e => (e.currentTarget.style.color = '#f87171')}
+                onMouseLeave={e => (e.currentTarget.style.color = t.textSecondary)}
+              >
+                Выйти
+              </button>
+            )}
           </div>
         </div>
       </header>
 
-      <main style={{ maxWidth: 1000, margin: '0 auto', padding: isMobile ? '24px 16px 80px' : '40px 24px 80px' }}>
+      <main style={{ maxWidth: 1000, margin: '0 auto', padding: isMobile ? '24px 16px 100px' : '40px 24px 80px' }}>
 
-        {tab === 'overview' ? (
+        {tab === 'history' ? (
+          <HistoryInline transactions={transactions} />
+        ) : tab === 'overview' ? (
           <>
             {/* Greeting */}
             <div style={{ marginBottom: 40 }}>
@@ -1523,6 +1650,35 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
       {transferOpen && <TransferModal onClose={() => setTransferOpen(false)} onTransferred={handleTransferred} balance={balance} />}
       {payOpen && <PayModal onClose={() => setPayOpen(false)} onPaid={addTransaction} />}
       {historyOpen && <HistoryModal onClose={() => setHistoryOpen(false)} transactions={transactions} />}
+
+      {/* Bottom nav — mobile only */}
+      {isMobile && (
+        <nav style={{
+          position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 200,
+          background: 'rgba(8,9,10,0.98)', borderTop: `1px solid ${t.border}`,
+          display: 'flex', height: 64,
+          paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+        }}>
+          {([
+            { id: 'overview', icon: 'home',    label: 'Главная'  },
+            { id: 'history',  icon: 'history', label: 'История'  },
+            { id: 'profile',  icon: 'profile', label: 'Профиль'  },
+          ] as const).map(item => (
+            <button key={item.id} onClick={() => setTab(item.id)} style={{
+              flex: 1, display: 'flex', flexDirection: 'column',
+              alignItems: 'center', justifyContent: 'center', gap: 4,
+              background: 'none', border: 'none', cursor: 'pointer', transition: t.ease,
+            }}>
+              <NavIcon type={item.icon} active={tab === item.id} />
+              <span style={{
+                fontSize: 10, fontWeight: 600,
+                color: tab === item.id ? '#a78bfa' : 'rgba(255,255,255,0.4)',
+                transition: t.ease,
+              }}>{item.label}</span>
+            </button>
+          ))}
+        </nav>
+      )}
 
       <style>{`
         @keyframes wave {
