@@ -52,7 +52,6 @@ export default function Header({ onCta, onLogin }: HeaderProps) {
           {SEGMENTS.map(({ id, label, hint }) => {
             const isActive  = active  === id
             const isHovered = hovered === id
-            const showHint  = isHovered && !isMobile
 
             return (
               <button
@@ -63,22 +62,17 @@ export default function Header({ onCta, onLogin }: HeaderProps) {
                 style={{
                   position: 'relative',
                   height: 34,
-                  padding: showHint ? '0 18px' : '0 16px',
+                  padding: '0 16px',
                   borderRadius: t.r999, border: 'none', cursor: 'pointer',
                   fontSize: 13, fontWeight: 700,
                   transition: 'all 0.22s ease',
-                  background: isActive
-                    ? 'linear-gradient(90deg, #a78bfa, #60a5fa)'
-                    : isHovered
-                    ? 'rgba(255,255,255,0.08)'
-                    : 'none',
+                  background: isActive ? 'linear-gradient(90deg, #a78bfa, #60a5fa)' : 'none',
                   color: isActive ? '#fff' : isHovered ? t.textPrimary : t.textSecondary,
                   whiteSpace: 'nowrap',
-                  transform: isHovered && !isActive ? 'scale(1.04)' : 'scale(1)',
                   boxShadow: isActive ? '0 2px 12px rgba(167,139,250,0.35)' : 'none',
                 }}
               >
-                {showHint ? hint : (isMobile && id === 'open' ? 'Счёт' : label)}
+                {isMobile && id === 'open' ? 'Счёт' : label}
               </button>
             )
           })}
