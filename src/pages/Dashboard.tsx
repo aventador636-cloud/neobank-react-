@@ -1290,7 +1290,9 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
       {/* Top bar */}
       <header style={{
         position: 'sticky', top: 0, zIndex: 100,
-        background: 'rgba(8,9,10,0.9)', backdropFilter: 'blur(20px)',
+        background: isMobile ? 'rgba(8,9,10,0.98)' : 'rgba(8,9,10,0.9)',
+        backdropFilter: isMobile ? 'none' : 'blur(20px)',
+        transform: 'translateZ(0)',
         borderBottom: `1px solid ${t.border}`,
       }}>
         <div style={{ maxWidth: 1000, margin: '0 auto', padding: isMobile ? '0 16px' : '0 24px', height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

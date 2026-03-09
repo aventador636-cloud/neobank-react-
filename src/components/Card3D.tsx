@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import type { CardProduct } from '../data/cards'
 import { t } from '../styles/tokens'
+import { useResponsive } from '../hooks/useResponsive'
 
 interface Card3DProps { card: CardProduct }
 
@@ -65,6 +66,7 @@ function BrandLogo({ brand, size = 'card' }: { brand: string; size?: 'card' | 'l
 export default function Card3D({ card }: Card3DProps) {
   const wrapRef  = useRef<HTMLDivElement>(null)
   const glareRef = useRef<HTMLDivElement>(null)
+  const { isMobile } = useResponsive()
 
   const isPremium = card.id === 'premium'
   const isDiners  = card.id === 'diners'
@@ -96,11 +98,12 @@ export default function Card3D({ card }: Card3DProps) {
 
   return (
     <>
-      <div style={{ perspective: '1000px', cursor: 'pointer' }} onMouseMove={onMouseMove} onMouseLeave={onMouseLeave}>
+      <div style={{ perspective: '1000px', cursor: 'pointer' }} onMouseMove={isMobile ? undefined : onMouseMove} onMouseLeave={isMobile ? undefined : onMouseLeave}>
         <div ref={wrapRef} style={{
           transformStyle: 'preserve-3d',
-          animation: 'cardFloat 6s ease-in-out infinite',
-          transition: 'transform 0.1s linear',
+          animation: isMobile ? 'none' : 'cardFloat 6s ease-in-out infinite',
+          transition: isMobile ? 'none' : 'transform 0.1s linear',
+          willChange: isMobile ? 'auto' : 'transform',
           position: 'relative',
         }}>
 
@@ -207,15 +210,17 @@ export default function Card3D({ card }: Card3DProps) {
           </div>
 
           {/* Card shadow */}
-          <div style={{
-            position: 'absolute', bottom: -30, left: '15%', right: '15%', height: 30,
-            background: isDiners
-              ? 'radial-gradient(ellipse, rgba(212,168,83,0.25) 0%, transparent 70%)'
-              : isPremium
-              ? 'radial-gradient(ellipse, rgba(167,139,250,0.25) 0%, transparent 70%)'
-              : 'radial-gradient(ellipse, rgba(96,165,250,0.2) 0%, transparent 70%)',
-            filter: 'blur(10px)',
-          }} />
+          {!isMobile && (
+            <div style={{
+              position: 'absolute', bottom: -30, left: '15%', right: '15%', height: 30,
+              background: isDiners
+                ? 'radial-gradient(ellipse, rgba(212,168,83,0.25) 0%, transparent 70%)'
+                : isPremium
+                ? 'radial-gradient(ellipse, rgba(167,139,250,0.25) 0%, transparent 70%)'
+                : 'radial-gradient(ellipse, rgba(96,165,250,0.2) 0%, transparent 70%)',
+              filter: 'blur(10px)',
+            }} />
+          )}
 
         </div>
       </div>
@@ -239,6 +244,7 @@ export default function Card3D({ card }: Card3DProps) {
           background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.55) 50%, transparent 70%);
           animation: logoShimmer 2.8s ease-in-out infinite;
           pointer-events: none;
+          will-change: transform;
         }
         .logo-shimmer--gold {
           background: linear-gradient(105deg, transparent 30%, rgba(255,220,120,0.6) 50%, transparent 70%);
