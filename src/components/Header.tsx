@@ -69,6 +69,7 @@ export default function Header({ onCta, onLogin }: HeaderProps) {
                   background: isActive ? 'linear-gradient(90deg, #a78bfa, #60a5fa)' : 'none',
                   color: isActive ? '#fff' : isHovered ? t.textPrimary : t.textSecondary,
                   whiteSpace: 'nowrap',
+                  transform: isHovered ? 'scale(1.07)' : 'scale(1)',
                   boxShadow: isActive ? '0 2px 12px rgba(167,139,250,0.35)' : 'none',
                 }}
               >
