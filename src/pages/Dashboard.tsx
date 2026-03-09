@@ -1379,6 +1379,114 @@ function ProfileTab({ user, activeCard, logout, updateProfile }: {
   )
 }
 
+const CATEGORY_COLORS: Record<string, string> = {
+  'Супермаркеты': '#4ade80',
+  'Рестораны':    '#f472b6',
+  'Подписки':     '#a78bfa',
+  'Транспорт':    '#60a5fa',
+  'Покупки':      '#fb923c',
+  'Здоровье':     '#34d399',
+  'Путешествия':  '#fbbf24',
+  'Переводы':     '#e879f9',
+}
+
+function polarPoint(cx: number, cy: number, r: number, angleDeg: number) {
+  const rad = ((angleDeg - 90) * Math.PI) / 180
+  return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) }
+}
+
+function AnalyticsSection({ transactions }: { transactions: Transaction[] }) {
+  const [hovered, setHovered] = useState<number | null>(null)
+  const { isMobile } = useResponsive()
+
+  const currentMonth = transactions[0]?.month ?? ''
+  const expenses = transactions.filter(tx =>
+    tx.amount < 0 && tx.month === currentMonth &&
+    tx.category !== 'Входящий' && tx.category !== 'Вознаграждение'
+  )
+
+  const catMap: Record<string, number> = {}
+  expenses.forEach(tx => { catMap[tx.category] = (catMap[tx.category] || 0) + Math.abs(tx.amount) })
+  const total = Object.values(catMap).reduce((s, v) => s + v, 0)
+  const segments = Object.entries(catMap)
+    .sort((a, b) => b[1] - a[1])
+    .map(([name, value]) => ({ name, value, pct: value / total, color: CATEGORY_COLORS[name] ?? '#888' }))
+
+  const cx = 90, cy = 90, R = 76, ri = 52
+  let angle = 0
+  const arcs = segments.map(seg => {
+    const GAP = segments.length > 1 ? 3 : 0
+    const start = angle + GAP / 2
+    const sweep = Math.max(seg.pct * 360 - GAP, 0.5)
+    const end = start + sweep
+    angle += seg.pct * 360
+    const o1 = polarPoint(cx, cy, R, start)
+    const o2 = polarPoint(cx, cy, R, end)
+    const i1 = polarPoint(cx, cy, ri, end)
+    const i2 = polarPoint(cx, cy, ri, start)
+    const lg = sweep > 180 ? 1 : 0
+    const d = `M${o1.x},${o1.y} A${R},${R} 0 ${lg} 1 ${o2.x},${o2.y} L${i1.x},${i1.y} A${ri},${ri} 0 ${lg} 0 ${i2.x},${i2.y}Z`
+    return { ...seg, d }
+  })
+
+  if (!segments.length) return null
+
+  return (
+    <div style={{ background: t.surface, border: `1px solid ${t.border}`, borderRadius: t.r24, padding: '20px 24px', marginBottom: 32 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 20 }}>
+        <h2 style={{ fontSize: 16, fontWeight: 700, color: t.textPrimary }}>Расходы · {currentMonth}</h2>
+        <span style={{ fontSize: 16, fontWeight: 800, color: '#f87171' }}>−{total.toLocaleString('ru-RU')} ₽</span>
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 24, alignItems: isMobile ? 'center' : 'center' }}>
+        {/* Donut */}
+        <div style={{ flexShrink: 0 }}>
+          <svg width={180} height={180} viewBox="0 0 180 180">
+            {arcs.map((arc, i) => (
+              <path key={arc.name} d={arc.d}
+                fill={arc.color}
+                opacity={hovered === null ? 1 : hovered === i ? 1 : 0.25}
+                style={{
+                  cursor: 'pointer', transition: 'opacity 0.2s ease, transform 0.2s ease',
+                  transformOrigin: `${cx}px ${cy}px`,
+                  transform: hovered === i ? 'scale(1.06)' : 'scale(1)',
+                }}
+                onMouseEnter={() => setHovered(i)}
+                onMouseLeave={() => setHovered(null)}
+              />
+            ))}
+            <text x={cx} y={cy - 7} textAnchor="middle" fill="rgba(255,255,255,0.4)" fontSize="9" fontFamily="Sora,sans-serif" fontWeight="600" letterSpacing="0.05em">
+              {hovered !== null ? segments[hovered].name.toUpperCase() : 'ИТОГО'}
+            </text>
+            <text x={cx} y={cx + 10} textAnchor="middle" fill="white" fontSize="15" fontWeight="800" fontFamily="Sora,sans-serif">
+              {hovered !== null
+                ? `${(segments[hovered].pct * 100).toFixed(0)}%`
+                : `${total.toLocaleString('ru-RU')} ₽`
+              }
+            </text>
+          </svg>
+        </div>
+
+        {/* Legend */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6, width: isMobile ? '100%' : undefined }}>
+          {segments.map((seg, i) => (
+            <div key={seg.name}
+              onMouseEnter={() => setHovered(i)}
+              onMouseLeave={() => setHovered(null)}
+              style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'default', transition: 'opacity 0.2s', opacity: hovered === null || hovered === i ? 1 : 0.35 }}
+            >
+              <div style={{ width: 10, height: 10, borderRadius: 3, background: seg.color, flexShrink: 0 }} />
+              <span style={{ fontSize: 13, color: t.textSecondary, flex: 1 }}>{seg.name}</span>
+              <span style={{ fontSize: 13, fontWeight: 700, color: t.textPrimary }}>{seg.value.toLocaleString('ru-RU')} ₽</span>
+              <span style={{ fontSize: 11, color: t.textTertiary, width: 32, textAlign: 'right' }}>{(seg.pct * 100).toFixed(0)}%</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function NavIcon({ type, active }: { type: 'home' | 'cards' | 'history' | 'profile'; active: boolean }) {
   const c = active ? '#a78bfa' : 'rgba(255,255,255,0.4)'
   if (type === 'home') return (
@@ -1798,6 +1906,9 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
                 </div>
               </div>
             </div>}
+
+            {/* Analytics */}
+            <AnalyticsSection transactions={transactions} />
 
             {/* Transactions */}
             <div>
