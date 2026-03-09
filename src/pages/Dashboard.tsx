@@ -1517,7 +1517,7 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
           <span onClick={onGoHome} className="shimmer" style={{ fontSize: 18, fontWeight: 800, letterSpacing: '-0.02em', cursor: 'pointer' }}>NeoBank</span>
 
           <div style={{ display: 'flex', gap: 8 }}>
-            {!isMobile && (['overview', 'profile'] as const).map(tp => (
+            {!isMobile && (['overview', 'cards', 'history', 'profile'] as const).map(tp => (
               <button key={tp} onClick={() => setTab(tp)} style={{
                 background: tab === tp ? t.surfaceHover : 'none',
                 border: `1px solid ${tab === tp ? t.borderHover : 'transparent'}`,
@@ -1525,7 +1525,7 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
                 color: tab === tp ? t.textPrimary : t.textSecondary,
                 fontSize: 13, fontWeight: 600, cursor: 'pointer', transition: t.ease,
               }}>
-                {tp === 'overview' ? 'Обзор' : 'Профиль'}
+                {{ overview: 'Обзор', cards: 'Карты', history: 'История', profile: 'Профиль' }[tp]}
               </button>
             ))}
             {!isMobile && (
