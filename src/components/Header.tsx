@@ -1,11 +1,13 @@
+import { useState } from 'react'
 import { t } from '../styles/tokens'
-import { Btn } from './Layout'
 import { useResponsive } from '../hooks/useResponsive'
 
 interface HeaderProps { onCta: () => void; onLogin: () => void }
 
 export default function Header({ onCta, onLogin }: HeaderProps) {
   const { isMobile } = useResponsive()
+  const [active, setActive] = useState<'login' | 'open'>('login')
+
   return (
     <header style={{
       position: 'sticky', top: 0, zIndex: 100,
@@ -30,9 +32,34 @@ export default function Header({ onCta, onLogin }: HeaderProps) {
           </nav>
         )}
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-          <Btn variant="ghost" onClick={onLogin} style={{ height: 40, fontSize: 14, padding: isMobile ? '0 16px' : '0 24px' }}>Войти</Btn>
-          <Btn onClick={onCta} style={{ height: 40, fontSize: 14, padding: isMobile ? '0 16px' : '0 24px' }}>{isMobile ? 'Счёт' : 'Открыть счёт'}</Btn>
+        {/* Segmented button */}
+        <div style={{
+          display: 'flex', alignItems: 'center',
+          background: 'rgba(255,255,255,0.06)',
+          border: `1px solid ${t.border}`,
+          borderRadius: t.r999, padding: 3, gap: 2, flexShrink: 0,
+        }}>
+          {([
+            { id: 'login', label: 'Войти',                          action: onLogin },
+            { id: 'open',  label: isMobile ? 'Счёт' : 'Открыть счёт', action: onCta   },
+          ] as const).map(({ id, label, action }) => {
+            const isActive = active === id
+            return (
+              <button
+                key={id}
+                onClick={() => { setActive(id); action() }}
+                style={{
+                  height: 34, padding: '0 16px', borderRadius: t.r999, border: 'none',
+                  cursor: 'pointer', fontSize: 13, fontWeight: 700, transition: 'all 0.2s ease',
+                  background: isActive ? 'linear-gradient(90deg, #a78bfa, #60a5fa)' : 'none',
+                  color: isActive ? '#fff' : t.textSecondary,
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {label}
+              </button>
+            )
+          })}
         </div>
 
       </div>
