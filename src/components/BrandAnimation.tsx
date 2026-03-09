@@ -138,7 +138,7 @@ export default function BrandAnimation({ size = 480 }: BrandAnimationProps) {
 
     frameRef.current = requestAnimationFrame(draw)
     return () => cancelAnimationFrame(frameRef.current)
-  }, [])
+  }, [size])
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 0' }}>

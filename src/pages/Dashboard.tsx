@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react'
 import type { ReactNode } from 'react'
 import { t } from '../styles/tokens'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../context/useAuth'
 import { cards } from '../data/cards'
 import type { CardProduct } from '../data/cards'
 import Card3D from '../components/Card3D'

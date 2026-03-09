@@ -1,18 +1,7 @@
-import { createContext, useContext, useState } from 'react'
+import { useState } from 'react'
 import type { ReactNode } from 'react'
-
-export interface User {
-  phone: string
-  name: string
-}
-
-interface AuthCtx {
-  user: User | null
-  login: (phone: string) => void
-  logout: () => void
-}
-
-const AuthContext = createContext<AuthCtx>({ user: null, login: () => {}, logout: () => {} })
+import { AuthContext } from './auth-context'
+import type { User } from './auth-context'
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
@@ -27,5 +16,3 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     </AuthContext.Provider>
   )
 }
-
-export const useAuth = () => useContext(AuthContext)

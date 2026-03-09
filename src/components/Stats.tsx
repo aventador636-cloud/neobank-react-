@@ -6,18 +6,23 @@ import { useResponsive } from '../hooks/useResponsive'
 
 function useCountUp(target: number, active: boolean) {
   const [val, setVal] = useState(0)
+
   useEffect(() => {
-    if (!active || target === 0) { setVal(target); return }
+    if (!active || target === 0) return
+
     const dur = 1400, step = 16, inc = target / (dur / step)
     let cur = 0
+
     const id = setInterval(() => {
       cur = Math.min(cur + inc, target)
       setVal(Math.floor(cur))
       if (cur >= target) clearInterval(id)
     }, step)
+
     return () => clearInterval(id)
   }, [active, target])
-  return val
+
+  return active ? val : target
 }
 
 function StatItem({ value, suffix, label }: { value: number; suffix: string; label: string }) {

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { t } from '../styles/tokens'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../context/useAuth'
 import { useResponsive } from '../hooks/useResponsive'
 
 interface AuthModalProps {
@@ -28,17 +28,16 @@ export default function AuthModal({ onClose }: AuthModalProps) {
   const [otp, setOtp] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const otpRefs = [
-    useRef<HTMLInputElement>(null),
-    useRef<HTMLInputElement>(null),
-    useRef<HTMLInputElement>(null),
-    useRef<HTMLInputElement>(null),
-  ]
+  const otpRef0 = useRef<HTMLInputElement>(null)
+  const otpRef1 = useRef<HTMLInputElement>(null)
+  const otpRef2 = useRef<HTMLInputElement>(null)
+  const otpRef3 = useRef<HTMLInputElement>(null)
+  const otpRefs = [otpRef0, otpRef1, otpRef2, otpRef3]
 
   useEffect(() => {
-    if (step === 'otp') {
-      setTimeout(() => otpRefs[0].current?.focus(), 100)
-    }
+    if (step !== 'otp') return
+    const id = window.setTimeout(() => otpRef0.current?.focus(), 100)
+    return () => window.clearTimeout(id)
   }, [step])
 
   const phoneDigits = phone.replace(/\D/g, '')
@@ -99,7 +98,7 @@ export default function AuthModal({ onClose }: AuthModalProps) {
     } else {
       setError('Неверный код. Попробуйте 1234')
       setOtp('')
-      otpRefs[0].current?.focus()
+      otpRef0.current?.focus()
     }
   }
 

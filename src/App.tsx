@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import type { CardType } from './data/cards'
-import { AuthProvider, useAuth } from './context/AuthContext'
+import { AuthProvider } from './context/AuthContext'
+import { useAuth } from './context/useAuth'
 import Header from './components/Header'
 import Hero from './components/Hero'
 import CardsSection from './components/CardsSection'
@@ -16,16 +17,12 @@ function AppInner() {
   const { user } = useAuth()
   const [modal, setModal] = useState<{ open: boolean; cardType: CardType }>({ open: false, cardType: 'standard' })
   const [authOpen, setAuthOpen] = useState(false)
-  const [view, setView] = useState<'home' | 'dashboard'>('home')
+  const [forceHomeView, setForceHomeView] = useState(false)
 
   const openModal = (type: CardType = 'standard') => setModal({ open: true, cardType: type })
   const closeModal = () => setModal(p => ({ ...p, open: false }))
 
-  useEffect(() => {
-    if (user) setView('dashboard')
-  }, [user])
-
-  if (user && view === 'dashboard') return <Dashboard onGoHome={() => setView('home')} />
+  if (user && !forceHomeView) return <Dashboard onGoHome={() => setForceHomeView(true)} />
 
   return (
     <>
@@ -35,7 +32,7 @@ function AppInner() {
       <Safety />
       <Footer />
       <Modal open={modal.open} cardType={modal.cardType} onClose={closeModal} />
-      {authOpen && <AuthModal onClose={() => setAuthOpen(false)} />}
+      {authOpen && <AuthModal onClose={() => { setAuthOpen(false); setForceHomeView(false) }} />}
       <Chat />
     </>
   )
