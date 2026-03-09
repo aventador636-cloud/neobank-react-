@@ -11,7 +11,7 @@ interface UserData {
 
 interface AuthCtx {
   user: UserData | null
-  login: (phone: string) => void
+  login: (phone: string, name?: string) => void
   updateProfile: (data: { name?: string; email?: string }) => void
   logout: () => void
 }
@@ -26,11 +26,11 @@ const AuthContext = createContext<AuthCtx>({
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<UserData | null>(null)
 
-  const login = (phone: string) => {
+  const login = (phone: string, name?: string) => {
     setUser({
       id: Date.now().toString(),
       phone,
-      name: null,
+      name: name ?? null,
       email: null,
       created_at: new Date().toISOString(),
     })

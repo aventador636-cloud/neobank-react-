@@ -23,9 +23,10 @@ const TEST_OTP = '1234'
 export default function AuthModal({ onClose }: AuthModalProps) {
   const { login } = useAuth()
   const { isMobile } = useResponsive()
-  const [step, setStep] = useState<'phone' | 'otp'>('phone')
+  const [step, setStep] = useState<'phone' | 'otp' | 'name'>('phone')
   const [phone, setPhone] = useState('')
   const [otp, setOtp] = useState('')
+  const [name, setName] = useState('')
   const [error, setError] = useState('')
   const [verifying, setVerifying] = useState(false)
   const otpRefs = [
@@ -60,8 +61,7 @@ export default function AuthModal({ onClose }: AuthModalProps) {
     await new Promise(r => setTimeout(r, 800))
     setVerifying(false)
     if (code === TEST_OTP) {
-      login(formatPhone(phone))
-      onClose()
+      setStep('name')
     } else {
       setError('Неверный код. Попробуйте ещё раз')
       setOtp('')
@@ -134,7 +134,68 @@ export default function AuthModal({ onClose }: AuthModalProps) {
           <span className="shimmer" style={{ fontSize: 22, fontWeight: 800, letterSpacing: '-0.02em' }}>NeoBank</span>
         </div>
 
-        {step === 'phone' ? (
+        {step === 'name' ? (
+          <>
+            <div style={{ textAlign: 'center', marginBottom: 28 }}>
+              <div style={{
+                fontSize: 52, marginBottom: 16,
+                animation: 'waveOnce 0.6s ease',
+                display: 'inline-block', transformOrigin: '70% 80%',
+              }}>👋</div>
+              <h2 style={{ fontSize: 24, fontWeight: 800, color: t.textPrimary, marginBottom: 8 }}>
+                Добро пожаловать!
+              </h2>
+              <p style={{ fontSize: 14, color: t.textSecondary }}>
+                Как вас зовут? Это нужно для персонализации
+              </p>
+            </div>
+
+            <input
+              autoFocus
+              value={name}
+              onChange={e => setName(e.target.value)}
+              onKeyDown={e => { if (e.key === 'Enter' && name.trim()) { login(formatPhone(phone), name.trim()); onClose() } }}
+              placeholder="Ваше имя"
+              style={{
+                width: '100%', boxSizing: 'border-box',
+                background: t.bg, border: `1px solid ${t.border}`,
+                borderRadius: t.r12, padding: '14px 16px',
+                color: t.textPrimary, fontSize: 18, fontFamily: t.fontFamily,
+                outline: 'none', transition: t.ease, marginBottom: 12,
+              }}
+              onFocus={e => (e.currentTarget.style.borderColor = 'rgba(167,139,250,0.5)')}
+              onBlur={e  => (e.currentTarget.style.borderColor = t.border)}
+            />
+
+            <button
+              onClick={() => { login(formatPhone(phone), name.trim() || undefined); onClose() }}
+              style={{
+                width: '100%', height: 52, borderRadius: t.r12, border: 'none',
+                background: name.trim()
+                  ? 'linear-gradient(90deg, #a78bfa, #60a5fa)'
+                  : t.surfaceHover,
+                color: t.textPrimary, fontSize: 15, fontWeight: 700,
+                cursor: 'pointer', transition: t.ease,
+                opacity: name.trim() ? 1 : 0.6,
+              }}
+            >
+              {name.trim() ? `Привет, ${name.trim().split(' ')[0]}! →` : 'Продолжить'}
+            </button>
+
+            <button
+              onClick={() => { login(formatPhone(phone)); onClose() }}
+              style={{
+                width: '100%', marginTop: 10, background: 'none', border: 'none',
+                color: t.textTertiary, fontSize: 13, cursor: 'pointer',
+                padding: '6px 0', transition: t.ease,
+              }}
+              onMouseEnter={e => (e.currentTarget.style.color = t.textSecondary)}
+              onMouseLeave={e => (e.currentTarget.style.color = t.textTertiary)}
+            >
+              Пропустить
+            </button>
+          </>
+        ) : step === 'phone' ? (
           <>
             <h2 style={{ fontSize: 24, fontWeight: 700, color: t.textPrimary, marginBottom: 8 }}>Войти в кабинет</h2>
             <p style={{ fontSize: 14, color: t.textSecondary, marginBottom: 28 }}>Введите номер телефона — мы отправим код подтверждения</p>
@@ -256,6 +317,13 @@ export default function AuthModal({ onClose }: AuthModalProps) {
         @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
         @keyframes modalSlide { from { opacity: 0; transform: translateY(20px) } to { opacity: 1; transform: translateY(0) } }
         @keyframes otpSpin { to { transform: rotate(360deg) } }
+        @keyframes waveOnce {
+          0%,100% { transform: rotate(0deg); }
+          20%      { transform: rotate(20deg); }
+          40%      { transform: rotate(-10deg); }
+          60%      { transform: rotate(16deg); }
+          80%      { transform: rotate(-6deg); }
+        }
       `}</style>
     </div>
   )
