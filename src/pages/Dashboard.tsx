@@ -1304,12 +1304,19 @@ function ProfileTab({ user, activeCard, logout, updateProfile }: {
   )
 }
 
-function NavIcon({ type, active }: { type: 'home' | 'history' | 'profile'; active: boolean }) {
+function NavIcon({ type, active }: { type: 'home' | 'cards' | 'history' | 'profile'; active: boolean }) {
   const c = active ? '#a78bfa' : 'rgba(255,255,255,0.4)'
   if (type === 'home') return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
       <path d="M3 10L12 3l9 7v10a1 1 0 01-1 1H5a1 1 0 01-1-1V10z" stroke={c} strokeWidth="1.8" strokeLinejoin="round"/>
       <path d="M9 21V12h6v9" stroke={c} strokeWidth="1.8" strokeLinejoin="round"/>
+    </svg>
+  )
+  if (type === 'cards') return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <rect x="2" y="5" width="20" height="14" rx="3" stroke={c} strokeWidth="1.8"/>
+      <path d="M2 10h20" stroke={c} strokeWidth="1.8"/>
+      <path d="M6 15h4" stroke={c} strokeWidth="1.8" strokeLinecap="round"/>
     </svg>
   )
   if (type === 'history') return (
@@ -1431,7 +1438,7 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
   const { user, logout, updateProfile } = useAuth()
   const { isMobile } = useResponsive()
   const [activeCard, setActiveCard]   = useState(0)
-  const [tab, setTab]                 = useState<'overview' | 'history' | 'profile'>('overview')
+  const [tab, setTab]                 = useState<'overview' | 'cards' | 'history' | 'profile'>('overview')
   const [payOpen, setPayOpen]         = useState(false)
   const [historyOpen, setHistoryOpen] = useState(false)
   const [transferOpen, setTransferOpen] = useState(false)
@@ -1516,6 +1523,51 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
 
         {tab === 'history' ? (
           <HistoryInline transactions={transactions} />
+        ) : tab === 'cards' ? (
+          <>
+            {/* Card picker */}
+            <div style={{ marginBottom: 16, display: 'flex', gap: 8 }}>
+              {cards.map((c, i) => (
+                <button key={c.id} onClick={() => setActiveCard(i)} style={{
+                  flex: 1, padding: '6px 4px', borderRadius: t.r8,
+                  background: activeCard === i ? t.surfaceHover : 'none',
+                  border: `1px solid ${activeCard === i ? t.borderHover : 'transparent'}`,
+                  color: activeCard === i ? t.textPrimary : t.textTertiary,
+                  fontSize: 11, fontWeight: 600, cursor: 'pointer', transition: t.ease, textAlign: 'center',
+                }}>
+                  {c.id === 'standard' ? 'Standard' : c.id === 'premium' ? 'Premium' : 'Diners'}
+                </button>
+              ))}
+            </div>
+            <Card3D card={userCard} />
+            <div style={{ marginTop: 28 }}>
+              <p style={{ fontSize: 12, fontWeight: 600, color: t.textTertiary, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>Текущий баланс</p>
+              <div className="shimmer" style={{ fontSize: 36, fontWeight: 800, letterSpacing: '-0.03em', marginBottom: 4 }}>{balance.toLocaleString('ru-RU')} ₽</div>
+              <p style={{ fontSize: 13, color: t.textTertiary, marginBottom: 28 }}>{userCard.number}</p>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>
+                {QUICK_ACTIONS.map(a => (
+                  <button key={a.label} onClick={
+                    a.label === 'Перевести' ? () => setTransferOpen(true) :
+                    a.label === 'Оплатить'  ? () => setPayOpen(true) :
+                    a.label === 'Пополнить' ? () => setTopUpOpen(true) :
+                    a.label === 'История'   ? () => setTab('history') :
+                    undefined
+                  } style={{
+                    background: t.surfaceHover, border: `1px solid ${t.border}`,
+                    borderRadius: t.r16, padding: '14px 8px',
+                    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
+                    cursor: 'pointer', transition: t.ease, color: t.textPrimary,
+                  }}
+                    onMouseEnter={e => { e.currentTarget.style.borderColor = t.borderHover; e.currentTarget.style.background = '#1e2025' }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = t.border; e.currentTarget.style.background = t.surfaceHover }}
+                  >
+                    <span style={{ fontSize: 18 }}>{a.icon}</span>
+                    <span style={{ fontSize: 11, fontWeight: 600, color: t.textSecondary }}>{a.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </>
         ) : tab === 'overview' ? (
           <>
             {/* Greeting */}
@@ -1526,8 +1578,8 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
               </h1>
             </div>
 
-            {/* Card + Balance */}
-            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? 20 : 32, marginBottom: 40, alignItems: 'start' }}>
+            {/* Card + Balance — скрыто на мобильном (есть вкладка Карты) */}
+            {!isMobile && <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, marginBottom: 40, alignItems: 'start' }}>
 
               {/* Card picker */}
               <div>
@@ -1584,7 +1636,7 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
                   ))}
                 </div>
               </div>
-            </div>
+            </div>}
 
             {/* Transactions */}
             <div>
@@ -1654,9 +1706,10 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
           paddingBottom: 'env(safe-area-inset-bottom, 0px)',
         }}>
           {([
-            { id: 'overview', icon: 'home',    label: 'Главная'  },
-            { id: 'history',  icon: 'history', label: 'История'  },
-            { id: 'profile',  icon: 'profile', label: 'Профиль'  },
+            { id: 'overview', icon: 'home',    label: 'Главная' },
+            { id: 'cards',    icon: 'cards',   label: 'Карты'   },
+            { id: 'history',  icon: 'history', label: 'История' },
+            { id: 'profile',  icon: 'profile', label: 'Профиль' },
           ] as const).map(item => (
             <button key={item.id} onClick={() => setTab(item.id)} style={{
               flex: 1, display: 'flex', flexDirection: 'column',
