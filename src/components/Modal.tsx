@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
 import { t } from '../styles/tokens'
 import { Btn } from './Layout'
+import { useResponsive } from '../hooks/useResponsive'
 import type { CardType } from '../data/cards'
 
 interface ModalProps { open: boolean; cardType: CardType; onClose: () => void }
 
 export default function Modal({ open, cardType, onClose }: ModalProps) {
   const [success, setSuccess] = useState(false)
+  const { isMobile, isSmallMobile } = useResponsive()
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
@@ -32,12 +34,12 @@ export default function Modal({ open, cardType, onClose }: ModalProps) {
       onClick={e => { if (e.target === e.currentTarget) onClose() }}
       style={{
         position: 'fixed', inset: 0, zIndex: 200,
-        display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20,
+        display: 'flex', alignItems: 'center', justifyContent: 'center', padding: isSmallMobile ? 12 : 20,
         background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(16px)',
       }}
     >
       <div style={{
-        width: '100%', maxWidth: 460, borderRadius: t.r24, padding: 40, position: 'relative',
+        width: '100%', maxWidth: 460, borderRadius: t.r24, padding: isMobile ? '24px 18px' : 40, position: 'relative',
         background: '#131416', border: `1px solid ${t.border}`,
         boxShadow: '0 32px 80px rgba(0,0,0,0.6)',
       }}>
@@ -52,7 +54,7 @@ export default function Modal({ open, cardType, onClose }: ModalProps) {
           <p style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: t.textTertiary, marginBottom: 8 }}>
             {cardType === 'premium' ? 'Премиум карта' : 'Стандартная карта'}
           </p>
-          <h2 style={{ fontSize: 28, fontWeight: 800, color: t.textPrimary, letterSpacing: '-0.02em', marginBottom: 6 }}>
+          <h2 style={{ fontSize: isMobile ? 24 : 28, fontWeight: 800, color: t.textPrimary, letterSpacing: '-0.02em', marginBottom: 6 }}>
             Открыть счёт
           </h2>
           <p style={{ fontSize: 14, color: t.textSecondary, marginBottom: 28 }}>
