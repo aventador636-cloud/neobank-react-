@@ -71,3 +71,19 @@ export default defineConfig([
   },
 ])
 ```
+
+## Auto-deploy to Vercel
+
+Этот репозиторий настроен на автоматический деплой через GitHub Actions в `https://neobank-omega.vercel.app/`.
+
+### Что настроено
+- Workflow: `.github/workflows/vercel-deploy.yml`
+- Триггеры: push в `main`, `master`, `work` и ручной запуск (`workflow_dispatch`)
+- Перед деплоем выполняются `npm ci` и `npm run build`
+
+### Что нужно добавить в GitHub Secrets
+- `VERCEL_TOKEN`
+- `VERCEL_ORG_ID`
+- `VERCEL_PROJECT_ID`
+
+После добавления секретов каждый push в указанные ветки будет автоматически публиковать обновления на Vercel.
