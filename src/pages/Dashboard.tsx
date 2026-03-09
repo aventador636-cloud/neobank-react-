@@ -46,6 +46,13 @@ const TRANSACTIONS: Transaction[] = [
 
 const ALL_CATEGORIES = ['Все', 'Входящий', 'Покупки', 'Супермаркеты', 'Рестораны', 'Подписки', 'Транспорт', 'Здоровье', 'Путешествия', 'Вознаграждение']
 
+const CONTACTS = [
+  { name: 'Алексей Морозов', phone: '+7 916 123-45-67', initials: 'АМ', color: '#a78bfa' },
+  { name: 'Мария Иванова',   phone: '+7 903 987-65-43', initials: 'МИ', color: '#60a5fa' },
+  { name: 'Дмитрий Козлов',  phone: '+7 926 555-11-22', initials: 'ДК', color: '#4ade80' },
+  { name: 'Анна Петрова',    phone: '+7 915 333-77-88', initials: 'АП', color: '#f472b6' },
+]
+
 function HistoryModal({ onClose, transactions }: { onClose: () => void; transactions: Transaction[] }) {
   const [search, setSearch]   = useState('')
   const [filter, setFilter]   = useState('Все')
@@ -193,6 +200,279 @@ function HistoryModal({ onClose, transactions }: { onClose: () => void; transact
         @keyframes drawerUp {
           from { transform: translateY(40px); opacity: 0; }
           to   { transform: translateY(0);    opacity: 1; }
+        }
+      `}</style>
+    </div>
+  )
+}
+
+function TransferModal({ onClose, onTransferred, balance }: {
+  onClose: () => void
+  onTransferred: (tx: Transaction) => void
+  balance: number
+}) {
+  const [step, setStep]           = useState<'phone' | 'amount' | 'confirm' | 'success'>('phone')
+  const [phone, setPhone]         = useState('')
+  const [amount, setAmount]       = useState('')
+  const [recipient, setRecipient] = useState<typeof CONTACTS[0] | null>(null)
+  const { isMobile } = useResponsive()
+
+  const filtered = phone.length >= 1
+    ? CONTACTS.filter(c =>
+        c.phone.replace(/\D/g, '').includes(phone.replace(/\D/g, '')) ||
+        c.name.toLowerCase().includes(phone.toLowerCase())
+      )
+    : CONTACTS
+
+  const selectContact = (c: typeof CONTACTS[0]) => {
+    setRecipient(c)
+    setPhone(c.phone)
+    setStep('amount')
+  }
+
+  const handlePhoneNext = () => {
+    if (phone.replace(/\D/g, '').length < 11) return
+    const found = CONTACTS.find(c => c.phone.replace(/\D/g, '') === phone.replace(/\D/g, ''))
+    setRecipient(found ?? { name: 'Клиент NeoBank', phone, initials: '?', color: '#888' })
+    setStep('amount')
+  }
+
+  const amountNum     = parseInt(amount.replace(/\D/g, ''), 10) || 0
+  const isAmountValid = amountNum >= 10 && amountNum <= balance
+
+  const handleConfirm = () => {
+    setStep('success')
+    const { date, month } = todayLabel()
+    onTransferred({ id: Date.now(), name: `Перевод: ${recipient!.name}`, category: 'Переводы', amount: -amountNum, date, month, icon: '↑' })
+    setTimeout(onClose, 2000)
+  }
+
+  return (
+    <div style={{
+      position: 'fixed', inset: 0, zIndex: 300,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)',
+      animation: 'fadeIn 0.2s ease',
+    }} onClick={e => { if (e.target === e.currentTarget) onClose() }}>
+
+      <div style={{
+        width: isMobile ? '94vw' : 420,
+        background: t.surface, border: `1px solid ${t.border}`,
+        borderRadius: t.r24, display: 'flex', flexDirection: 'column',
+        boxShadow: '0 40px 80px rgba(0,0,0,0.6)',
+        animation: 'modalSlide 0.25s ease', overflow: 'hidden',
+      }}>
+
+        {/* Header */}
+        {step !== 'success' && (
+          <div style={{
+            padding: '22px 24px 18px', borderBottom: `1px solid ${t.border}`,
+            display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0,
+          }}>
+            {step !== 'phone' && (
+              <button onClick={() => setStep(step === 'confirm' ? 'amount' : 'phone')} style={{
+                background: t.surfaceHover, border: `1px solid ${t.border}`,
+                borderRadius: '50%', width: 32, height: 32, flexShrink: 0,
+                cursor: 'pointer', color: t.textSecondary, fontSize: 18,
+                display: 'flex', alignItems: 'center', justifyContent: 'center', transition: t.ease,
+              }}>‹</button>
+            )}
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 18, fontWeight: 700, color: t.textPrimary }}>
+                {step === 'phone' ? 'Перевод' : step === 'amount' ? 'Сумма' : 'Подтверждение'}
+              </div>
+              <div style={{ fontSize: 12, color: t.textTertiary, marginTop: 2 }}>
+                {step === 'phone' ? 'Кому перевести?' : step === 'amount' ? `Кому: ${recipient?.name}` : 'Проверьте детали перевода'}
+              </div>
+            </div>
+            <button onClick={onClose} style={{
+              background: 'none', border: 'none', cursor: 'pointer',
+              color: t.textTertiary, fontSize: 22, lineHeight: 1, padding: 4, transition: t.ease,
+            }}
+              onMouseEnter={e => (e.currentTarget.style.color = t.textPrimary)}
+              onMouseLeave={e => (e.currentTarget.style.color = t.textTertiary)}
+            >×</button>
+          </div>
+        )}
+
+        {/* Step: phone */}
+        {step === 'phone' && (
+          <div style={{ padding: '20px 24px 24px' }}>
+            <input
+              autoFocus
+              value={phone}
+              onChange={e => setPhone(e.target.value)}
+              placeholder="+7 ___ ___-__-__"
+              style={{
+                width: '100%', boxSizing: 'border-box',
+                background: t.bg, border: `1px solid ${t.border}`,
+                borderRadius: t.r12, padding: '12px 16px',
+                color: t.textPrimary, fontSize: 16, fontFamily: t.fontFamily,
+                outline: 'none', transition: t.ease, marginBottom: 16,
+              }}
+              onFocus={e => (e.currentTarget.style.borderColor = 'rgba(167,139,250,0.4)')}
+              onBlur={e  => (e.currentTarget.style.borderColor = t.border)}
+              onKeyDown={e => { if (e.key === 'Enter') handlePhoneNext() }}
+            />
+            <p style={{ fontSize: 11, fontWeight: 700, color: t.textTertiary, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 8 }}>
+              Недавние
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 2, marginBottom: 20 }}>
+              {filtered.map(c => (
+                <button key={c.phone} onClick={() => selectContact(c)} style={{
+                  display: 'flex', alignItems: 'center', gap: 12,
+                  padding: '10px 12px', borderRadius: t.r12, cursor: 'pointer',
+                  background: 'none', border: '1px solid transparent', transition: t.ease, textAlign: 'left',
+                }}
+                  onMouseEnter={e => { e.currentTarget.style.background = t.surfaceHover; e.currentTarget.style.borderColor = t.border }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.borderColor = 'transparent' }}
+                >
+                  <div style={{
+                    width: 40, height: 40, borderRadius: '50%', flexShrink: 0,
+                    background: `${c.color}22`, border: `1px solid ${c.color}44`,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: 13, fontWeight: 700, color: c.color,
+                  }}>{c.initials}</div>
+                  <div>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: t.textPrimary }}>{c.name}</div>
+                    <div style={{ fontSize: 12, color: t.textTertiary }}>{c.phone}</div>
+                  </div>
+                </button>
+              ))}
+            </div>
+            <button onClick={handlePhoneNext} disabled={phone.replace(/\D/g, '').length < 11} style={{
+              width: '100%', height: 50, borderRadius: t.r16, border: 'none',
+              background: phone.replace(/\D/g, '').length >= 11 ? 'linear-gradient(90deg, #a78bfa, #60a5fa)' : t.surfaceHover,
+              color: t.textPrimary, fontSize: 15, fontWeight: 700,
+              cursor: phone.replace(/\D/g, '').length >= 11 ? 'pointer' : 'default',
+              transition: t.ease, opacity: phone.replace(/\D/g, '').length >= 11 ? 1 : 0.5,
+            }}>
+              Продолжить
+            </button>
+          </div>
+        )}
+
+        {/* Step: amount */}
+        {step === 'amount' && (
+          <div style={{ padding: '20px 24px 24px' }}>
+            <div style={{ textAlign: 'center', padding: '24px 0 28px', position: 'relative' }}>
+              <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 8 }}>
+                <input
+                  autoFocus
+                  value={amount}
+                  onChange={e => setAmount(e.target.value.replace(/\D/g, ''))}
+                  placeholder="0"
+                  style={{
+                    background: 'none', border: 'none', outline: 'none',
+                    fontSize: 52, fontWeight: 800, color: t.textPrimary,
+                    fontFamily: t.fontFamily, textAlign: 'right',
+                    width: `${Math.max(1, amount.length) * 32}px`, maxWidth: '80%',
+                    letterSpacing: '-0.03em', transition: 'width 0.1s',
+                  }}
+                  onKeyDown={e => { if (e.key === 'Enter' && isAmountValid) setStep('confirm') }}
+                />
+                <span style={{ fontSize: 28, color: t.textTertiary, fontWeight: 700 }}>₽</span>
+              </div>
+              <div style={{ fontSize: 13, color: t.textTertiary, marginTop: 6 }}>
+                Доступно: {balance.toLocaleString('ru-RU')} ₽
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
+              {[500, 1000, 5000, 10000].map(v => (
+                <button key={v} onClick={() => setAmount(String(v))} style={{
+                  flex: 1, padding: '8px 4px', borderRadius: t.r12,
+                  background: amountNum === v ? 'rgba(167,139,250,0.15)' : t.surfaceHover,
+                  border: `1px solid ${amountNum === v ? 'rgba(167,139,250,0.4)' : 'transparent'}`,
+                  color: amountNum === v ? t.purple : t.textSecondary,
+                  fontSize: 12, fontWeight: 600, cursor: 'pointer', transition: t.ease,
+                }}>
+                  {v >= 1000 ? `${v / 1000}к` : v}
+                </button>
+              ))}
+            </div>
+
+            {amountNum > balance && (
+              <div style={{ fontSize: 12, color: '#f87171', textAlign: 'center', marginBottom: 12 }}>
+                Недостаточно средств
+              </div>
+            )}
+
+            <button onClick={() => setStep('confirm')} disabled={!isAmountValid} style={{
+              width: '100%', height: 50, borderRadius: t.r16, border: 'none',
+              background: isAmountValid ? 'linear-gradient(90deg, #a78bfa, #60a5fa)' : t.surfaceHover,
+              color: t.textPrimary, fontSize: 15, fontWeight: 700,
+              cursor: isAmountValid ? 'pointer' : 'default',
+              transition: t.ease, opacity: isAmountValid ? 1 : 0.5,
+            }}>
+              Продолжить
+            </button>
+          </div>
+        )}
+
+        {/* Step: confirm */}
+        {step === 'confirm' && (
+          <div style={{ padding: '20px 24px 24px' }}>
+            <div style={{
+              background: t.bg, borderRadius: t.r16, padding: '20px',
+              marginBottom: 20, display: 'flex', flexDirection: 'column', gap: 14,
+            }}>
+              {[
+                { label: 'Получатель', value: recipient?.name ?? '' },
+                { label: 'Телефон',    value: recipient?.phone ?? '' },
+              ].map(row => (
+                <div key={row.label}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: 13, color: t.textTertiary }}>{row.label}</span>
+                    <span style={{ fontSize: 14, fontWeight: 600, color: t.textPrimary }}>{row.value}</span>
+                  </div>
+                  <div style={{ height: 1, background: t.border, marginTop: 14 }} />
+                </div>
+              ))}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: 13, color: t.textTertiary }}>Сумма</span>
+                <span style={{ fontSize: 20, fontWeight: 800, color: t.textPrimary }}>{amountNum.toLocaleString('ru-RU')} ₽</span>
+              </div>
+              <div style={{ height: 1, background: t.border }} />
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: 13, color: t.textTertiary }}>Комиссия</span>
+                <span style={{ fontSize: 14, fontWeight: 600, color: t.green }}>Бесплатно</span>
+              </div>
+            </div>
+            <button onClick={handleConfirm} style={{
+              width: '100%', height: 50, borderRadius: t.r16, border: 'none',
+              background: 'linear-gradient(90deg, #a78bfa, #60a5fa)',
+              color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer', transition: t.ease,
+            }}>
+              Подтвердить перевод
+            </button>
+          </div>
+        )}
+
+        {/* Step: success */}
+        {step === 'success' && (
+          <div style={{
+            padding: '56px 24px 52px', display: 'flex', flexDirection: 'column',
+            alignItems: 'center', gap: 16, textAlign: 'center',
+          }}>
+            <div style={{
+              width: 80, height: 80, borderRadius: '50%',
+              background: 'rgba(74,222,128,0.12)', border: '2px solid rgba(74,222,128,0.3)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 36, animation: 'successPop 0.4s ease',
+            }}>✓</div>
+            <div style={{ fontSize: 22, fontWeight: 800, color: t.textPrimary }}>Перевод отправлен</div>
+            <div style={{ fontSize: 14, color: t.textTertiary }}>
+              {amountNum.toLocaleString('ru-RU')} ₽ → {recipient?.name}
+            </div>
+          </div>
+        )}
+      </div>
+
+      <style>{`
+        @keyframes successPop {
+          from { transform: scale(0.5); opacity: 0; }
+          to   { transform: scale(1);   opacity: 1; }
         }
       `}</style>
     </div>
@@ -792,18 +1072,29 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
   const [tab, setTab]                 = useState<'overview' | 'profile'>('overview')
   const [payOpen, setPayOpen]         = useState(false)
   const [historyOpen, setHistoryOpen] = useState(false)
+  const [transferOpen, setTransferOpen] = useState(false)
   const [transactions, setTransactions] = useState<Transaction[]>(TRANSACTIONS)
+  const [balances, setBalances]         = useState([45_230, 128_450, 2_400_000])
 
   const addTransaction = useCallback((tx: Transaction) => {
     setTransactions(prev => [tx, ...prev])
   }, [])
+
+  const handleTransferred = useCallback((tx: Transaction) => {
+    addTransaction(tx)
+    setBalances(prev => {
+      const next = [...prev]
+      next[activeCard] += tx.amount
+      return next
+    })
+  }, [addTransaction, activeCard])
 
   const userCard: CardProduct = {
     ...cards[activeCard],
     holder: user?.name?.toUpperCase() ?? 'КЛИЕНТ',
   }
 
-  const balance = [45_230, 128_450, 2_400_000][activeCard]
+  const balance = balances[activeCard]
 
   return (
     <div style={{ minHeight: '100vh', background: t.bg, fontFamily: t.fontFamily }}>
@@ -893,7 +1184,12 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
                 {/* Quick actions */}
                 <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', gap: 10 }}>
                   {QUICK_ACTIONS.map(a => (
-                    <button key={a.label} onClick={a.label === 'Оплатить' ? () => setPayOpen(true) : a.label === 'История' ? () => setHistoryOpen(true) : undefined} style={{
+                    <button key={a.label} onClick={
+                      a.label === 'Перевести' ? () => setTransferOpen(true) :
+                      a.label === 'Оплатить'  ? () => setPayOpen(true) :
+                      a.label === 'История'   ? () => setHistoryOpen(true) :
+                      undefined
+                    } style={{
                       background: t.surfaceHover, border: `1px solid ${t.border}`,
                       borderRadius: t.r16, padding: '14px 8px',
                       display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
@@ -964,6 +1260,7 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
           <ProfileTab user={user} activeCard={activeCard} logout={logout} />
         )}
       </main>
+      {transferOpen && <TransferModal onClose={() => setTransferOpen(false)} onTransferred={handleTransferred} balance={balance} />}
       {payOpen && <PayModal onClose={() => setPayOpen(false)} onPaid={addTransaction} />}
       {historyOpen && <HistoryModal onClose={() => setHistoryOpen(false)} transactions={transactions} />}
 
