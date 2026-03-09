@@ -587,14 +587,14 @@ function Divider() {
   return <div style={{ height: 1, background: t.border, margin: '0 20px' }} />
 }
 
-function ProfileTab({ user, activeCard, logout }: { user: { name: string; phone: string } | null; activeCard: number; logout: () => void }) {
+function ProfileTab({ user, activeCard, logout }: { user: { name: string | null; phone: string } | null; activeCard: number; logout: () => void }) {
   const [security, setSecurity] = useState({ biometric: true, twofa: false, loginAlerts: true })
   const [notifs, setNotifs]     = useState({ push: true, sms: false, email: true })
   const [copied, setCopied]     = useState(false)
   const { isMobile } = useResponsive()
 
   const refCode = 'NEO-ALEX-2024'
-  const initials = user?.name.split(' ').map(w => w[0]).join('') ?? 'НА'
+  const initials = user?.name?.split(' ').map(w => w[0]).join('') ?? 'НА'
   const tierColors = ['#60a5fa', '#a855f7', '#d4a853']
   const tierColor  = tierColors[activeCard]
   const tierName   = ['Standard', 'Premium', 'Diners Club'][activeCard]
@@ -800,7 +800,7 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
 
   const userCard: CardProduct = {
     ...cards[activeCard],
-    holder: user?.name.toUpperCase() ?? 'КЛИЕНТ',
+    holder: user?.name?.toUpperCase() ?? 'КЛИЕНТ',
   }
 
   const balance = [45_230, 128_450, 2_400_000][activeCard]
@@ -852,7 +852,7 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
             <div style={{ marginBottom: 40 }}>
               <p style={{ fontSize: 14, color: t.textTertiary, marginBottom: 4 }}>{getGreeting()},</p>
               <h1 style={{ fontSize: 32, fontWeight: 800, letterSpacing: '-0.03em', color: t.textPrimary }}>
-                {user?.name.split(' ').reverse().join(' ')} <span className="wave-hand">👋</span>
+                {user?.name?.split(' ').reverse().join(' ')} <span className="wave-hand">👋</span>
               </h1>
             </div>
 
