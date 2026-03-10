@@ -11,6 +11,9 @@ export interface CardProduct {
   features: string[]
   accentColor: string
   btnClass: string
+  price: string
+  priceNote: string
+  cta: string
 }
 
 export const cards: CardProduct[] = [
@@ -29,6 +32,9 @@ export const cards: CardProduct[] = [
     ],
     accentColor: '#60a5fa',
     btnClass: 'standard',
+    price: '0 ₽',
+    priceNote: 'навсегда бесплатно',
+    cta: 'Открыть бесплатно',
   },
   {
     id: 'premium',
@@ -46,6 +52,9 @@ export const cards: CardProduct[] = [
     ],
     accentColor: '#a855f7',
     btnClass: 'premium',
+    price: '299 ₽',
+    priceNote: 'в месяц · бесплатно от 30 000 ₽',
+    cta: 'Открыть Premium',
   },
   {
     id: 'diners',
@@ -63,6 +72,9 @@ export const cards: CardProduct[] = [
     ],
     accentColor: '#d4a853',
     btnClass: 'diners',
+    price: '1 990 ₽',
+    priceNote: 'в месяц · только по приглашению',
+    cta: 'Запросить доступ',
   },
 ]
 

@@ -33,11 +33,13 @@ export default function CardsSection({ onOrder }: CardsSectionProps) {
               position: 'relative', overflow: 'hidden',
               padding: isMobile ? 24 : 36,
               borderRadius: t.r24,
-              background: 'rgba(255,255,255,0.04)',
+              background: isPremium ? 'rgba(167,139,250,0.06)' : 'rgba(255,255,255,0.04)',
               backdropFilter: 'blur(16px)',
               WebkitBackdropFilter: 'blur(16px)',
-              boxShadow: `0 8px 40px rgba(0,0,0,0.25), 0 0 80px ${isDiners ? 'rgba(212,168,83,0.06)' : isPremium ? 'rgba(167,139,250,0.04)' : 'rgba(96,165,250,0.03)'}`,
+              boxShadow: `0 8px 40px rgba(0,0,0,0.25), 0 0 80px ${isDiners ? 'rgba(212,168,83,0.06)' : isPremium ? 'rgba(167,139,250,0.10)' : 'rgba(96,165,250,0.03)'}`,
+              border: isPremium ? '1px solid rgba(167,139,250,0.20)' : '1px solid transparent',
               display: 'flex', flexDirection: 'column',
+              transform: isPremium && !isMobile ? 'translateY(-16px)' : undefined,
               animation: `productFadeUp 0.65s cubic-bezier(0.16,1,0.3,1) ${i * 0.12}s both`,
             }}>
 
@@ -47,6 +49,23 @@ export default function CardsSection({ onOrder }: CardsSectionProps) {
                 background: `radial-gradient(ellipse at 50% 0%, ${isDiners ? 'rgba(212,168,83,0.10)' : isPremium ? 'rgba(167,139,250,0.10)' : 'rgba(96,165,250,0.07)'} 0%, transparent 65%)`,
               }} />
 
+              {/* Badge */}
+              {card.badge && (
+                <div style={{ position: 'relative', zIndex: 1, marginBottom: 16 }}>
+                  <span style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 5,
+                    padding: '5px 12px', borderRadius: t.r999,
+                    background: isDiners ? 'rgba(212,168,83,0.15)' : 'rgba(167,139,250,0.15)',
+                    border: `1px solid ${isDiners ? 'rgba(212,168,83,0.30)' : 'rgba(167,139,250,0.30)'}`,
+                    fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
+                    color: isDiners ? '#d4a853' : t.purple,
+                  }}>
+                    <span>★</span>
+                    {card.badge}
+                  </span>
+                </div>
+              )}
+
               {/* Card 3D */}
               <div style={{ position: 'relative', zIndex: 1, marginBottom: 32 }}>
                 <Card3D card={card} />
@@ -54,9 +73,15 @@ export default function CardsSection({ onOrder }: CardsSectionProps) {
 
               {/* Content */}
               <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', flex: 1 }}>
-                <h3 className="shimmer" style={{ fontSize: 22, fontWeight: 800, letterSpacing: '-0.03em', marginBottom: 12 }}>
-                  {card.title}
-                </h3>
+                <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 12, marginBottom: 4 }}>
+                  <h3 className="shimmer" style={{ fontSize: 22, fontWeight: 800, letterSpacing: '-0.03em' }}>
+                    {card.title}
+                  </h3>
+                  <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                    <div style={{ fontSize: 18, fontWeight: 800, color: accent, lineHeight: 1 }}>{card.price}</div>
+                  </div>
+                </div>
+                <p style={{ fontSize: 12, color: t.textTertiary, marginBottom: 16 }}>{card.priceNote}</p>
 
                 <p style={{ fontSize: 14, lineHeight: 1.7, color: t.textSecondary, marginBottom: 24 }}>
                   {card.description}
@@ -96,7 +121,7 @@ export default function CardsSection({ onOrder }: CardsSectionProps) {
                     color: '#fff',
                   }}
                 >
-                  Оформить карту
+                  {card.cta}
                 </button>
               </div>
             </div>

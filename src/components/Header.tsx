@@ -30,11 +30,14 @@ export default function Header({ onCta, onLogin }: HeaderProps) {
 
         {!isMobile && (
           <nav style={{ display: 'flex', gap: 32 }}>
-            {['Карты', 'Кредиты', 'Вклады', 'О банке'].map(item => (
-              <a key={item} href="#" style={{ fontSize: 14, fontWeight: 500, color: t.textSecondary, transition: t.ease }}
+            {[
+              { label: 'Карты',   href: '#cards' },
+              { label: 'О банке', href: '#faq'   },
+            ].map(item => (
+              <a key={item.label} href={item.href} style={{ fontSize: 14, fontWeight: 500, color: t.textSecondary, transition: t.ease }}
                 onMouseEnter={e => (e.currentTarget.style.color = t.textPrimary)}
                 onMouseLeave={e => (e.currentTarget.style.color = t.textSecondary)}>
-                {item}
+                {item.label}
               </a>
             ))}
           </nav>

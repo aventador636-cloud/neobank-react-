@@ -1,137 +1,87 @@
-import { Users, Percent, BadgeDollarSign } from 'lucide-react'
 import { t } from '../styles/tokens'
 import { Container, Btn } from './Layout'
-import BrandAnimation from './BrandAnimation'
+import Card3D from './Card3D'
+import { cards } from '../data/cards'
 import { useResponsive } from '../hooks/useResponsive'
 
 interface HeroProps { onCta: () => void }
 
+
 export default function Hero({ onCta }: HeroProps) {
   const { isMobile, isTablet } = useResponsive()
-  return (
-    <div style={{ position: 'relative', overflow: 'hidden', paddingBottom: 0 }}>
+  const premiumCard = cards.find(c => c.id === 'premium')!
 
-      {/* Ambient glow behind animation */}
+  return (
+    <div style={{ position: 'relative', overflow: 'hidden' }}>
+      {/* Ambient glow */}
       <div style={{
         position: 'absolute', top: -100, left: '50%', transform: 'translateX(-50%)',
         width: 900, height: 700, pointerEvents: 'none',
-        background: 'radial-gradient(ellipse at 50% 30%, rgba(139,92,246,0.14) 0%, transparent 65%)',
+        background: 'radial-gradient(ellipse at 50% 30%, rgba(139,92,246,0.12) 0%, transparent 65%)',
         filter: 'blur(60px)',
       }} />
 
       <Container style={{ position: 'relative', zIndex: 1 }}>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: isMobile || isTablet ? '1fr' : '1fr 1fr',
+          gap: isMobile ? 48 : isTablet ? 56 : 80,
+          alignItems: 'center',
+          paddingTop: isMobile ? 48 : 80,
+          paddingBottom: isMobile ? 48 : 80,
+        }}>
 
-        {/* ── Brand animation — самый верх ── */}
-        <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 40 }}>
-          <BrandAnimation size={isMobile ? 280 : isTablet ? 360 : 480} />
-        </div>
+          {/* ── Left: text ── */}
+          <div>
+            <h1 className="shimmer" style={{
+              fontSize: isMobile ? 44 : isTablet ? 56 : 72,
+              fontWeight: 900, lineHeight: 1.0,
+              letterSpacing: '-0.04em',
+              marginBottom: 20,
+            }}>
+              Банк нового<br />поколения
+            </h1>
 
-        {/* ── Headline ── */}
-        <div style={{ textAlign: 'center', maxWidth: 720, margin: '0 auto' }}>
-          <p style={{
-            fontSize: 18, lineHeight: 1.7, color: t.textSecondary,
-            marginBottom: 40, maxWidth: 480, margin: '0 auto 40px',
-          }}>
-            Кэшбэк до 5%, бесплатное обслуживание и полный контроль через приложение. Без скрытых комиссий.
-          </p>
+            <p style={{
+              fontSize: isMobile ? 16 : 18,
+              lineHeight: 1.65, color: t.textSecondary,
+              maxWidth: 440, marginBottom: 36,
+            }}>
+              Управляйте деньгами там, где удобно — переводы, кэшбэк и аналитика в одном приложении.
+            </p>
 
-          {/* ── CTAs ── */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, justifyContent: 'center', marginBottom: 64 }}>
-            <Btn onClick={onCta}>Открыть счёт бесплатно</Btn>
-            <Btn variant="ghost" href="#cards">Сравнить карты</Btn>
+            {/* CTAs */}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginBottom: 40 }}>
+              <Btn onClick={onCta}>Открыть счёт бесплатно</Btn>
+              <Btn variant="ghost" href="#cards">Смотреть карты</Btn>
+            </div>
+
           </div>
 
-          {/* ── Trust bar ── */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
-            gap: 12,
-            paddingTop: 40, paddingBottom: 64,
-          }}>
-            {[
-              { icon: <Users size={20} strokeWidth={1.5} color="#a78bfa" style={{ animation: 'iconFloat 3s ease-in-out infinite' }} />, val: '1М+', desc: 'довольных клиентов', stripe: 'trust-stripe-purple', glow: 'rgba(167,139,250,0.06)', iconBg: 'rgba(167,139,250,0.1)', iconBorder: 'rgba(167,139,250,0.2)', delay: '0s' },
-              { icon: <Percent size={20} strokeWidth={1.5} color="#818cf8" style={{ animation: 'iconSpin 8s linear infinite' }} />, val: '5%', desc: 'кэшбэк на покупки', stripe: 'trust-stripe-blue', glow: 'rgba(129,140,248,0.06)', iconBg: 'rgba(129,140,248,0.1)', iconBorder: 'rgba(129,140,248,0.2)', delay: '0.1s' },
-              { icon: <BadgeDollarSign size={20} strokeWidth={1.5} color="#60a5fa" style={{ animation: 'iconPulse 2.5s ease-in-out infinite' }} />, val: '0₽', desc: 'обслуживание навсегда', stripe: 'trust-stripe-indigo', glow: 'rgba(96,165,250,0.06)', iconBg: 'rgba(96,165,250,0.1)', iconBorder: 'rgba(96,165,250,0.2)', delay: '0.2s' },
-            ].map(s => (
-              <div key={s.val} className="trust-card" style={{
-                position: 'relative', overflow: 'hidden',
-                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14,
-                padding: '32px 20px', borderRadius: t.r24,
-                background: '#0d0e11',
-                animation: `trustFadeUp 0.6s cubic-bezier(0.16,1,0.3,1) ${s.delay} both`,
-              }}>
-                {/* Radial glow */}
-                <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: `radial-gradient(ellipse at 50% 0%, ${s.glow} 0%, transparent 65%)` }} />
-
-                <div style={{
-                  position: 'relative', zIndex: 1,
-                  width: 44, height: 44, borderRadius: t.r12, flexShrink: 0,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  background: s.iconBg,
-                }}>
-                  {s.icon}
-                </div>
-                <div className="shimmer" style={{ position: 'relative', zIndex: 1, fontSize: 44, fontWeight: 900, letterSpacing: '-0.04em', lineHeight: 1 }}>{s.val}</div>
-                <div style={{ position: 'relative', zIndex: 1, fontSize: 14, color: t.textSecondary, lineHeight: 1.4 }}>{s.desc}</div>
+          {/* ── Right: card ── */}
+          {!isMobile && (
+            <div style={{
+              display: 'flex', justifyContent: isTablet ? 'center' : 'flex-end',
+              position: 'relative',
+            }}>
+              {/* Glow behind card */}
+              <div style={{
+                position: 'absolute', top: '50%', left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: 400, height: 300, pointerEvents: 'none',
+                background: 'radial-gradient(ellipse, rgba(167,139,250,0.15) 0%, transparent 70%)',
+                filter: 'blur(40px)',
+              }} />
+              <div style={{ width: isTablet ? 360 : 420, position: 'relative' }}>
+                <Card3D card={premiumCard} />
               </div>
-            ))}
-          </div>
+            </div>
+          )}
 
-
-          <style>{`
-            @keyframes trustFadeUp {
-              from { opacity: 0; transform: translateY(24px); }
-              to   { opacity: 1; transform: translateY(0); }
-            }
-            .trust-stripe-purple {
-              background: linear-gradient(90deg, #a78bfa 0%, #818cf8 50%, #a78bfa 100%);
-              background-size: 200% auto;
-              animation: trustStripe 4s linear infinite;
-            }
-            .trust-stripe-blue {
-              background: linear-gradient(90deg, #60a5fa 0%, #818cf8 50%, #60a5fa 100%);
-              background-size: 200% auto;
-              animation: trustStripe 4s linear infinite;
-            }
-            .trust-stripe-green {
-              background: linear-gradient(90deg, #4ade80 0%, #34d399 50%, #4ade80 100%);
-              background-size: 200% auto;
-              animation: trustStripe 4s linear infinite;
-            }
-            .trust-stripe-indigo {
-              background: linear-gradient(90deg, #60a5fa 0%, #818cf8 50%, #60a5fa 100%);
-              background-size: 200% auto;
-              animation: trustStripe 4s linear infinite;
-            }
-            @keyframes trustStripe {
-              0%   { background-position: 0% center; }
-              100% { background-position: 200% center; }
-            }
-            .trust-card {
-              transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s ease;
-            }
-            .trust-card:hover {
-              transform: translateY(-6px);
-              box-shadow: 0 20px 48px rgba(0,0,0,0.4) !important;
-            }
-            @keyframes iconFloat {
-              0%, 100% { transform: translateY(0px); }
-              50%       { transform: translateY(-4px); }
-            }
-            @keyframes iconSpin {
-              from { transform: rotate(0deg); }
-              to   { transform: rotate(360deg); }
-            }
-            @keyframes iconPulse {
-              0%, 100% { transform: scale(1); }
-              50%       { transform: scale(1.18); }
-            }
-          `}</style>
         </div>
-
       </Container>
 
-      {/* Bottom fade into next section */}
+      {/* Bottom fade */}
       <div style={{
         height: 80,
         background: `linear-gradient(to bottom, transparent, ${t.bg})`,

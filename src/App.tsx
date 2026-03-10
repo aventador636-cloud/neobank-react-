@@ -11,6 +11,8 @@ import Footer from './components/Footer'
 import Chat from './components/Chat'
 import AuthModal from './components/AuthModal'
 import Dashboard from './pages/Dashboard'
+import FAQ from './components/FAQ'
+import CtaSection from './components/CtaSection'
 import './index.css'
 
 function AppInner() {
@@ -34,6 +36,8 @@ function AppInner() {
       <Hero onCta={() => openModal()} />
       <CardsSection onOrder={openModal} />
       <Safety />
+      <FAQ />
+      <CtaSection onCta={() => openModal()} />
       <Footer />
       <Modal open={modal.open} cardType={modal.cardType} onClose={closeModal} />
       {authOpen && <AuthModal onClose={() => setAuthOpen(false)} />}

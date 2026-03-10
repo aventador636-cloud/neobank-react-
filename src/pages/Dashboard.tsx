@@ -1825,11 +1825,8 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
                 </button>
               ))}
             </div>
-            <Card3D card={userCard} />
+            <Card3D card={userCard} balance={animatedBalance} />
             <div style={{ marginTop: 28 }}>
-              <p style={{ fontSize: 12, fontWeight: 600, color: t.textTertiary, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>Текущий баланс</p>
-              <div className="shimmer" style={{ fontSize: 36, fontWeight: 800, letterSpacing: '-0.03em', marginBottom: 4 }}>{animatedBalance.toLocaleString('ru-RU')} ₽</div>
-              <p style={{ fontSize: 13, color: t.textTertiary, marginBottom: 28 }}>{userCard.number}</p>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>
                 {QUICK_ACTIONS.map(a => (
                   <button key={a.label} onClick={
@@ -1885,7 +1882,7 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
                     </button>
                   ))}
                 </div>
-                <Card3D card={userCard} />
+                <Card3D card={userCard} balance={animatedBalance} />
 
                 {/* Card details — под картой, та же ширина */}
                 <div style={{ marginTop: 16, background: t.surface, border: `1px solid ${t.border}`, borderRadius: t.r20, overflow: 'hidden' }}>
@@ -1952,16 +1949,6 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
 
               {/* Balance & actions */}
               <div style={{ paddingTop: isMobile ? 0 : 52 }}>
-                <p style={{ fontSize: 12, fontWeight: 600, color: t.textTertiary, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>
-                  Текущий баланс
-                </p>
-                <div className="shimmer" style={{ fontSize: 40, fontWeight: 800, letterSpacing: '-0.03em', marginBottom: 4 }}>
-                  {animatedBalance.toLocaleString('ru-RU')} ₽
-                </div>
-                <p style={{ fontSize: 13, color: t.textTertiary, marginBottom: 32 }}>
-                  {userCard.number}
-                </p>
-
                 {/* Quick actions */}
                 <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', gap: 10 }}>
                   {QUICK_ACTIONS.map(a => (

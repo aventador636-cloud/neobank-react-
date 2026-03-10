@@ -3,7 +3,7 @@ import type { CardProduct } from '../data/cards'
 import { t } from '../styles/tokens'
 import { useResponsive } from '../hooks/useResponsive'
 
-interface Card3DProps { card: CardProduct }
+interface Card3DProps { card: CardProduct; balance?: number }
 
 function BrandLogo({ brand, size = 'card' }: { brand: string; size?: 'card' | 'label' }) {
   if (brand === 'VISA') {
@@ -63,7 +63,7 @@ function BrandLogo({ brand, size = 'card' }: { brand: string; size?: 'card' | 'l
   return <span style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.35)' }}>{brand}</span>
 }
 
-export default function Card3D({ card }: Card3DProps) {
+export default function Card3D({ card, balance }: Card3DProps) {
   const wrapRef  = useRef<HTMLDivElement>(null)
   const glareRef = useRef<HTMLDivElement>(null)
   const { isMobile } = useResponsive()
@@ -174,12 +174,32 @@ export default function Card3D({ card }: Card3DProps) {
               </div>
             </div>
 
+            {/* ── Balance (if provided) ── */}
+            {balance !== undefined && (
+              <div style={{ position: 'relative', zIndex: 1 }}>
+                <div style={{ fontSize: 10, fontWeight: 600, color: 'rgba(255,255,255,0.4)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 4 }}>
+                  Баланс
+                </div>
+                <div style={{
+                  fontSize: 26, fontWeight: 800, letterSpacing: '-0.03em',
+                  color: '#fff',
+                  textShadow: isDiners
+                    ? '0 0 20px rgba(212,168,83,0.4)'
+                    : isPremium
+                    ? '0 0 20px rgba(167,139,250,0.3)'
+                    : '0 0 20px rgba(96,165,250,0.3)',
+                }}>
+                  {balance.toLocaleString('ru-RU')} ₽
+                </div>
+              </div>
+            )}
+
             {/* ── Card number ── */}
             <div style={{
               position: 'relative', zIndex: 1,
               fontFamily: `'SF Mono', 'Fira Code', monospace`,
               fontSize: 15, letterSpacing: '0.22em',
-              color: 'rgba(255,255,255,0.7)',
+              color: balance !== undefined ? 'rgba(255,255,255,0.45)' : 'rgba(255,255,255,0.7)',
               fontWeight: 500,
               whiteSpace: 'nowrap',
             }}>

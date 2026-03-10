@@ -10,7 +10,7 @@ export default function FAQ() {
   const { isTablet } = useResponsive()
 
   return (
-    <Section>
+    <Section id="faq">
       <div style={{ display: 'grid', gridTemplateColumns: isTablet ? '1fr' : '340px 1fr', gap: isTablet ? 40 : 80 }}>
 
         {/* Left — sticky */}
