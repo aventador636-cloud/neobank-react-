@@ -79,6 +79,44 @@ const CONTACTS = [
   { name: 'Анна Петрова',    phone: '+7 915 333-77-88', initials: 'АП', color: '#f472b6' },
 ]
 
+function EmptyState({ type }: { type: 'no-results' | 'no-transactions' }) {
+  const isSearch = type === 'no-results'
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '48px 24px', gap: 16 }}>
+      <div style={{ position: 'relative', marginBottom: 4 }}>
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+          {isSearch ? (
+            <>
+              <circle cx="28" cy="28" r="18" stroke="rgba(255,255,255,0.08)" strokeWidth="3"/>
+              <path d="M41 41l10 10" stroke="rgba(255,255,255,0.08)" strokeWidth="3" strokeLinecap="round"/>
+              <path d="M23 28h10M28 23v10" stroke="rgba(255,255,255,0.15)" strokeWidth="2.5" strokeLinecap="round"/>
+            </>
+          ) : (
+            <>
+              <rect x="12" y="16" width="40" height="32" rx="6" stroke="rgba(255,255,255,0.08)" strokeWidth="3"/>
+              <path d="M12 26h40" stroke="rgba(255,255,255,0.08)" strokeWidth="2"/>
+              <path d="M20 34h8M20 39h14" stroke="rgba(255,255,255,0.12)" strokeWidth="2" strokeLinecap="round"/>
+              <circle cx="50" cy="50" r="10" fill="#111214" stroke="rgba(255,255,255,0.06)" strokeWidth="2"/>
+              <path d="M46 50h8M50 46v8" stroke="rgba(167,139,250,0.4)" strokeWidth="2" strokeLinecap="round"/>
+            </>
+          )}
+        </svg>
+      </div>
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ fontSize: 15, fontWeight: 700, color: 'rgba(255,255,255,0.5)', marginBottom: 6 }}>
+          {isSearch ? 'Ничего не найдено' : 'Операций пока нет'}
+        </div>
+        <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.25)', lineHeight: 1.5 }}>
+          {isSearch
+            ? 'Попробуйте изменить запрос\nили выбрать другую категорию'
+            : 'Здесь появятся ваши переводы,\nоплаты и пополнения'
+          }
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function HistoryModal({ onClose, transactions }: { onClose: () => void; transactions: Transaction[] }) {
   const [search, setSearch]   = useState('')
   const [filter, setFilter]   = useState('Все')
@@ -179,9 +217,7 @@ function HistoryModal({ onClose, transactions }: { onClose: () => void; transact
         {/* List */}
         <div style={{ flex: 1, overflowY: 'auto', padding: '0 24px 24px', scrollbarWidth: 'thin', scrollbarColor: `${t.border} transparent` }}>
           {Object.keys(grouped).length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '40px 0', color: t.textTertiary, fontSize: 14 }}>
-              Операции не найдены
-            </div>
+            <EmptyState type="no-results" />
           ) : (
             Object.entries(grouped).map(([month, txs]) => (
               <div key={month} style={{ marginBottom: 24 }}>
@@ -1616,9 +1652,7 @@ function HistoryInline({ transactions }: { transactions: Transaction[] }) {
       </div>
 
       {Object.keys(grouped).length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '40px 0', color: t.textTertiary, fontSize: 14 }}>
-          Операции не найдены
-        </div>
+        <EmptyState type="no-results" />
       ) : (
         Object.entries(grouped).map(([month, txs]) => (
           <div key={month} style={{ marginBottom: 24 }}>
@@ -1967,6 +2001,7 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                {transactions.length === 0 && <EmptyState type="no-transactions" />}
                 {transactions.slice(0, 8).map((tx, i) => (
                   <div key={tx.id} style={{
                     display: 'flex', alignItems: 'center', gap: 16,
