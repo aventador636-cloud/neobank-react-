@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect, useRef } from 'react'
 import type { ReactNode } from 'react'
 import { t } from '../styles/tokens'
 import { useAuth } from '../context/AuthContext'
+import { useToast } from '../context/ToastContext'
 import { cards } from '../data/cards'
 import type { CardProduct } from '../data/cards'
 import Card3D from '../components/Card3D'
@@ -1655,6 +1656,7 @@ function HistoryInline({ transactions }: { transactions: Transaction[] }) {
 
 export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
   const { user, logout, updateProfile } = useAuth()
+  const { showToast } = useToast()
   const { isMobile } = useResponsive()
   const [activeCard, setActiveCard]   = useState(0)
   const [tab, setTab]                 = useState<'overview' | 'cards' | 'history' | 'profile'>('overview')
@@ -1689,6 +1691,7 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
     navigator.clipboard.writeText(userCard.number.replace(/\s/g, ''))
     setCopiedCard(true)
     setTimeout(() => setCopiedCard(false), 2000)
+    showToast('Номер карты скопирован', userCard.number, 'info')
   }
 
   const addTransaction = useCallback((tx: Transaction) => {
@@ -1702,7 +1705,9 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
       next[activeCard] += tx.amount
       return next
     })
-  }, [addTransaction, activeCard])
+    const name = tx.name.replace('Перевод: ', '')
+    showToast('Перевод отправлен', `${Math.abs(tx.amount).toLocaleString('ru-RU')} ₽ → ${name}`)
+  }, [addTransaction, activeCard, showToast])
 
   const handleTopUp = useCallback((amount: number) => {
     const { date, month } = todayLabel()
@@ -1712,7 +1717,8 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
       next[activeCard] += amount
       return next
     })
-  }, [addTransaction, activeCard])
+    showToast('Счёт пополнен', `+${amount.toLocaleString('ru-RU')} ₽`)
+  }, [addTransaction, activeCard, showToast])
 
   const userCard: CardProduct = {
     ...cards[activeCard],
@@ -2004,7 +2010,7 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
       </main>
       {topUpOpen && <TopUpModal onClose={() => setTopUpOpen(false)} onTopUp={handleTopUp} />}
       {transferOpen && <TransferModal onClose={() => setTransferOpen(false)} onTransferred={handleTransferred} balance={balance} />}
-      {payOpen && <PayModal onClose={() => setPayOpen(false)} onPaid={addTransaction} />}
+      {payOpen && <PayModal onClose={() => setPayOpen(false)} onPaid={tx => { addTransaction(tx); showToast('Оплата прошла', `${tx.name} · ${Math.abs(tx.amount).toLocaleString('ru-RU')} ₽`) }} />}
       {historyOpen && <HistoryModal onClose={() => setHistoryOpen(false)} transactions={transactions} />}
 
       {/* Bottom nav — mobile only */}
