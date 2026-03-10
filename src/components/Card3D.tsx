@@ -174,21 +174,10 @@ export default function Card3D({ card, balance }: Card3DProps) {
               </div>
             </div>
 
-            {/* ── Balance (if provided) ── */}
+            {/* ── Balance ── */}
             {balance !== undefined && (
               <div style={{ position: 'relative', zIndex: 1 }}>
-                <div style={{ fontSize: 10, fontWeight: 600, color: 'rgba(255,255,255,0.4)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 4 }}>
-                  Баланс
-                </div>
-                <div style={{
-                  fontSize: 26, fontWeight: 800, letterSpacing: '-0.03em',
-                  color: '#fff',
-                  textShadow: isDiners
-                    ? '0 0 20px rgba(212,168,83,0.4)'
-                    : isPremium
-                    ? '0 0 20px rgba(167,139,250,0.3)'
-                    : '0 0 20px rgba(96,165,250,0.3)',
-                }}>
+                <div style={{ fontSize: 24, fontWeight: 800, letterSpacing: '-0.03em', color: '#fff' }}>
                   {balance.toLocaleString('ru-RU')} ₽
                 </div>
               </div>

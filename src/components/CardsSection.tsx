@@ -17,11 +17,15 @@ export default function CardsSection({ onOrder }: CardsSectionProps) {
         <Heading size="lg">Выберите свою NEOкарту</Heading>
       </div>
 
-      <div style={{
+      <div style={isMobile ? {
+        display: 'flex', overflowX: 'auto', gap: 16,
+        scrollSnapType: 'x mandatory', scrollbarWidth: 'none',
+        paddingBottom: 8, marginLeft: -20, marginRight: -20,
+        paddingLeft: 20, paddingRight: 20,
+      } : {
         display: 'grid',
-        gridTemplateColumns: isMobile ? '1fr' : isTablet ? '1fr 1fr' : 'repeat(3, 1fr)',
-        gap: 24,
-        alignItems: 'stretch',
+        gridTemplateColumns: isTablet ? '1fr 1fr' : 'repeat(3, 1fr)',
+        gap: 24, alignItems: 'stretch',
       }}>
         {cards.map((card, i) => {
           const isPremium = card.id === 'premium'
@@ -31,6 +35,7 @@ export default function CardsSection({ onOrder }: CardsSectionProps) {
           return (
             <div key={card.id} className="product-card" style={{
               position: 'relative', overflow: 'hidden',
+              ...(isMobile ? { minWidth: '82vw', flexShrink: 0, scrollSnapAlign: 'center' } : {}),
               padding: isMobile ? 24 : 36,
               borderRadius: t.r24,
               background: isPremium ? 'rgba(167,139,250,0.06)' : 'rgba(255,255,255,0.04)',

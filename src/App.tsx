@@ -4,8 +4,10 @@ import { AuthProvider, useAuth } from './context/AuthContext'
 import { ToastProvider } from './context/ToastContext'
 import Header from './components/Header'
 import Hero from './components/Hero'
+import HowItWorks from './components/HowItWorks'
 import CardsSection from './components/CardsSection'
 import Safety from './components/Safety'
+import SocialProof from './components/SocialProof'
 import Modal from './components/Modal'
 import Footer from './components/Footer'
 import Chat from './components/Chat'
@@ -13,6 +15,7 @@ import AuthModal from './components/AuthModal'
 import Dashboard from './pages/Dashboard'
 import FAQ from './components/FAQ'
 import CtaSection from './components/CtaSection'
+import FadeIn from './components/FadeIn'
 import './index.css'
 
 function AppInner() {
@@ -34,10 +37,12 @@ function AppInner() {
     <>
       <Header onCta={() => openModal()} onLogin={() => setAuthOpen(true)} />
       <Hero onCta={() => openModal()} />
-      <CardsSection onOrder={openModal} />
-      <Safety />
-      <FAQ />
-      <CtaSection onCta={() => openModal()} />
+      <FadeIn><HowItWorks onCta={() => openModal()} /></FadeIn>
+      <FadeIn><CardsSection onOrder={openModal} /></FadeIn>
+      <FadeIn delay={50}><Safety /></FadeIn>
+      <FadeIn delay={50}><SocialProof /></FadeIn>
+      <FadeIn><FAQ /></FadeIn>
+      <FadeIn><CtaSection onCta={() => openModal()} /></FadeIn>
       <Footer />
       <Modal open={modal.open} cardType={modal.cardType} onClose={closeModal} />
       {authOpen && <AuthModal onClose={() => setAuthOpen(false)} />}

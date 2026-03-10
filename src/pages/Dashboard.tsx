@@ -1,10 +1,10 @@
-import { useState, useCallback, useEffect, useRef } from 'react'
+import { useState, useCallback } from 'react'
 import type { ReactNode } from 'react'
+import { ArrowUpRight, ArrowDownLeft, Zap } from 'lucide-react'
 import { t } from '../styles/tokens'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
 import { cards } from '../data/cards'
-import type { CardProduct } from '../data/cards'
 import Card3D from '../components/Card3D'
 import { useResponsive } from '../hooks/useResponsive'
 
@@ -47,30 +47,6 @@ const TRANSACTIONS: Transaction[] = [
 
 const ALL_CATEGORIES = ['Все', 'Входящий', 'Покупки', 'Супермаркеты', 'Рестораны', 'Подписки', 'Транспорт', 'Здоровье', 'Путешествия', 'Вознаграждение']
 
-function useCountingNumber(target: number, duration = 700) {
-  const [display, setDisplay] = useState(target)
-  const fromRef = useRef(target)
-  const rafRef  = useRef(0)
-
-  useEffect(() => {
-    const from = fromRef.current
-    fromRef.current = target
-    if (from === target) return
-    cancelAnimationFrame(rafRef.current)
-    const start = performance.now()
-    const diff  = target - from
-    const step  = (now: number) => {
-      const t = Math.min((now - start) / duration, 1)
-      const ease = 1 - Math.pow(1 - t, 4) // ease-out quart
-      setDisplay(Math.round(from + diff * ease))
-      if (t < 1) rafRef.current = requestAnimationFrame(step)
-    }
-    rafRef.current = requestAnimationFrame(step)
-    return () => cancelAnimationFrame(rafRef.current)
-  }, [target, duration])
-
-  return display
-}
 
 const CONTACTS = [
   { name: 'Алексей Морозов', phone: '+7 916 123-45-67', initials: 'АМ', color: '#a78bfa' },
@@ -792,12 +768,6 @@ function TopUpModal({ onClose, onTopUp }: {
   )
 }
 
-const QUICK_ACTIONS = [
-  { label: 'Перевести',  icon: '↑' },
-  { label: 'Оплатить',   icon: '⚡' },
-  { label: 'Пополнить',  icon: '↓' },
-  { label: 'История',    icon: '☰' },
-]
 
 function formatAmount(n: number) {
   const abs = Math.abs(n).toLocaleString('ru-RU')
@@ -1688,6 +1658,86 @@ function HistoryInline({ transactions }: { transactions: Transaction[] }) {
   )
 }
 
+function ActionRail({ onTransfer, onTopUp, onPay, onHistory, isMobile }: {
+  onTransfer: () => void
+  onTopUp: () => void
+  onPay: () => void
+  onHistory: () => void
+  isMobile: boolean
+}) {
+  const actions = [
+    {
+      label: 'Перевести', sub: 'Мгновенно · СБП',
+      icon: <ArrowUpRight size={20} strokeWidth={2} color="#a78bfa" />,
+      iconBg: 'rgba(167,139,250,0.15)', iconBorder: 'rgba(167,139,250,0.25)',
+      bg: 'rgba(167,139,250,0.06)', border: 'rgba(167,139,250,0.14)',
+      hoverBg: 'rgba(167,139,250,0.11)', hoverBorder: 'rgba(167,139,250,0.32)',
+      onClick: onTransfer,
+    },
+    {
+      label: 'Пополнить', sub: 'Картой или СБП',
+      icon: <ArrowDownLeft size={20} strokeWidth={2} color="#4ade80" />,
+      iconBg: 'rgba(74,222,128,0.15)', iconBorder: 'rgba(74,222,128,0.25)',
+      bg: 'rgba(74,222,128,0.06)', border: 'rgba(74,222,128,0.14)',
+      hoverBg: 'rgba(74,222,128,0.11)', hoverBorder: 'rgba(74,222,128,0.32)',
+      onClick: onTopUp,
+    },
+    {
+      label: 'Оплатить', sub: 'Любые услуги',
+      icon: <Zap size={20} strokeWidth={2} color="#60a5fa" />,
+      iconBg: 'rgba(96,165,250,0.15)', iconBorder: 'rgba(96,165,250,0.25)',
+      bg: 'rgba(96,165,250,0.06)', border: 'rgba(96,165,250,0.14)',
+      hoverBg: 'rgba(96,165,250,0.11)', hoverBorder: 'rgba(96,165,250,0.32)',
+      onClick: onPay,
+    },
+  ]
+
+  return (
+    <div style={{ marginBottom: 28 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 12 }}>
+        {actions.map(a => (
+          <button key={a.label} onClick={a.onClick} style={{
+            background: a.bg, border: `1px solid ${a.border}`,
+            borderRadius: 18, cursor: 'pointer', textAlign: 'left',
+            padding: isMobile ? '14px 12px' : '16px 18px',
+            display: 'flex', alignItems: 'center',
+            gap: isMobile ? 10 : 14,
+            transition: 'all 0.22s ease',
+          }}
+            onMouseEnter={e => { e.currentTarget.style.background = a.hoverBg; e.currentTarget.style.borderColor = a.hoverBorder; e.currentTarget.style.transform = 'translateY(-2px)' }}
+            onMouseLeave={e => { e.currentTarget.style.background = a.bg; e.currentTarget.style.borderColor = a.border; e.currentTarget.style.transform = 'translateY(0)' }}
+          >
+            <div style={{
+              width: 40, height: 40, borderRadius: 12, flexShrink: 0,
+              background: a.iconBg, border: `1px solid ${a.iconBorder}`,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+              {a.icon}
+            </div>
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: '#fff', marginBottom: 2 }}>{a.label}</div>
+              {!isMobile && <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)' }}>{a.sub}</div>}
+            </div>
+          </button>
+        ))}
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <button onClick={onHistory} style={{
+          background: 'none', border: 'none', cursor: 'pointer',
+          color: 'rgba(255,255,255,0.35)', fontSize: 13, fontWeight: 600,
+          display: 'flex', alignItems: 'center', gap: 4, transition: 'color 0.2s ease',
+        }}
+          onMouseEnter={e => (e.currentTarget.style.color = '#a78bfa')}
+          onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.35)')}
+        >
+          История операций →
+        </button>
+      </div>
+    </div>
+  )
+}
+
 export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
   const { user, logout, updateProfile } = useAuth()
   const { showToast } = useToast()
@@ -1701,12 +1751,10 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
   const [transactions, setTransactions] = useState<Transaction[]>(TRANSACTIONS)
   const [balances, setBalances]         = useState([45_230, 128_450, 2_400_000])
   const [cardBlocked, setCardBlocked]   = useState([false, false, false])
-  const [cardLimits, setCardLimits]     = useState([100_000, 300_000, 1_000_000])
+  const [cardLimits]                    = useState([100_000, 300_000, 1_000_000])
   const [showCvv, setShowCvv]           = useState(false)
   const [cvvCountdown, setCvvCountdown] = useState(0)
-  const [detailsOpen, setDetailsOpen]   = useState(false)
-  const [limitDraft, setLimitDraft]     = useState('')
-  const [copied, setCopiedCard]         = useState(false)
+  const [flippedCard, setFlippedCard]   = useState<number | null>(null)
 
   const CVV_MOCK = ['412', '739', '285']
 
@@ -1721,12 +1769,6 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
     }, 1000)
   }
 
-  const copyCardNumber = () => {
-    navigator.clipboard.writeText(userCard.number.replace(/\s/g, ''))
-    setCopiedCard(true)
-    setTimeout(() => setCopiedCard(false), 2000)
-    showToast('Номер карты скопирован', userCard.number, 'info')
-  }
 
   const addTransaction = useCallback((tx: Transaction) => {
     setTransactions(prev => [tx, ...prev])
@@ -1754,13 +1796,8 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
     showToast('Счёт пополнен', `+${amount.toLocaleString('ru-RU')} ₽`)
   }, [addTransaction, activeCard, showToast])
 
-  const userCard: CardProduct = {
-    ...cards[activeCard],
-    holder: user?.name?.toUpperCase() ?? 'КЛИЕНТ',
-  }
 
-  const balance         = balances[activeCard]
-  const animatedBalance = useCountingNumber(balance)
+  const balance = balances[activeCard]
 
   return (
     <div style={{ minHeight: '100vh', background: t.bg, fontFamily: t.fontFamily }}>
@@ -1811,46 +1848,37 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
           <HistoryInline transactions={transactions} />
         ) : tab === 'cards' ? (
           <>
-            {/* Card picker */}
-            <div style={{ marginBottom: 16, display: 'flex', gap: 8 }}>
-              {cards.map((c, i) => (
-                <button key={c.id} onClick={() => setActiveCard(i)} style={{
-                  flex: 1, padding: '6px 4px', borderRadius: t.r8,
-                  background: activeCard === i ? t.surfaceHover : 'none',
-                  border: `1px solid ${activeCard === i ? t.borderHover : 'transparent'}`,
-                  color: activeCard === i ? t.textPrimary : t.textTertiary,
-                  fontSize: 11, fontWeight: 600, cursor: 'pointer', transition: t.ease, textAlign: 'center',
-                }}>
-                  {c.id === 'standard' ? 'Standard' : c.id === 'premium' ? 'Premium' : 'Diners'}
-                </button>
-              ))}
-            </div>
-            <Card3D card={userCard} balance={animatedBalance} />
-            <div style={{ marginTop: 28 }}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>
-                {QUICK_ACTIONS.map(a => (
-                  <button key={a.label} onClick={
-                    a.label === 'Перевести' ? () => setTransferOpen(true) :
-                    a.label === 'Оплатить'  ? () => setPayOpen(true) :
-                    a.label === 'Пополнить' ? () => setTopUpOpen(true) :
-                    a.label === 'История'   ? () => setTab('history') :
-                    undefined
-                  } style={{
-                    background: t.surfaceHover, border: `1px solid ${t.border}`,
-                    borderRadius: t.r16, padding: '14px 8px',
-                    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
-                    cursor: 'pointer', transition: t.ease, color: t.textPrimary,
-                  }}
-                    onMouseEnter={e => { e.currentTarget.style.borderColor = t.borderHover; e.currentTarget.style.background = '#1e2025' }}
-                    onMouseLeave={e => { e.currentTarget.style.borderColor = t.border; e.currentTarget.style.background = t.surfaceHover }}
-                  >
-                    <span style={{ fontSize: 18 }}>{a.icon}</span>
-                    <span style={{ fontSize: 11, fontWeight: 600, color: t.textSecondary }}>{a.label}</span>
-                  </button>
-                ))}
-              </div>
+            {/* All cards horizontal scroll */}
+            <div style={{
+              display: 'flex', overflowX: 'auto', gap: 16,
+              paddingBottom: 12, scrollSnapType: 'x mandatory', scrollbarWidth: 'none',
+              marginBottom: 24,
+            }}>
+              {cards.map((card, i) => {
+                const isActive = activeCard === i
+                const accent = card.id === 'diners' ? '#d4a853' : card.id === 'premium' ? '#a78bfa' : '#60a5fa'
+                const cardWithUser = { ...card, holder: user?.name?.toUpperCase() ?? 'КЛИЕНТ' }
+                return (
+                  <div key={card.id} onClick={() => setActiveCard(i)} style={{
+                    minWidth: '82vw', flexShrink: 0, scrollSnapAlign: 'center',
+                    cursor: 'pointer', borderRadius: 28,
+                    border: `1.5px solid ${isActive ? accent + '55' : 'transparent'}`,
+                    boxShadow: isActive ? `0 16px 40px rgba(0,0,0,0.35), 0 0 28px ${accent}22` : 'none',
+                    transition: 'all 0.3s cubic-bezier(0.16,1,0.3,1)',
+                  }}>
+                    <Card3D card={cardWithUser} />
+                  </div>
+                )
+              })}
             </div>
 
+            <ActionRail
+              onTransfer={() => setTransferOpen(true)}
+              onTopUp={() => setTopUpOpen(true)}
+              onPay={() => setPayOpen(true)}
+              onHistory={() => setTab('history')}
+              isMobile={isMobile}
+            />
           </>
         ) : tab === 'overview' ? (
           <>
@@ -1863,117 +1891,159 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
             </div>
 
 
-            {/* Card + Balance — скрыто на мобильном (есть вкладка Карты) */}
-            {!isMobile && <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, marginBottom: 40, alignItems: 'start' }}>
-
-              {/* Card picker */}
-              <div>
-                <div style={{ marginBottom: 16, display: 'flex', gap: 8 }}>
-                  {cards.map((c, i) => (
-                    <button key={c.id} onClick={() => setActiveCard(i)} style={{
-                      flex: 1, padding: '6px 4px', borderRadius: t.r8,
-                      background: activeCard === i ? t.surfaceHover : 'none',
-                      border: `1px solid ${activeCard === i ? t.borderHover : 'transparent'}`,
-                      color: activeCard === i ? t.textPrimary : t.textTertiary,
-                      fontSize: 11, fontWeight: 600, cursor: 'pointer', transition: t.ease,
-                      textAlign: 'center',
-                    }}>
-                      {c.id === 'standard' ? 'Standard' : c.id === 'premium' ? 'Premium' : 'Diners'}
-                    </button>
-                  ))}
+            {/* All cards grid — каждая карта со своими плашками */}
+            <div style={{ marginBottom: 32 }}>
+              {/* Mobile: горизонтальный скролл */}
+              {isMobile && (
+                <div style={{
+                  display: 'flex', overflowX: 'auto', gap: 16,
+                  paddingBottom: 12, scrollSnapType: 'x mandatory', scrollbarWidth: 'none',
+                  marginBottom: 20,
+                }}>
+                  {cards.map((card, i) => {
+                    const isActive = activeCard === i
+                    const accent = card.id === 'diners' ? '#d4a853' : card.id === 'premium' ? '#a78bfa' : '#60a5fa'
+                    return (
+                      <div key={card.id} onClick={() => setActiveCard(i)} style={{
+                        minWidth: '82vw', flexShrink: 0, scrollSnapAlign: 'center', cursor: 'pointer',
+                        borderRadius: 28, border: `1.5px solid ${isActive ? accent + '55' : 'transparent'}`,
+                        boxShadow: isActive ? `0 16px 40px rgba(0,0,0,0.35), 0 0 28px ${accent}22` : 'none',
+                        transition: 'all 0.3s cubic-bezier(0.16,1,0.3,1)',
+                      }}>
+                        <Card3D card={{ ...card, holder: user?.name?.toUpperCase() ?? 'КЛИЕНТ' }} />
+                      </div>
+                    )
+                  })}
                 </div>
-                <Card3D card={userCard} balance={animatedBalance} />
+              )}
 
-                {/* Card details — под картой, та же ширина */}
-                <div style={{ marginTop: 16, background: t.surface, border: `1px solid ${t.border}`, borderRadius: t.r20, overflow: 'hidden' }}>
-                  <button onClick={() => setDetailsOpen(p => !p)} style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 18px', background: 'none', border: 'none', cursor: 'pointer', transition: t.ease }}>
-                    <span style={{ fontSize: 13, fontWeight: 700, color: t.textPrimary }}>Реквизиты и управление</span>
-                    <span style={{ color: t.textTertiary, fontSize: 14, display: 'inline-block', transition: 'transform 0.25s ease', transform: detailsOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>▾</span>
-                  </button>
-                  {detailsOpen && (
-                    <div style={{ borderTop: `1px solid ${t.border}`, padding: '0 18px', display: 'flex', flexDirection: 'column' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: `1px solid ${t.border}` }}>
-                        <span style={{ fontSize: 12, color: t.textTertiary }}>Номер карты</span>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                          <span style={{ fontSize: 12, fontWeight: 600, color: t.textPrimary, fontFamily: 'monospace', letterSpacing: '0.05em' }}>{userCard.number}</span>
-                          <button onClick={copyCardNumber} style={{ background: copied ? 'rgba(74,222,128,0.12)' : t.surfaceHover, border: `1px solid ${copied ? 'rgba(74,222,128,0.3)' : t.border}`, borderRadius: t.r999, padding: '2px 8px', cursor: 'pointer', fontSize: 10, fontWeight: 700, color: copied ? t.green : t.textSecondary, transition: t.ease }}>{copied ? '✓' : 'Копировать'}</button>
-                        </div>
-                      </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: `1px solid ${t.border}` }}>
-                        <span style={{ fontSize: 12, color: t.textTertiary }}>Держатель</span>
-                        <span style={{ fontSize: 12, fontWeight: 600, color: t.textPrimary }}>{userCard.holder}</span>
-                      </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: `1px solid ${t.border}` }}>
-                        <span style={{ fontSize: 12, color: t.textTertiary }}>Срок действия</span>
-                        <span style={{ fontSize: 12, fontWeight: 600, color: t.textPrimary, fontFamily: 'monospace' }}>12/29</span>
-                      </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: `1px solid ${t.border}` }}>
-                        <span style={{ fontSize: 12, color: t.textTertiary }}>CVV</span>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                          <span style={{ fontSize: 14, fontWeight: 700, color: t.textPrimary, fontFamily: 'monospace', letterSpacing: '0.2em' }}>{showCvv ? CVV_MOCK[activeCard] : '•••'}</span>
-                          <button onClick={revealCvv} disabled={showCvv} style={{ background: t.surfaceHover, border: `1px solid ${t.border}`, borderRadius: t.r999, padding: '2px 8px', cursor: showCvv ? 'default' : 'pointer', fontSize: 10, fontWeight: 700, color: showCvv ? t.textTertiary : t.purple, transition: t.ease }}>{showCvv ? `${cvvCountdown}с` : 'Показать'}</button>
-                        </div>
-                      </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: `1px solid ${t.border}` }}>
-                        <div>
-                          <div style={{ fontSize: 12, fontWeight: 600, color: cardBlocked[activeCard] ? '#f87171' : t.textPrimary }}>{cardBlocked[activeCard] ? '🔒 Заблокирована' : '🔓 Активна'}</div>
-                          <div style={{ fontSize: 10, color: t.textTertiary, marginTop: 1 }}>{cardBlocked[activeCard] ? 'Операции недоступны' : 'Все операции разрешены'}</div>
-                        </div>
-                        <button onClick={() => setCardBlocked(prev => { const n = [...prev]; n[activeCard] = !n[activeCard]; return n })} style={{ height: 28, padding: '0 12px', borderRadius: t.r999, border: 'none', cursor: 'pointer', background: cardBlocked[activeCard] ? 'rgba(74,222,128,0.12)' : 'rgba(248,113,113,0.12)', color: cardBlocked[activeCard] ? t.green : '#f87171', fontSize: 11, fontWeight: 700, transition: t.ease }}>
-                          {cardBlocked[activeCard] ? 'Разблокировать' : 'Заблокировать'}
-                        </button>
-                      </div>
-                      <div style={{ padding: '10px 0' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: limitDraft ? 8 : 0 }}>
-                          <div>
-                            <div style={{ fontSize: 12, fontWeight: 600, color: t.textPrimary }}>Дневной лимит</div>
-                            <div style={{ fontSize: 10, color: t.textTertiary, marginTop: 1 }}>{cardLimits[activeCard].toLocaleString('ru-RU')} ₽</div>
+              {/* Desktop: 3 колонки, у каждой своя карта + плашки */}
+              {!isMobile && (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20, marginBottom: 24 }}>
+                  {cards.map((card, i) => {
+                    const isActive = activeCard === i
+                    const accent = card.id === 'diners' ? '#d4a853' : card.id === 'premium' ? '#a78bfa' : '#60a5fa'
+                    const cardWithUser = { ...card, holder: user?.name?.toUpperCase() ?? 'КЛИЕНТ' }
+                    const isFlipped = flippedCard === i
+
+                    return (
+                      <div key={card.id} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+
+                        {/* Flip-карта */}
+                        <div style={{
+                          perspective: '1200px',
+                          transform: isActive ? 'translateY(-6px)' : 'none',
+                          transition: 'transform 0.3s cubic-bezier(0.16,1,0.3,1)',
+                        }}>
+                          <div style={{
+                            position: 'relative',
+                            transformStyle: 'preserve-3d',
+                            transition: 'transform 0.65s cubic-bezier(0.16,1,0.3,1)',
+                            transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
+                          }}>
+                            {/* Лицевая сторона */}
+                            <div style={{
+                              backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden',
+                              cursor: 'pointer', borderRadius: 28,
+                              border: `1.5px solid ${isActive ? accent + '55' : 'transparent'}`,
+                              boxShadow: isActive ? `0 16px 40px rgba(0,0,0,0.35), 0 0 28px ${accent}22` : 'none',
+                              transition: 'border-color 0.3s, box-shadow 0.3s',
+                            }} onClick={() => { setActiveCard(i); setFlippedCard(isFlipped ? null : i) }}>
+                              <Card3D card={cardWithUser} balance={balances[i]} />
+                            </div>
+
+                            {/* Обратная сторона — реквизиты */}
+                            <div style={{
+                              position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+                              backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden',
+                              transform: 'rotateY(180deg)',
+                              borderRadius: 24,
+                              background: '#0d0e11',
+                              border: `1.5px solid ${accent}44`,
+                              boxShadow: `0 16px 40px rgba(0,0,0,0.4), 0 0 28px ${accent}18`,
+                              padding: '20px 22px',
+                              display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+                              overflow: 'hidden', cursor: 'pointer',
+                            }}>
+                              {/* Glow */}
+                              <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: `radial-gradient(ellipse at 80% 0%, ${accent}12 0%, transparent 60%)` }} />
+
+                              {/* Верх: название + статус + закрыть */}
+                              <div style={{ position: 'relative', zIndex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                                <div>
+                                  <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 3 }}>Реквизиты</div>
+                                  <div style={{ fontSize: 14, fontWeight: 700, color: '#fff' }}>
+                                    {card.id === 'standard' ? 'Standard' : card.id === 'premium' ? 'Premium' : 'Diners Club'}
+                                  </div>
+                                </div>
+                                <button onClick={() => setFlippedCard(null)} style={{
+                                  background: 'rgba(255,255,255,0.08)', border: 'none', borderRadius: '50%',
+                                  width: 28, height: 28, cursor: 'pointer', color: 'rgba(255,255,255,0.6)',
+                                  fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                }}>✕</button>
+                              </div>
+
+                              {/* Детали */}
+                              <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', gap: 10 }}>
+                                {[
+                                  { label: 'Номер', value: cardWithUser.number, mono: true },
+                                  { label: 'Держатель', value: cardWithUser.holder, mono: false },
+                                  { label: 'Срок действия', value: '12/29', mono: true },
+                                ].map(row => (
+                                  <div key={row.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)' }}>{row.label}</span>
+                                    <span style={{ fontSize: 12, fontWeight: 600, color: '#fff', fontFamily: row.mono ? 'monospace' : 'inherit', letterSpacing: row.mono ? '0.04em' : 0 }}>{row.value}</span>
+                                  </div>
+                                ))}
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                  <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)' }}>CVV</span>
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                                    <span style={{ fontSize: 13, fontWeight: 700, color: '#fff', fontFamily: 'monospace', letterSpacing: '0.2em' }}>
+                                      {showCvv && activeCard === i ? CVV_MOCK[i] : '•••'}
+                                    </span>
+                                    <button onClick={e => { e.stopPropagation(); setActiveCard(i); revealCvv() }} disabled={showCvv && activeCard === i} style={{
+                                      background: 'rgba(167,139,250,0.15)', border: `1px solid rgba(167,139,250,0.3)`,
+                                      borderRadius: t.r999, padding: '2px 8px', cursor: 'pointer',
+                                      fontSize: 10, fontWeight: 700, color: '#a78bfa',
+                                    }}>{showCvv && activeCard === i ? `${cvvCountdown}с` : 'Показать'}</button>
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Низ: блокировка + лимит */}
+                              <div style={{ position: 'relative', zIndex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)' }}>
+                                  Лимит: <span style={{ color: '#fff', fontWeight: 600 }}>{cardLimits[i].toLocaleString('ru-RU')} ₽</span>
+                                </div>
+                                <button onClick={e => { e.stopPropagation(); setCardBlocked(prev => { const n = [...prev]; n[i] = !n[i]; return n }) }} style={{
+                                  height: 26, padding: '0 12px', borderRadius: t.r999, border: 'none', cursor: 'pointer',
+                                  background: cardBlocked[i] ? 'rgba(74,222,128,0.15)' : 'rgba(248,113,113,0.15)',
+                                  color: cardBlocked[i] ? '#4ade80' : '#f87171',
+                                  fontSize: 11, fontWeight: 700,
+                                }}>
+                                  {cardBlocked[i] ? '🔓 Разблокировать' : '🔒 Заблокировать'}
+                                </button>
+                              </div>
+                            </div>
                           </div>
-                          {!limitDraft && <button onClick={() => setLimitDraft(String(cardLimits[activeCard]))} style={{ background: t.surfaceHover, border: `1px solid ${t.border}`, borderRadius: t.r999, padding: '2px 8px', cursor: 'pointer', fontSize: 10, fontWeight: 700, color: t.textSecondary }}>Изменить</button>}
                         </div>
-                        {limitDraft && (
-                          <div style={{ display: 'flex', gap: 6 }}>
-                            <input autoFocus value={limitDraft} onChange={e => setLimitDraft(e.target.value.replace(/\D/g, ''))} onKeyDown={e => { if (e.key === 'Enter' && limitDraft) { setCardLimits(prev => { const n = [...prev]; n[activeCard] = parseInt(limitDraft); return n }); setLimitDraft('') } if (e.key === 'Escape') setLimitDraft('') }} placeholder="Введите лимит" style={{ flex: 1, background: t.bg, border: `1px solid rgba(167,139,250,0.4)`, borderRadius: t.r999, padding: '5px 12px', color: t.textPrimary, fontSize: 12, fontFamily: t.fontFamily, outline: 'none' }} />
-                            <button onClick={() => { if (limitDraft) { setCardLimits(prev => { const n = [...prev]; n[activeCard] = parseInt(limitDraft); return n }); setLimitDraft('') } }} style={{ height: 28, padding: '0 12px', borderRadius: t.r999, border: 'none', background: 'linear-gradient(90deg, #a78bfa, #60a5fa)', color: '#fff', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>OK</button>
-                            <button onClick={() => setLimitDraft('')} style={{ height: 28, padding: '0 10px', borderRadius: t.r999, border: `1px solid ${t.border}`, background: 'none', color: t.textTertiary, fontSize: 11, cursor: 'pointer' }}>✕</button>
-                          </div>
-                        )}
+
+                        {/* Аналитика расходов */}
+                        <AnalyticsSection transactions={transactions} collapsible />
                       </div>
-                    </div>
-                  )}
+                    )
+                  })}
                 </div>
+              )}
 
-                {/* Analytics — раскрывающаяся, та же ширина */}
-                <AnalyticsSection transactions={transactions} collapsible />
-              </div>
-
-              {/* Balance & actions */}
-              <div style={{ paddingTop: isMobile ? 0 : 52 }}>
-                {/* Quick actions */}
-                <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', gap: 10 }}>
-                  {QUICK_ACTIONS.map(a => (
-                    <button key={a.label} onClick={
-                      a.label === 'Перевести' ? () => setTransferOpen(true) :
-                      a.label === 'Оплатить'  ? () => setPayOpen(true) :
-                      a.label === 'Пополнить' ? () => setTopUpOpen(true) :
-                      a.label === 'История'   ? () => setHistoryOpen(true) :
-                      undefined
-                    } style={{
-                      background: t.surfaceHover, border: `1px solid ${t.border}`,
-                      borderRadius: t.r16, padding: '14px 8px',
-                      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
-                      cursor: 'pointer', transition: t.ease, color: t.textPrimary,
-                    }}
-                      onMouseEnter={e => { e.currentTarget.style.borderColor = t.borderHover; e.currentTarget.style.background = '#1e2025' }}
-                      onMouseLeave={e => { e.currentTarget.style.borderColor = t.border; e.currentTarget.style.background = t.surfaceHover }}
-                    >
-                      <span className="action-icon" style={{ fontSize: 18, display: 'inline-block' }}>{a.icon}</span>
-                      <span style={{ fontSize: 11, fontWeight: 600, color: t.textSecondary }}>{a.label}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>}
+              <ActionRail
+                onTransfer={() => setTransferOpen(true)}
+                onTopUp={() => setTopUpOpen(true)}
+                onPay={() => setPayOpen(true)}
+                onHistory={() => setHistoryOpen(true)}
+                isMobile={isMobile}
+              />
+            </div>
 
             {/* Transactions */}
             <div>
