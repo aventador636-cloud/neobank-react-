@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import type { ReactNode } from 'react'
 import { t } from '../styles/tokens'
 import { useAuth } from '../context/AuthContext'
@@ -45,6 +45,31 @@ const TRANSACTIONS: Transaction[] = [
 ]
 
 const ALL_CATEGORIES = ['Все', 'Входящий', 'Покупки', 'Супермаркеты', 'Рестораны', 'Подписки', 'Транспорт', 'Здоровье', 'Путешествия', 'Вознаграждение']
+
+function useCountingNumber(target: number, duration = 700) {
+  const [display, setDisplay] = useState(target)
+  const fromRef = useRef(target)
+  const rafRef  = useRef(0)
+
+  useEffect(() => {
+    const from = fromRef.current
+    fromRef.current = target
+    if (from === target) return
+    cancelAnimationFrame(rafRef.current)
+    const start = performance.now()
+    const diff  = target - from
+    const step  = (now: number) => {
+      const t = Math.min((now - start) / duration, 1)
+      const ease = 1 - Math.pow(1 - t, 4) // ease-out quart
+      setDisplay(Math.round(from + diff * ease))
+      if (t < 1) rafRef.current = requestAnimationFrame(step)
+    }
+    rafRef.current = requestAnimationFrame(step)
+    return () => cancelAnimationFrame(rafRef.current)
+  }, [target, duration])
+
+  return display
+}
 
 const CONTACTS = [
   { name: 'Алексей Морозов', phone: '+7 916 123-45-67', initials: 'АМ', color: '#a78bfa' },
@@ -1694,7 +1719,8 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
     holder: user?.name?.toUpperCase() ?? 'КЛИЕНТ',
   }
 
-  const balance = balances[activeCard]
+  const balance         = balances[activeCard]
+  const animatedBalance = useCountingNumber(balance)
 
   return (
     <div style={{ minHeight: '100vh', background: t.bg, fontFamily: t.fontFamily }}>
@@ -1762,7 +1788,7 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
             <Card3D card={userCard} />
             <div style={{ marginTop: 28 }}>
               <p style={{ fontSize: 12, fontWeight: 600, color: t.textTertiary, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>Текущий баланс</p>
-              <div className="shimmer" style={{ fontSize: 36, fontWeight: 800, letterSpacing: '-0.03em', marginBottom: 4 }}>{balance.toLocaleString('ru-RU')} ₽</div>
+              <div className="shimmer" style={{ fontSize: 36, fontWeight: 800, letterSpacing: '-0.03em', marginBottom: 4 }}>{animatedBalance.toLocaleString('ru-RU')} ₽</div>
               <p style={{ fontSize: 13, color: t.textTertiary, marginBottom: 28 }}>{userCard.number}</p>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>
                 {QUICK_ACTIONS.map(a => (
@@ -1890,7 +1916,7 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
                   Текущий баланс
                 </p>
                 <div className="shimmer" style={{ fontSize: 40, fontWeight: 800, letterSpacing: '-0.03em', marginBottom: 4 }}>
-                  {balance.toLocaleString('ru-RU')} ₽
+                  {animatedBalance.toLocaleString('ru-RU')} ₽
                 </div>
                 <p style={{ fontSize: 13, color: t.textTertiary, marginBottom: 32 }}>
                   {userCard.number}
