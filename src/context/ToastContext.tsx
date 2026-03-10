@@ -53,21 +53,19 @@ export function ToastProvider({ children }: { children: ReactNode }) {
           return (
             <div key={toast.id} style={{
               width: '100%', padding: '12px 16px',
-              background: `color-mix(in srgb, ${t.surface} 95%, transparent)`,
-              backdropFilter: 'blur(12px)',
-              border: `1px solid ${s.border}`,
-              borderLeft: `3px solid ${s.color}`,
+              background: 'rgba(22,24,28,0.92)',
+              backdropFilter: 'blur(16px)',
               borderRadius: t.r16,
-              boxShadow: `0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px ${s.border}`,
-              display: 'flex', alignItems: 'flex-start', gap: 12,
+              boxShadow: '0 16px 40px rgba(0,0,0,0.5)',
+              display: 'flex', alignItems: 'center', gap: 12,
               pointerEvents: 'auto',
               animation: toast.exiting ? 'toastOut 0.3s ease forwards' : 'toastIn 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards',
             }}>
               <div style={{
-                width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
-                background: `${s.color}15`, border: `1px solid ${s.color}30`,
+                width: 32, height: 32, borderRadius: '50%', flexShrink: 0,
+                background: `${s.color}18`,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 13, fontWeight: 800, color: s.color,
+                fontSize: 14, fontWeight: 800, color: s.color,
               }}>{s.icon}</div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 14, fontWeight: 700, color: t.textPrimary, marginBottom: toast.sub ? 2 : 0 }}>
