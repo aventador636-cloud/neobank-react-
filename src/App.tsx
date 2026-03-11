@@ -39,10 +39,10 @@ function AppInner() {
       <Hero onCta={() => openModal()} />
       <FadeIn><HowItWorks onCta={() => openModal()} /></FadeIn>
       <FadeIn><CardsSection onOrder={openModal} /></FadeIn>
+      <FadeIn><CtaSection onCta={() => openModal()} /></FadeIn>
       <FadeIn delay={50}><Safety /></FadeIn>
       <FadeIn delay={50}><SocialProof /></FadeIn>
       <FadeIn><FAQ /></FadeIn>
-      <FadeIn><CtaSection onCta={() => openModal()} /></FadeIn>
       <Footer />
       <Modal open={modal.open} cardType={modal.cardType} onClose={closeModal} />
       {authOpen && <AuthModal onClose={() => setAuthOpen(false)} />}
