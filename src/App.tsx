@@ -7,6 +7,7 @@ import Hero from './components/Hero'
 import HowItWorks from './components/HowItWorks'
 import CardsSection from './components/CardsSection'
 import Safety from './components/Safety'
+import AppSection from './components/AppSection'
 import Modal from './components/Modal'
 import Footer from './components/Footer'
 import Chat from './components/Chat'
@@ -39,6 +40,7 @@ function AppInner() {
       <FadeIn><HowItWorks onCta={() => openModal()} /></FadeIn>
       <FadeIn><CardsSection onOrder={openModal} /></FadeIn>
       <FadeIn><CtaSection onCta={() => openModal()} /></FadeIn>
+      <FadeIn><AppSection /></FadeIn>
       <FadeIn delay={50}><Safety /></FadeIn>
       <FadeIn><FAQ /></FadeIn>
       <Footer />
