@@ -1,4 +1,4 @@
-export type CardType = 'standard' | 'premium' | 'diners'
+export type CardType = 'standard' | 'premium' | 'black'
 
 export interface CardProduct {
   id: CardType
@@ -43,7 +43,6 @@ export const cards: CardProduct[] = [
     number: '5536 •••• •••• 5678',
     holder: 'NeoBank Premium',
     brand: 'Mastercard',
-    badge: 'Популярный выбор',
     features: [
       'Кэшбэк до 5% в выбранных категориях',
       'Доступ в бизнес-залы аэропортов',
@@ -57,24 +56,23 @@ export const cards: CardProduct[] = [
     cta: 'Открыть Premium',
   },
   {
-    id: 'diners',
-    title: 'Diners Club',
-    description: 'Эксклюзивная карта для избранных. Безлимитный кэшбэк, консьерж-сервис и доступ в более 1400 VIP-залов по всему миру.',
-    number: '3622 •••• •••• 9001',
-    holder: 'NeoBank Diners',
-    brand: 'Diners Club',
-    badge: 'Эксклюзив',
+    id: 'black',
+    title: 'Mastercard Black',
+    description: 'Элитная карта для тех, кто привык к лучшему. World Elite привилегии, персональный консьерж и безлимитный доступ в VIP-залы по всему миру.',
+    number: '5536 •••• •••• 9001',
+    holder: 'NeoBank Black',
+    brand: 'Mastercard',
     features: [
       'Кэшбэк 10% в ресторанах и отелях',
       'Доступ в 1400+ VIP-залов мира',
-      'Консьерж-сервис 24/7',
+      'Персональный консьерж 24/7',
       'Безлимитное страхование путешествий',
     ],
-    accentColor: '#d4a853',
-    btnClass: 'diners',
+    accentColor: '#a78bfa',
+    btnClass: 'black',
     price: '1 990 ₽',
     priceNote: 'в месяц · только по приглашению',
-    cta: 'Открыть Diners Club',
+    cta: 'Открыть Black',
   },
 ]
 

@@ -1177,9 +1177,9 @@ function ProfileTab({ user, activeCard, logout, updateProfile }: {
 
   const refCode = 'NEO-ALEX-2024'
   const initials = user?.name?.split(' ').map(w => w[0]).join('') ?? 'НА'
-  const tierColors = ['#60a5fa', '#a855f7', '#d4a853']
+  const tierColors = ['#60a5fa', '#a855f7', '#a78bfa']
   const tierColor  = tierColors[activeCard]
-  const tierName   = ['Standard', 'Premium', 'Diners Club'][activeCard]
+  const tierName   = ['Standard', 'Premium', 'Black'][activeCard]
 
   const copy = useCallback(() => {
     navigator.clipboard.writeText(refCode)
@@ -1860,7 +1860,7 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
             }}>
               {cards.map((card, i) => {
                 const isActive = activeCard === i
-                const accent = card.id === 'diners' ? '#d4a853' : card.id === 'premium' ? '#a78bfa' : '#60a5fa'
+                const accent = card.id === 'black' ? '#a78bfa' : card.id === 'premium' ? '#a78bfa' : '#60a5fa'
                 const cardWithUser = { ...card, holder: user?.name?.toUpperCase() ?? 'КЛИЕНТ' }
                 return (
                   <div key={card.id} onClick={() => setActiveCard(i)} style={{
@@ -1887,7 +1887,7 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
               {/* Balance + card name */}
               <div style={{ padding: '16px 18px', borderBottom: `1px solid ${t.border}` }}>
                 <div style={{ fontSize: 11, color: t.textTertiary, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>
-                  {cards[activeCard].id === 'standard' ? 'Standard' : cards[activeCard].id === 'premium' ? 'Premium' : 'Diners Club'}
+                  {cards[activeCard].id === 'standard' ? 'Standard' : cards[activeCard].id === 'premium' ? 'Premium' : 'Black'}
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div className="shimmer" style={{ fontSize: 26, fontWeight: 800, letterSpacing: '-0.03em' }}>
@@ -1977,7 +1977,7 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
                 }}>
                   {cards.map((card, i) => {
                     const isActive = activeCard === i
-                    const accent = card.id === 'diners' ? '#d4a853' : card.id === 'premium' ? '#a78bfa' : '#60a5fa'
+                    const accent = card.id === 'black' ? '#a78bfa' : card.id === 'premium' ? '#a78bfa' : '#60a5fa'
                     return (
                       <div key={card.id} onClick={() => setActiveCard(i)} style={{
                         minWidth: '82vw', flexShrink: 0, scrollSnapAlign: 'center', cursor: 'pointer',
@@ -2002,7 +2002,7 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
                 }}>
                   <div>
                     <div style={{ fontSize: 11, color: t.textTertiary, marginBottom: 3 }}>
-                      {cards[activeCard].id === 'standard' ? 'Standard' : cards[activeCard].id === 'premium' ? 'Premium' : 'Diners Club'}
+                      {cards[activeCard].id === 'standard' ? 'Standard' : cards[activeCard].id === 'premium' ? 'Premium' : 'Black'}
                     </div>
                     <div className="shimmer" style={{ fontSize: 22, fontWeight: 800, letterSpacing: '-0.03em' }}>
                       {balances[activeCard].toLocaleString('ru-RU')} ₽
@@ -2023,7 +2023,7 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20, marginBottom: 24 }}>
                   {cards.map((card, i) => {
                     const isActive = activeCard === i
-                    const accent = card.id === 'diners' ? '#d4a853' : card.id === 'premium' ? '#a78bfa' : '#60a5fa'
+                    const accent = card.id === 'black' ? '#a78bfa' : card.id === 'premium' ? '#a78bfa' : '#60a5fa'
                     const cardWithUser = { ...card, holder: user?.name?.toUpperCase() ?? 'КЛИЕНТ' }
                     const isFlipped = flippedCard === i
 
@@ -2074,7 +2074,7 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
                                 <div>
                                   <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 3 }}>Реквизиты</div>
                                   <div style={{ fontSize: 14, fontWeight: 700, color: '#fff' }}>
-                                    {card.id === 'standard' ? 'Standard' : card.id === 'premium' ? 'Premium' : 'Diners Club'}
+                                    {card.id === 'standard' ? 'Standard' : card.id === 'premium' ? 'Premium' : 'Black'}
                                   </div>
                                 </div>
                                 <button onClick={() => setFlippedCard(null)} style={{

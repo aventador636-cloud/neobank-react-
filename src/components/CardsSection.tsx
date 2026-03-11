@@ -23,8 +23,8 @@ export default function CardsSection({ onOrder }: CardsSectionProps) {
       {isMobile && (() => {
         const card = cards[mobileTab]
         const isPremium = card.id === 'premium'
-        const isDiners  = card.id === 'diners'
-        const accent = isDiners ? '#d4a853' : isPremium ? t.purple : t.blue
+        const isBlack   = card.id === 'black'
+        const accent = isBlack ? '#a78bfa' : isPremium ? t.purple : t.blue
 
         return (
           <div>
@@ -41,14 +41,14 @@ export default function CardsSection({ onOrder }: CardsSectionProps) {
                   transition: 'all 0.22s ease',
                   WebkitTapHighlightColor: 'transparent', outline: 'none',
                   background: mobileTab === i
-                    ? c.id === 'diners' ? 'linear-gradient(90deg, #c8960c, #d4a853)'
+                    ? c.id === 'black' ? 'linear-gradient(90deg, #7c3aed, #a78bfa)'
                     : c.id === 'premium' ? 'linear-gradient(90deg, #a78bfa, #818cf8)'
                     : 'linear-gradient(90deg, #60a5fa, #818cf8)'
                     : 'transparent',
                   color: mobileTab === i ? '#fff' : t.textTertiary,
                   boxShadow: mobileTab === i ? '0 2px 10px rgba(0,0,0,0.3)' : 'none',
                 }}>
-                  {c.id === 'standard' ? 'Standard' : c.id === 'premium' ? 'Premium' : 'Diners'}
+                  {c.id === 'standard' ? 'Standard' : c.id === 'premium' ? 'Premium' : 'Black'}
                 </button>
               ))}
             </div>
@@ -65,7 +65,7 @@ export default function CardsSection({ onOrder }: CardsSectionProps) {
               {/* Glow */}
               <div style={{
                 position: 'absolute', inset: 0, pointerEvents: 'none',
-                background: `radial-gradient(ellipse at 50% 0%, ${isDiners ? 'rgba(212,168,83,0.10)' : isPremium ? 'rgba(167,139,250,0.10)' : 'rgba(96,165,250,0.07)'} 0%, transparent 60%)`,
+                background: `radial-gradient(ellipse at 50% 0%, ${isBlack ? 'rgba(167,139,250,0.10)' : isPremium ? 'rgba(167,139,250,0.10)' : 'rgba(96,165,250,0.07)'} 0%, transparent 60%)`,
               }} />
 
               {/* Badge */}
@@ -74,10 +74,10 @@ export default function CardsSection({ onOrder }: CardsSectionProps) {
                   <span style={{
                     display: 'inline-flex', alignItems: 'center', gap: 5,
                     padding: '4px 10px', borderRadius: t.r999,
-                    background: isDiners ? 'rgba(212,168,83,0.15)' : 'rgba(167,139,250,0.15)',
-                    border: `1px solid ${isDiners ? 'rgba(212,168,83,0.30)' : 'rgba(167,139,250,0.30)'}`,
+                    background: isBlack ? 'rgba(167,139,250,0.15)' : 'rgba(167,139,250,0.15)',
+                    border: `1px solid ${isBlack ? 'rgba(167,139,250,0.30)' : 'rgba(167,139,250,0.30)'}`,
                     fontSize: 10, fontWeight: 700, letterSpacing: '0.06em',
-                    color: isDiners ? '#d4a853' : t.purple,
+                    color: isBlack ? '#a78bfa' : t.purple,
                   }}>
                     <span>★</span>{card.badge}
                   </span>
@@ -120,8 +120,8 @@ export default function CardsSection({ onOrder }: CardsSectionProps) {
                 width: '100%', height: 52, borderRadius: t.r999, border: 'none',
                 cursor: 'pointer', fontSize: 15, fontWeight: 700,
                 WebkitTapHighlightColor: 'transparent',
-                background: isDiners
-                  ? 'linear-gradient(135deg, #c8960c, #d4a853)'
+                background: isBlack
+                  ? 'linear-gradient(135deg, #7c3aed, #a78bfa)'
                   : isPremium
                   ? 'linear-gradient(135deg, #a78bfa, #818cf8)'
                   : 'linear-gradient(135deg, #60a5fa, #818cf8)',
@@ -143,8 +143,8 @@ export default function CardsSection({ onOrder }: CardsSectionProps) {
         }}>
           {cards.map((card, i) => {
             const isPremium = card.id === 'premium'
-            const isDiners  = card.id === 'diners'
-            const accent = isDiners ? '#d4a853' : isPremium ? t.purple : t.blue
+            const isBlack   = card.id === 'black'
+            const accent = isBlack ? '#a78bfa' : isPremium ? t.purple : t.blue
 
             return (
               <div key={card.id} className="product-card" style={{
@@ -152,23 +152,23 @@ export default function CardsSection({ onOrder }: CardsSectionProps) {
                 padding: 36, borderRadius: t.r24,
                 background: isPremium ? 'rgba(167,139,250,0.06)' : 'rgba(255,255,255,0.04)',
                 backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
-                boxShadow: `0 8px 40px rgba(0,0,0,0.25), 0 0 80px ${isDiners ? 'rgba(212,168,83,0.06)' : isPremium ? 'rgba(167,139,250,0.10)' : 'rgba(96,165,250,0.03)'}`,
+                boxShadow: `0 8px 40px rgba(0,0,0,0.25), 0 0 80px ${isBlack ? 'rgba(167,139,250,0.06)' : isPremium ? 'rgba(167,139,250,0.10)' : 'rgba(96,165,250,0.03)'}`,
                 border: isPremium ? '1px solid rgba(167,139,250,0.20)' : '1px solid transparent',
                 display: 'flex', flexDirection: 'column',
                 transform: isPremium ? 'translateY(-16px)' : undefined,
                 animation: `productFadeUp 0.65s cubic-bezier(0.16,1,0.3,1) ${i * 0.12}s both`,
               }}>
-                <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: `radial-gradient(ellipse at 50% 0%, ${isDiners ? 'rgba(212,168,83,0.10)' : isPremium ? 'rgba(167,139,250,0.10)' : 'rgba(96,165,250,0.07)'} 0%, transparent 65%)` }} />
+                <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: `radial-gradient(ellipse at 50% 0%, ${isBlack ? 'rgba(167,139,250,0.10)' : isPremium ? 'rgba(167,139,250,0.10)' : 'rgba(96,165,250,0.07)'} 0%, transparent 65%)` }} />
 
                 <div style={{ position: 'relative', zIndex: 1, marginBottom: 16, minHeight: 27 }}>
                   {card.badge && (
                     <span style={{
                       display: 'inline-flex', alignItems: 'center', gap: 5,
                       padding: '5px 12px', borderRadius: t.r999,
-                      background: isDiners ? 'rgba(212,168,83,0.15)' : 'rgba(167,139,250,0.15)',
-                      border: `1px solid ${isDiners ? 'rgba(212,168,83,0.30)' : 'rgba(167,139,250,0.30)'}`,
+                      background: isBlack ? 'rgba(167,139,250,0.15)' : 'rgba(167,139,250,0.15)',
+                      border: `1px solid ${isBlack ? 'rgba(167,139,250,0.30)' : 'rgba(167,139,250,0.30)'}`,
                       fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
-                      color: isDiners ? '#d4a853' : t.purple,
+                      color: isBlack ? '#a78bfa' : t.purple,
                     }}>
                       <span>★</span>{card.badge}
                     </span>
@@ -206,8 +206,8 @@ export default function CardsSection({ onOrder }: CardsSectionProps) {
                     marginTop: 'auto', width: '100%', height: 52,
                     borderRadius: t.r999, border: 'none', cursor: 'pointer',
                     fontSize: 15, fontWeight: 700, letterSpacing: '-0.01em',
-                    background: isDiners
-                      ? 'linear-gradient(135deg, #c8960c, #d4a853)'
+                    background: isBlack
+                      ? 'linear-gradient(135deg, #7c3aed, #a78bfa)'
                       : 'linear-gradient(135deg, #a78bfa 0%, #818cf8 55%, #60a5fa 100%)',
                     color: '#fff',
                   }}>

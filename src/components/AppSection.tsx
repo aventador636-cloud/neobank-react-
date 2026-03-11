@@ -176,32 +176,101 @@ function StatusBar() {
 function CardVisual() {
   return (
     <div style={{ marginBottom: 12 }}>
+      {/* Mastercard Black — premium holographic border */}
       <div className="phone-card-float" style={{
-        borderRadius: 16, padding: '16px 14px',
+        borderRadius: 16, padding: 1,
         position: 'relative', overflow: 'hidden',
-        background: '#0e0b16', aspectRatio: '1.586',
-        display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
-        boxShadow: '0 10px 30px rgba(0,0,0,0.4), 0 0 20px rgba(167,139,250,0.06)',
+        background: 'linear-gradient(135deg, rgba(167,139,250,0.25), rgba(40,40,40,0.6) 30%, rgba(96,165,250,0.15) 60%, rgba(167,139,250,0.2))',
+        aspectRatio: '1.586',
         animation: 'phoneCardIn 0.5s cubic-bezier(0.16,1,0.3,1)',
+        boxShadow: '0 14px 44px rgba(0,0,0,0.55), 0 0 24px rgba(167,139,250,0.06)',
       }}>
-        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'radial-gradient(ellipse at 80% 0%, rgba(167,139,250,0.10) 0%, transparent 60%)' }} />
-        <div style={{ position: 'absolute', right: -8, bottom: -14, fontSize: 90, fontWeight: 900, lineHeight: 1, color: 'rgba(255,255,255,0.02)', pointerEvents: 'none' }}>N</div>
-        <div style={{ position: 'relative', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ width: 28, height: 20, borderRadius: 4, background: 'linear-gradient(135deg, #8a7340, #e8cc7a, #c4a84f)', boxShadow: 'inset 0 1px 1px rgba(255,255,255,0.2)' }} />
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 1.5, opacity: 0.3 }}>
-            {[9, 6, 3].map(w => <div key={w} style={{ height: 1, width: w, borderRadius: 1, background: '#fff', alignSelf: 'flex-end' }} />)}
-          </div>
-        </div>
-        <div style={{ position: 'relative', fontFamily: 'monospace', fontSize: 11, letterSpacing: '0.18em', color: 'rgba(255,255,255,0.55)' }}>5536 •••• •••• 5678</div>
-        <div style={{ position: 'relative', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-          <div>
-            <div style={{ fontSize: 7, fontWeight: 600, color: 'rgba(255,255,255,0.25)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 2 }}>Card holder</div>
-            <div style={{ fontSize: 10, fontWeight: 700, background: 'linear-gradient(90deg, #a78bfa, #818cf8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>NeoBank Premium</div>
-          </div>
-          <svg width="28" height="17" viewBox="0 0 32 20" fill="none">
-            <circle cx="12" cy="10" r="8" fill="#EB001B" /><circle cx="20" cy="10" r="8" fill="#F79E1B" />
-            <path d="M16 3.5a8 8 0 010 13 8 8 0 010-13z" fill="#FF5F00" />
+        {/* Inner card body — deep black */}
+        <div style={{
+          borderRadius: 15, padding: '14px 14px',
+          height: '100%', boxSizing: 'border-box',
+          position: 'relative', overflow: 'hidden',
+          background: 'linear-gradient(155deg, #0d0d10 0%, #111116 35%, #0a0a0e 70%, #0e0e14 100%)',
+          display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+        }}>
+          {/* Subtle aurora glow */}
+          <div className="card-aurora" style={{
+            position: 'absolute', inset: 0, pointerEvents: 'none', opacity: 0.45,
+            background: 'radial-gradient(ellipse at 15% -10%, rgba(167,139,250,0.12) 0%, transparent 45%), radial-gradient(ellipse at 85% 110%, rgba(96,165,250,0.08) 0%, transparent 45%)',
+          }} />
+
+          {/* Diagonal brushed-metal lines */}
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none', opacity: 0.025 }}>
+            <defs>
+              <pattern id="cardLines" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(30)">
+                <line x1="0" y1="0" x2="0" y2="6" stroke="#fff" strokeWidth="0.4" />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#cardLines)" />
           </svg>
+
+          {/* Top row: chip + World Elite badge */}
+          <div style={{ position: 'relative', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            {/* EMV chip */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div style={{ position: 'relative' }}>
+                <div style={{
+                  width: 30, height: 22, borderRadius: 4,
+                  background: 'linear-gradient(145deg, #b8974a, #e8d48a, #c9a64e, #d4b860)',
+                  boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.3), inset 0 -1px 1px rgba(0,0,0,0.2), 0 1px 3px rgba(0,0,0,0.3)',
+                }}>
+                  <div style={{ position: 'absolute', top: 4, left: 5, width: 20, height: 14, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1, opacity: 0.25 }}>
+                    <div style={{ borderRadius: 1, border: '0.5px solid rgba(0,0,0,0.4)' }} />
+                    <div style={{ borderRadius: 1, border: '0.5px solid rgba(0,0,0,0.4)' }} />
+                    <div style={{ borderRadius: 1, border: '0.5px solid rgba(0,0,0,0.4)' }} />
+                    <div style={{ borderRadius: 1, border: '0.5px solid rgba(0,0,0,0.4)' }} />
+                  </div>
+                </div>
+              </div>
+              {/* Contactless */}
+              <svg width="12" height="12" viewBox="0 0 12 12" style={{ opacity: 0.3 }}>
+                <path d="M3 9.5a5.5 5.5 0 010-7" stroke="#fff" strokeWidth="1" fill="none" strokeLinecap="round" />
+                <path d="M5 8a3.2 3.2 0 010-4" stroke="#fff" strokeWidth="1" fill="none" strokeLinecap="round" />
+                <path d="M7 6.8a1.2 1.2 0 010-1.6" stroke="#fff" strokeWidth="1" fill="none" strokeLinecap="round" />
+              </svg>
+            </div>
+            {/* WORLD ELITE label */}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1 }}>
+              <span style={{ fontSize: 5.5, fontWeight: 700, letterSpacing: '0.18em', color: 'rgba(255,255,255,0.18)' }}>WORLD ELITE</span>
+              <span style={{ fontSize: 7, fontWeight: 800, letterSpacing: '0.2em', background: 'linear-gradient(90deg, #a78bfa, #60a5fa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>BLACK</span>
+            </div>
+          </div>
+
+          {/* Card number */}
+          <div style={{ position: 'relative', fontFamily: 'monospace', fontSize: 11.5, letterSpacing: '0.2em', color: 'rgba(255,255,255,0.45)' }}>
+            5536 •••• •••• 5678
+          </div>
+
+          {/* Bottom row: holder info + Mastercard logo */}
+          <div style={{ position: 'relative', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+            <div>
+              <div style={{ display: 'flex', gap: 20, marginBottom: 6 }}>
+                <div>
+                  <div style={{ fontSize: 5.5, fontWeight: 600, color: 'rgba(255,255,255,0.18)', letterSpacing: '0.1em', marginBottom: 1.5 }}>VALID THRU</div>
+                  <div style={{ fontSize: 9, fontWeight: 600, fontFamily: 'monospace', color: 'rgba(255,255,255,0.5)', letterSpacing: '0.08em' }}>12/28</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: 5.5, fontWeight: 600, color: 'rgba(255,255,255,0.18)', letterSpacing: '0.1em', marginBottom: 1.5 }}>CVV</div>
+                  <div style={{ fontSize: 9, fontWeight: 600, fontFamily: 'monospace', color: 'rgba(255,255,255,0.5)', letterSpacing: '0.08em' }}>•••</div>
+                </div>
+              </div>
+              <div style={{ fontSize: 10, fontWeight: 700, color: 'rgba(255,255,255,0.6)', letterSpacing: '0.06em' }}>IVANOV ALEXEI</div>
+            </div>
+            {/* Mastercard logo — dark premium style */}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 3 }}>
+              <svg width="36" height="22" viewBox="0 0 36 22" fill="none">
+                <circle cx="13" cy="11" r="9" fill="rgba(235,0,27,0.7)" />
+                <circle cx="23" cy="11" r="9" fill="rgba(247,158,27,0.55)" />
+                <path d="M18 3.5a9 9 0 010 15 9 9 0 010-15z" fill="rgba(255,95,0,0.6)" />
+              </svg>
+              <span style={{ fontSize: 5, fontWeight: 700, letterSpacing: '0.06em', color: 'rgba(255,255,255,0.15)' }}>mastercard</span>
+            </div>
+          </div>
         </div>
       </div>
       <div style={{ display: 'flex', gap: 6, marginTop: 10 }}>
@@ -508,6 +577,14 @@ export default function AppSection() {
         @keyframes phoneCardFloat {
           0%, 100% { transform: translateY(0px) rotateX(1deg); }
           50%      { transform: translateY(-6px) rotateX(-1deg); }
+        }
+        .card-aurora {
+          animation: auroraShift 6s ease-in-out infinite alternate;
+        }
+        @keyframes auroraShift {
+          0%   { opacity: 0.5; filter: hue-rotate(0deg); }
+          50%  { opacity: 0.7; filter: hue-rotate(15deg); }
+          100% { opacity: 0.5; filter: hue-rotate(-10deg); }
         }
         @keyframes iconPulse {
           0%, 100% { transform: scale(1); }

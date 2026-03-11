@@ -16,7 +16,7 @@ export type Profile = {
 export type Card = {
   id: string
   user_id: string
-  product_id: 'standard' | 'premium' | 'diners'
+  product_id: 'standard' | 'premium' | 'black'
   holder: string | null
   status: 'active' | 'blocked' | 'pending'
   created_at: string

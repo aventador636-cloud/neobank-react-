@@ -17,7 +17,7 @@ const STEPS: {
     icon: <CreditCard size={26} strokeWidth={1.5} color="#a78bfa" />,
     iconClass: 'how-icon-card',
     title: 'Выберите карту',
-    desc: 'Стандартная, Premium или Diners Club — выберите тариф который подходит вашему стилю жизни.',
+    desc: 'Стандартная, Premium или Mastercard Black — выберите тариф который подходит вашему стилю жизни.',
     accent: '#a78bfa',
   },
   {
