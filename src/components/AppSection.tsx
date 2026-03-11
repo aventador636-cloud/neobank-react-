@@ -8,14 +8,14 @@ const tabs = [
     id: 'payments',
     label: 'Платежи',
     icon: '💳',
-    desc: 'Оплачивайте услуги, подписки и счета в пару нажатий. Автоплатежи и шаблоны — чтобы не тратить время на рутину.',
+    desc: 'Оплата ЖКХ, мобильной связи, интернета и штрафов ГИБДД — по шаблону или с автоплатежом. Настройте один раз — и забудьте о просрочках.',
     screen: {
       title: 'Платежи',
       items: [
-        { icon: '📱', name: 'Мобильная связь', sub: 'МТС · Автоплатёж', amount: '-350 ₽', color: '#f87171' },
-        { icon: '🏠', name: 'ЖКХ Квартира', sub: 'Москва · Ежемесячно', amount: '-8 420 ₽', color: '#f87171' },
-        { icon: '🎵', name: 'Яндекс Музыка', sub: 'Подписка · Авто', amount: '-199 ₽', color: '#f87171' },
-        { icon: '⚡', name: 'Электроэнергия', sub: 'Мосэнерго', amount: '-1 230 ₽', color: '#f87171' },
+        { icon: '🏠', name: 'ЖКХ · МосОблЕИРЦ', sub: 'Автоплатёж · каждое 15-е', amount: '-9 870 ₽', color: '#f87171' },
+        { icon: '📱', name: 'Tele2 · +7 915 ***', sub: 'Баланс ниже 100 ₽ → пополнить', amount: '-300 ₽', color: '#f87171' },
+        { icon: '🌐', name: 'Ростелеком Интернет', sub: 'Лицевой счёт 7830••••12', amount: '-890 ₽', color: '#f87171' },
+        { icon: '🚗', name: 'Штраф ГИБДД', sub: 'УИН 188••• · скидка 50%', amount: '-750 ₽', color: '#fb923c' },
       ],
     },
   },
@@ -23,14 +23,14 @@ const tabs = [
     id: 'transfers',
     label: 'Переводы',
     icon: '↗️',
-    desc: 'Мгновенные переводы по номеру телефона, между счетами и в другие банки — без комиссий и ожидания.',
+    desc: 'Переводы через СБП без комиссии, по номеру карты или между своими счетами — деньги придут за секунды в любой банк России.',
     screen: {
-      title: 'Перевод',
+      title: 'Переводы',
       items: [
-        { icon: '👤', name: 'Алексей М.', sub: 'NeoBank · Мгновенно', amount: '-5 000 ₽', color: '#60a5fa' },
-        { icon: '👩', name: 'Мария И.', sub: 'Сбербанк · 0 ₽ комиссия', amount: '-12 000 ₽', color: '#60a5fa' },
-        { icon: '🔄', name: 'Между счетами', sub: 'Накопительный → Основной', amount: '+25 000 ₽', color: '#4ade80' },
-        { icon: '🌍', name: 'SWIFT перевод', sub: 'USD · Deutsche Bank', amount: '-$200', color: '#60a5fa' },
+        { icon: '⚡', name: 'СБП · Алексей М.', sub: 'Сбербанк · мгновенно · 0 ₽', amount: '-15 000 ₽', color: '#60a5fa' },
+        { icon: '💳', name: 'По номеру карты', sub: '2200 •••• 4587 · Т-Банк', amount: '-3 200 ₽', color: '#60a5fa' },
+        { icon: '🔄', name: 'Между счетами', sub: 'Накопительный → Дебетовая', amount: '+50 000 ₽', color: '#4ade80' },
+        { icon: '📲', name: 'Запрос денег', sub: 'Мария И. · ожидает оплаты', amount: '2 500 ₽', color: '#a78bfa' },
       ],
     },
   },
@@ -38,14 +38,14 @@ const tabs = [
     id: 'card',
     label: 'Карта',
     icon: '⚙️',
-    desc: 'Полный контроль над картой: лимиты, заморозка, PIN, уведомления — всё в одном месте без звонков в банк.',
+    desc: 'Заморозка за секунду, лимиты на покупки и снятие, смена PIN-кода, подключение Apple Pay — вся настройка прямо в приложении.',
     screen: {
-      title: 'Управление',
+      title: 'Настройки карты',
       items: [
-        { icon: '🔒', name: 'Заморозить карту', sub: 'Мгновенная блокировка', amount: '', color: '#a78bfa', toggle: true },
-        { icon: '📊', name: 'Лимит покупок', sub: '50 000 ₽ / день', amount: '', color: '#a78bfa', toggle: true },
-        { icon: '🌐', name: 'Онлайн-платежи', sub: 'Включены', amount: '', color: '#4ade80', toggle: true },
-        { icon: '🔔', name: 'Push-уведомления', sub: 'Все операции', amount: '', color: '#4ade80', toggle: true },
+        { icon: '❄️', name: 'Временная блокировка', sub: 'Разморозить в любой момент', amount: '', color: '#a78bfa', toggle: true },
+        { icon: '🛡️', name: 'Лимит на покупки', sub: '100 000 ₽ / сутки', amount: '', color: '#4ade80', toggle: true },
+        { icon: '🏧', name: 'Снятие наличных', sub: '50 000 ₽ / сутки без комиссии', amount: '', color: '#4ade80', toggle: true },
+        { icon: '🔔', name: 'Уведомления по операциям', sub: 'Push + SMS для сумм > 1 000 ₽', amount: '', color: '#4ade80', toggle: true },
       ],
     },
   },
@@ -292,30 +292,51 @@ export default function AppSection() {
       }}>
         {/* Left: tabs + description */}
         <div style={{ order: isMobile ? 2 : 1 }}>
-          {/* Tab buttons */}
+          {/* Tab buttons with progress */}
           <div style={{
-            display: 'flex', gap: 8,
+            display: 'flex', flexDirection: 'column', gap: 6,
             marginBottom: 32,
-            flexWrap: 'wrap',
           }}>
-            {tabs.map((tb, i) => (
-              <button key={tb.id} onClick={() => setActive(i)} style={{
-                display: 'flex', alignItems: 'center', gap: 8,
-                padding: '10px 18px', borderRadius: t.r999,
-                border: active === i ? '1px solid rgba(167,139,250,0.3)' : `1px solid ${t.border}`,
-                background: active === i ? 'rgba(167,139,250,0.10)' : 'transparent',
-                color: active === i ? t.textPrimary : t.textTertiary,
-                fontSize: 14, fontWeight: 600, cursor: 'pointer',
-                transition: 'all 0.25s ease',
-                WebkitTapHighlightColor: 'transparent',
-              }}
-                onMouseEnter={e => { if (active !== i) e.currentTarget.style.borderColor = 'rgba(255,255,255,0.14)' }}
-                onMouseLeave={e => { if (active !== i) e.currentTarget.style.borderColor = t.border }}
-              >
-                <span style={{ fontSize: 16 }}>{tb.icon}</span>
-                {tb.label}
-              </button>
-            ))}
+            {tabs.map((tb, i) => {
+              const isActive = active === i
+              return (
+                <button key={tb.id} onClick={() => setActive(i)} style={{
+                  display: 'flex', alignItems: 'center', gap: 12,
+                  padding: '14px 18px', borderRadius: t.r16,
+                  border: `1px solid ${isActive ? 'rgba(167,139,250,0.20)' : t.border}`,
+                  background: isActive ? 'rgba(167,139,250,0.06)' : 'transparent',
+                  color: isActive ? t.textPrimary : t.textTertiary,
+                  fontSize: 15, fontWeight: 600, cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  WebkitTapHighlightColor: 'transparent',
+                  position: 'relative', overflow: 'hidden',
+                  textAlign: 'left',
+                }}
+                  onMouseEnter={e => { if (!isActive) { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.14)'; e.currentTarget.style.background = 'rgba(255,255,255,0.02)' } }}
+                  onMouseLeave={e => { if (!isActive) { e.currentTarget.style.borderColor = t.border; e.currentTarget.style.background = 'transparent' } }}
+                >
+                  <span className={isActive ? `app-icon-${tb.id}` : ''} style={{
+                    width: 36, height: 36, borderRadius: t.r12, flexShrink: 0,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: 18,
+                    background: isActive ? 'rgba(167,139,250,0.12)' : 'rgba(255,255,255,0.04)',
+                    transition: 'background 0.3s ease',
+                  }}>{tb.icon}</span>
+                  <div>
+                    <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 2 }}>{tb.label}</div>
+                    <div style={{
+                      fontSize: 12, fontWeight: 400,
+                      color: isActive ? t.textSecondary : t.textTertiary,
+                      transition: 'color 0.3s ease',
+                    }}>
+                      {tb.id === 'payments' ? 'ЖКХ, связь, штрафы, подписки' :
+                       tb.id === 'transfers' ? 'СБП, по карте, между счетами' :
+                       'Лимиты, блокировка, PIN, NFC'}
+                    </div>
+                  </div>
+                </button>
+              )
+            })}
           </div>
 
           {/* Description */}
@@ -326,7 +347,7 @@ export default function AppSection() {
 
             {/* Feature highlights */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-              {['Моментальные уведомления', 'Биометрическая защита', 'Работает без интернета'].map(f => (
+              {['Push и SMS по каждой операции', 'Face ID и отпечаток пальца', 'Оплата через Apple Pay и Google Pay'].map(f => (
                 <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   <div style={{
                     width: 6, height: 6, borderRadius: '50%',
@@ -365,6 +386,22 @@ export default function AppSection() {
           from { opacity: 0; transform: translateY(8px); }
           to   { opacity: 1; transform: translateY(0); }
         }
+        @keyframes iconPulse {
+          0%, 100% { transform: scale(1); }
+          50%      { transform: scale(1.18); }
+        }
+        @keyframes iconSlide {
+          0%, 100% { transform: translateX(0); }
+          25%      { transform: translateX(3px) translateY(-2px); }
+          75%      { transform: translateX(-1px); }
+        }
+        @keyframes iconSpin {
+          0%   { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        .app-icon-payments { animation: iconPulse 2s ease-in-out infinite; }
+        .app-icon-transfers { animation: iconSlide 2s ease-in-out infinite; }
+        .app-icon-card { animation: iconSpin 4s linear infinite; }
       `}</style>
     </Section>
   )
