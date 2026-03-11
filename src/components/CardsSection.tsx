@@ -39,6 +39,7 @@ export default function CardsSection({ onOrder }: CardsSectionProps) {
                   flex: 1, height: 36, borderRadius: t.r999, border: 'none',
                   cursor: 'pointer', fontSize: 12, fontWeight: 700,
                   transition: 'all 0.22s ease',
+                  WebkitTapHighlightColor: 'transparent', outline: 'none',
                   background: mobileTab === i
                     ? c.id === 'diners' ? 'linear-gradient(90deg, #c8960c, #d4a853)'
                     : c.id === 'premium' ? 'linear-gradient(90deg, #a78bfa, #818cf8)'
@@ -118,6 +119,7 @@ export default function CardsSection({ onOrder }: CardsSectionProps) {
                 position: 'relative', zIndex: 1,
                 width: '100%', height: 52, borderRadius: t.r999, border: 'none',
                 cursor: 'pointer', fontSize: 15, fontWeight: 700,
+                WebkitTapHighlightColor: 'transparent',
                 background: isDiners
                   ? 'linear-gradient(135deg, #c8960c, #d4a853)'
                   : isPremium
