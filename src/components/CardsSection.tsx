@@ -160,8 +160,8 @@ export default function CardsSection({ onOrder }: CardsSectionProps) {
               }}>
                 <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: `radial-gradient(ellipse at 50% 0%, ${isDiners ? 'rgba(212,168,83,0.10)' : isPremium ? 'rgba(167,139,250,0.10)' : 'rgba(96,165,250,0.07)'} 0%, transparent 65%)` }} />
 
-                {card.badge && (
-                  <div style={{ position: 'relative', zIndex: 1, marginBottom: 16 }}>
+                <div style={{ position: 'relative', zIndex: 1, marginBottom: 16, minHeight: 27 }}>
+                  {card.badge && (
                     <span style={{
                       display: 'inline-flex', alignItems: 'center', gap: 5,
                       padding: '5px 12px', borderRadius: t.r999,
@@ -172,8 +172,8 @@ export default function CardsSection({ onOrder }: CardsSectionProps) {
                     }}>
                       <span>★</span>{card.badge}
                     </span>
-                  </div>
-                )}
+                  )}
+                </div>
 
                 <div style={{ position: 'relative', zIndex: 1, marginBottom: 32 }}>
                   <Card3D card={card} />
