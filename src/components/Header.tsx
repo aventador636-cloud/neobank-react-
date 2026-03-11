@@ -20,8 +20,8 @@ export default function Header({ onCta, onLogin }: HeaderProps) {
         height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       }}>
 
-        <span className="shimmer" style={{ fontSize: 18, fontWeight: 800, letterSpacing: '-0.02em' }}>
-          NeoBank
+        <span className="shimmer" style={{ fontSize: 20, fontWeight: 900, letterSpacing: '-0.03em', fontFamily: "'Inter', system-ui, sans-serif" }}>
+          Neo<span style={{ WebkitTextFillColor: 'transparent', background: 'linear-gradient(135deg, #818cf8, #60a5fa)', WebkitBackgroundClip: 'text', backgroundClip: 'text' }}>Bank</span>
         </span>
 
         {!isMobile && (

@@ -135,7 +135,7 @@ export default function AuthModal({ onClose }: AuthModalProps) {
 
         {/* Logo */}
         <div style={{ marginBottom: 28 }}>
-          <span className="shimmer" style={{ fontSize: 22, fontWeight: 800, letterSpacing: '-0.02em' }}>NeoBank</span>
+          <span className="shimmer" style={{ fontSize: 24, fontWeight: 900, letterSpacing: '-0.03em' }}>Neo<span style={{ WebkitTextFillColor: 'transparent', background: 'linear-gradient(135deg, #818cf8, #60a5fa)', WebkitBackgroundClip: 'text', backgroundClip: 'text' }}>Bank</span></span>
         </div>
 
         {step === 'name' ? (

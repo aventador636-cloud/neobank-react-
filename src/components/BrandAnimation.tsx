@@ -150,7 +150,7 @@ export default function BrandAnimation({ size = 480 }: BrandAnimationProps) {
       {/* Brand name */}
       <div style={{ marginTop: 32, textAlign: 'center' }}>
         <div className="brand-name-shimmer">
-          NeoBank
+          Neo<span style={{ WebkitTextFillColor: 'transparent', background: 'linear-gradient(135deg, #818cf8, #60a5fa)', WebkitBackgroundClip: 'text', backgroundClip: 'text' }}>Bank</span>
         </div>
         <p style={{ fontSize: 16, color: t.textTertiary, marginTop: 8, letterSpacing: '0.06em', textTransform: 'uppercase', fontWeight: 500 }}>
           Банк нового поколения
@@ -159,19 +159,29 @@ export default function BrandAnimation({ size = 480 }: BrandAnimationProps) {
 
       <style>{`
         .brand-name-shimmer {
-          font-size: 48px;
+          font-size: 52px;
           font-weight: 900;
           letter-spacing: -0.04em;
-          background: linear-gradient(90deg, #a78bfa 0%, #818cf8 25%, #60a5fa 50%, #a78bfa 75%, #818cf8 100%);
-          background-size: 200% auto;
+          background: linear-gradient(
+            90deg,
+            #60a5fa 0%,
+            #a78bfa 20%,
+            #e0e7ff 45%,
+            #ffffff 50%,
+            #e0e7ff 55%,
+            #a78bfa 80%,
+            #60a5fa 100%
+          );
+          background-size: 300% auto;
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
-          animation: brandNameShimmer 4s linear infinite;
+          animation: brandNameShimmer 10s ease-in-out infinite;
+          filter: drop-shadow(0 0 20px rgba(129,140,248,0.35));
         }
         @keyframes brandNameShimmer {
-          0%   { background-position: 0% center; }
-          100% { background-position: 200% center; }
+          0%   { background-position: 300% center; }
+          100% { background-position: -300% center; }
         }
       `}</style>
     </div>

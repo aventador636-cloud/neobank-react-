@@ -82,8 +82,8 @@ export default function Footer() {
 
             {/* Brand column */}
             <div>
-              <div className="shimmer" style={{ fontSize: 20, fontWeight: 900, marginBottom: 14, letterSpacing: '-0.03em' }}>
-                NeoBank
+              <div className="shimmer" style={{ fontSize: 22, fontWeight: 900, marginBottom: 14, letterSpacing: '-0.03em' }}>
+                Neo<span style={{ WebkitTextFillColor: 'transparent', background: 'linear-gradient(135deg, #818cf8, #60a5fa)', WebkitBackgroundClip: 'text', backgroundClip: 'text' }}>Bank</span>
               </div>
               <p style={{ fontSize: 14, color: t.textSecondary, lineHeight: 1.7, maxWidth: 200, marginBottom: 28 }}>
                 Современный банк для тех, кто ценит удобство и выгоду каждый день.

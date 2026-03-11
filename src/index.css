@@ -18,15 +18,25 @@ input, select, button, textarea { font-family: inherit; }
 a { text-decoration: none; color: inherit; }
 
 .shimmer {
-  background: linear-gradient(90deg, #c4b5fd 0%, #ffffff 50%, #c4b5fd 100%);
-  background-size: 200% auto;
+  background: linear-gradient(
+    90deg,
+    #60a5fa 0%,
+    #a78bfa 20%,
+    #e0e7ff 45%,
+    #ffffff 50%,
+    #e0e7ff 55%,
+    #a78bfa 80%,
+    #60a5fa 100%
+  );
+  background-size: 300% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  animation: globalShimmer 4s linear infinite;
+  animation: globalShimmer 10s ease-in-out infinite;
   will-change: background-position;
+  filter: drop-shadow(0 0 12px rgba(129,140,248,0.25));
 }
 @keyframes globalShimmer {
-  from { background-position: 200% center; }
-  to   { background-position: -200% center; }
+  0%   { background-position: 300% center; }
+  100% { background-position: -300% center; }
 }

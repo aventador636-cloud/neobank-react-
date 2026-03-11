@@ -1815,7 +1815,7 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
         borderBottom: `1px solid ${t.border}`,
       }}>
         <div style={{ maxWidth: 1000, margin: '0 auto', padding: isMobile ? '0 16px' : '0 24px', height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <span onClick={onGoHome} className="shimmer" style={{ fontSize: 18, fontWeight: 800, letterSpacing: '-0.02em', cursor: 'pointer' }}>NeoBank</span>
+          <span onClick={onGoHome} className="shimmer" style={{ fontSize: 20, fontWeight: 900, letterSpacing: '-0.03em', cursor: 'pointer' }}>Neo<span style={{ WebkitTextFillColor: 'transparent', background: 'linear-gradient(135deg, #818cf8, #60a5fa)', WebkitBackgroundClip: 'text', backgroundClip: 'text' }}>Bank</span></span>
 
           <div style={{ display: 'flex', gap: 8 }}>
             {!isMobile && (['overview', 'profile'] as const).map(tp => (
