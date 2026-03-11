@@ -10,7 +10,7 @@ interface HeroProps { onCta: () => void }
 
 export default function Hero({ onCta }: HeroProps) {
   const { isMobile, isTablet } = useResponsive()
-  const premiumCard = cards.find(c => c.id === 'premium')!
+  const blackCard = cards.find(c => c.id === 'black')!
   const heroRef = useRef<HTMLDivElement>(null)
   const cardWrapRef = useRef<HTMLDivElement>(null)
   const [scrollReady, setScrollReady] = useState(false)
@@ -106,7 +106,7 @@ export default function Hero({ onCta }: HeroProps) {
                 willChange: 'transform',
               }}
             >
-              <Card3D card={premiumCard} disableFloat />
+              <Card3D card={blackCard} disableFloat />
             </div>
           </div>
 

@@ -32,17 +32,48 @@ const cardThemes = {
   black: {
     tier: 'BLACK',
     tierSub: 'WORLD ELITE',
-    bg: 'linear-gradient(155deg, #0d0d10 0%, #111116 35%, #0a0a0e 70%, #0e0e14 100%)',
-    border: 'linear-gradient(135deg, rgba(167,139,250,0.25), rgba(40,40,40,0.6) 30%, rgba(96,165,250,0.15) 60%, rgba(167,139,250,0.2))',
-    aurora: 'radial-gradient(ellipse at 15% -10%, rgba(167,139,250,0.12) 0%, transparent 45%), radial-gradient(ellipse at 85% 110%, rgba(96,165,250,0.08) 0%, transparent 45%)',
+    bg: 'linear-gradient(155deg, #111214 0%, #1a1a1f 20%, #0f1012 45%, #18181d 65%, #111214 100%)',
+    border: 'linear-gradient(135deg, rgba(200,200,220,0.35), rgba(60,60,65,0.7) 25%, rgba(167,139,250,0.2) 50%, rgba(180,180,200,0.25) 75%, rgba(96,165,250,0.2))',
+    aurora: 'radial-gradient(ellipse at 25% 0%, rgba(200,200,220,0.08) 0%, transparent 40%), radial-gradient(ellipse at 75% 100%, rgba(167,139,250,0.07) 0%, transparent 40%), radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.02) 0%, transparent 50%)',
     shadow: 'rgba(167,139,250,0.20)',
-    watermark: 'linear-gradient(135deg, rgba(167,139,250,0.04), rgba(96,165,250,0.02))',
-    tierGrad: 'linear-gradient(90deg, #a78bfa, #60a5fa)',
+    watermark: 'linear-gradient(135deg, rgba(255,255,255,0.03), rgba(167,139,250,0.02))',
+    tierGrad: 'linear-gradient(90deg, #c0c0d0, #a78bfa, #c0c0d0)',
     nameClass: 'card-name-black',
   },
 } as const
 
-function MastercardLogo({ muted }: { muted?: boolean }) {
+function MastercardLogo({ muted, chrome }: { muted?: boolean; chrome?: boolean }) {
+  if (chrome) {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4 }}>
+        <svg width="48" height="30" viewBox="0 0 48 30" fill="none">
+          <defs>
+            <linearGradient id="mcChromeL" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#8a8a9a" />
+              <stop offset="40%" stopColor="#c0c0cc" />
+              <stop offset="60%" stopColor="#707080" />
+              <stop offset="100%" stopColor="#9a9aaa" />
+            </linearGradient>
+            <linearGradient id="mcChromeR" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#9a9aaa" />
+              <stop offset="35%" stopColor="#d0d0dd" />
+              <stop offset="65%" stopColor="#808090" />
+              <stop offset="100%" stopColor="#a8a8b8" />
+            </linearGradient>
+            <linearGradient id="mcChromeM" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#b0b0c0" />
+              <stop offset="50%" stopColor="#e0e0ee" />
+              <stop offset="100%" stopColor="#a0a0b0" />
+            </linearGradient>
+          </defs>
+          <circle cx="17" cy="15" r="12" fill="url(#mcChromeL)" />
+          <circle cx="31" cy="15" r="12" fill="url(#mcChromeR)" />
+          <path d="M24 4.5a12 12 0 010 21 12 12 0 010-21z" fill="url(#mcChromeM)" />
+        </svg>
+        <span style={{ fontSize: 7, fontWeight: 700, letterSpacing: '0.08em', background: 'linear-gradient(90deg, #888898, #c0c0d0, #888898)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>mastercard</span>
+      </div>
+    )
+  }
   const o1 = muted ? 0.7 : 1
   const o2 = muted ? 0.55 : 1
   const o3 = muted ? 0.6 : 1
@@ -144,19 +175,28 @@ export default function Card3D({ card, balance, disableFloat }: Card3DProps) {
 
               {/* Aurora glow */}
               <div className="card-aurora" style={{
-                position: 'absolute', inset: 0, pointerEvents: 'none', opacity: 0.45, zIndex: 0,
+                position: 'absolute', inset: 0, pointerEvents: 'none', opacity: card.id === 'black' ? 0.6 : 0.45, zIndex: 0,
                 background: theme.aurora,
               }} />
 
               {/* Brushed-metal diagonal lines */}
-              <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none', opacity: 0.025, zIndex: 0 }}>
+              <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none', opacity: card.id === 'black' ? 0.05 : 0.025, zIndex: 0 }}>
                 <defs>
-                  <pattern id={patternId} width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(30)">
-                    <line x1="0" y1="0" x2="0" y2="6" stroke="#fff" strokeWidth="0.4" />
+                  <pattern id={patternId} width={card.id === 'black' ? '4' : '6'} height={card.id === 'black' ? '4' : '6'} patternUnits="userSpaceOnUse" patternTransform={card.id === 'black' ? 'rotate(25)' : 'rotate(30)'}>
+                    <line x1="0" y1="0" x2="0" y2={card.id === 'black' ? '4' : '6'} stroke="#fff" strokeWidth={card.id === 'black' ? '0.3' : '0.4'} />
                   </pattern>
                 </defs>
                 <rect width="100%" height="100%" fill={`url(#${patternId})`} />
               </svg>
+
+              {/* Metallic shimmer sweep — Black only */}
+              {card.id === 'black' && (
+                <div className="card-metal-shimmer" style={{
+                  position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1,
+                  background: 'linear-gradient(105deg, transparent 0%, transparent 35%, rgba(255,255,255,0.06) 42%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.06) 58%, transparent 65%, transparent 100%)',
+                  backgroundSize: '300% 100%',
+                }} />
+              )}
 
               {/* Background watermark */}
               <div style={{
@@ -239,8 +279,8 @@ export default function Card3D({ card, balance, disableFloat }: Card3DProps) {
                     {card.holder}
                   </div>
                 </div>
-                {/* Brand logo — muted */}
-                {card.brand === 'Mastercard' ? <MastercardLogo muted /> : <VisaLogo />}
+                {/* Brand logo */}
+                {card.brand === 'Mastercard' ? <MastercardLogo muted={card.id !== 'black'} chrome={card.id === 'black'} /> : <VisaLogo />}
               </div>
 
             </div>
@@ -293,7 +333,7 @@ export default function Card3D({ card, balance, disableFloat }: Card3DProps) {
           animation: cardStripeShimmer 4s linear infinite;
         }
         .card-name-black {
-          background: linear-gradient(90deg, #a78bfa 0%, #818cf8 30%, #60a5fa 60%, #a78bfa 100%);
+          background: linear-gradient(90deg, #8888a0 0%, #c8c8dd 25%, #a78bfa 50%, #c8c8dd 75%, #8888a0 100%);
           background-size: 200% auto;
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
@@ -307,6 +347,13 @@ export default function Card3D({ card, balance, disableFloat }: Card3DProps) {
           0%   { opacity: 0.4; filter: hue-rotate(0deg); }
           50%  { opacity: 0.55; filter: hue-rotate(15deg); }
           100% { opacity: 0.4; filter: hue-rotate(-10deg); }
+        }
+        .card-metal-shimmer {
+          animation: metalSweep 4s ease-in-out infinite;
+        }
+        @keyframes metalSweep {
+          0%   { background-position: 150% 0; }
+          100% { background-position: -50% 0; }
         }
       `}</style>
     </>

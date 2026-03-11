@@ -180,7 +180,7 @@ function CardVisual() {
       <div className="phone-card-float" style={{
         borderRadius: 16, padding: 1,
         position: 'relative', overflow: 'hidden',
-        background: 'linear-gradient(135deg, rgba(167,139,250,0.25), rgba(40,40,40,0.6) 30%, rgba(96,165,250,0.15) 60%, rgba(167,139,250,0.2))',
+        background: 'linear-gradient(135deg, rgba(200,200,220,0.35), rgba(60,60,65,0.7) 25%, rgba(167,139,250,0.2) 50%, rgba(180,180,200,0.25) 75%, rgba(96,165,250,0.2))',
         aspectRatio: '1.586',
         animation: 'phoneCardIn 0.5s cubic-bezier(0.16,1,0.3,1)',
         boxShadow: '0 14px 44px rgba(0,0,0,0.55), 0 0 24px rgba(167,139,250,0.06)',
@@ -190,24 +190,31 @@ function CardVisual() {
           borderRadius: 15, padding: '14px 14px',
           height: '100%', boxSizing: 'border-box',
           position: 'relative', overflow: 'hidden',
-          background: 'linear-gradient(155deg, #0d0d10 0%, #111116 35%, #0a0a0e 70%, #0e0e14 100%)',
+          background: 'linear-gradient(155deg, #111214 0%, #1a1a1f 20%, #0f1012 45%, #18181d 65%, #111214 100%)',
           display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
         }}>
           {/* Subtle aurora glow */}
           <div className="card-aurora" style={{
-            position: 'absolute', inset: 0, pointerEvents: 'none', opacity: 0.45,
-            background: 'radial-gradient(ellipse at 15% -10%, rgba(167,139,250,0.12) 0%, transparent 45%), radial-gradient(ellipse at 85% 110%, rgba(96,165,250,0.08) 0%, transparent 45%)',
+            position: 'absolute', inset: 0, pointerEvents: 'none', opacity: 0.6,
+            background: 'radial-gradient(ellipse at 25% 0%, rgba(200,200,220,0.08) 0%, transparent 40%), radial-gradient(ellipse at 75% 100%, rgba(167,139,250,0.07) 0%, transparent 40%), radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.02) 0%, transparent 50%)',
           }} />
 
           {/* Diagonal brushed-metal lines */}
-          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none', opacity: 0.025 }}>
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none', opacity: 0.05 }}>
             <defs>
-              <pattern id="cardLines" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(30)">
-                <line x1="0" y1="0" x2="0" y2="6" stroke="#fff" strokeWidth="0.4" />
+              <pattern id="cardLines" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(25)">
+                <line x1="0" y1="0" x2="0" y2="4" stroke="#fff" strokeWidth="0.3" />
               </pattern>
             </defs>
             <rect width="100%" height="100%" fill="url(#cardLines)" />
           </svg>
+
+          {/* Metallic shimmer sweep */}
+          <div className="card-metal-shimmer" style={{
+            position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1,
+            background: 'linear-gradient(105deg, transparent 0%, transparent 35%, rgba(255,255,255,0.05) 42%, rgba(255,255,255,0.10) 50%, rgba(255,255,255,0.05) 58%, transparent 65%, transparent 100%)',
+            backgroundSize: '300% 100%',
+          }} />
 
           {/* Top row: chip + World Elite badge */}
           <div style={{ position: 'relative', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -237,7 +244,7 @@ function CardVisual() {
             {/* WORLD ELITE label */}
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1 }}>
               <span style={{ fontSize: 5.5, fontWeight: 700, letterSpacing: '0.18em', color: 'rgba(255,255,255,0.18)' }}>WORLD ELITE</span>
-              <span style={{ fontSize: 7, fontWeight: 800, letterSpacing: '0.2em', background: 'linear-gradient(90deg, #a78bfa, #60a5fa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>BLACK</span>
+              <span style={{ fontSize: 7, fontWeight: 800, letterSpacing: '0.2em', background: 'linear-gradient(90deg, #c0c0d0, #a78bfa, #c0c0d0)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>BLACK</span>
             </div>
           </div>
 
@@ -259,16 +266,35 @@ function CardVisual() {
                   <div style={{ fontSize: 9, fontWeight: 600, fontFamily: 'monospace', color: 'rgba(255,255,255,0.5)', letterSpacing: '0.08em' }}>•••</div>
                 </div>
               </div>
-              <div style={{ fontSize: 10, fontWeight: 700, color: 'rgba(255,255,255,0.6)', letterSpacing: '0.06em' }}>IVANOV ALEXEI</div>
+              <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.06em', background: 'linear-gradient(90deg, #8888a0, #c8c8dd, #a78bfa, #c8c8dd, #8888a0)', backgroundSize: '200% auto', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>IVANOV ALEXEI</div>
             </div>
-            {/* Mastercard logo — dark premium style */}
+            {/* Mastercard logo — chrome metallic */}
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 3 }}>
               <svg width="36" height="22" viewBox="0 0 36 22" fill="none">
-                <circle cx="13" cy="11" r="9" fill="rgba(235,0,27,0.7)" />
-                <circle cx="23" cy="11" r="9" fill="rgba(247,158,27,0.55)" />
-                <path d="M18 3.5a9 9 0 010 15 9 9 0 010-15z" fill="rgba(255,95,0,0.6)" />
+                <defs>
+                  <linearGradient id="mcPhChrL" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#8a8a9a" />
+                    <stop offset="40%" stopColor="#c0c0cc" />
+                    <stop offset="60%" stopColor="#707080" />
+                    <stop offset="100%" stopColor="#9a9aaa" />
+                  </linearGradient>
+                  <linearGradient id="mcPhChrR" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#9a9aaa" />
+                    <stop offset="35%" stopColor="#d0d0dd" />
+                    <stop offset="65%" stopColor="#808090" />
+                    <stop offset="100%" stopColor="#a8a8b8" />
+                  </linearGradient>
+                  <linearGradient id="mcPhChrM" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#b0b0c0" />
+                    <stop offset="50%" stopColor="#e0e0ee" />
+                    <stop offset="100%" stopColor="#a0a0b0" />
+                  </linearGradient>
+                </defs>
+                <circle cx="13" cy="11" r="9" fill="url(#mcPhChrL)" />
+                <circle cx="23" cy="11" r="9" fill="url(#mcPhChrR)" />
+                <path d="M18 3.5a9 9 0 010 15 9 9 0 010-15z" fill="url(#mcPhChrM)" />
               </svg>
-              <span style={{ fontSize: 5, fontWeight: 700, letterSpacing: '0.06em', color: 'rgba(255,255,255,0.15)' }}>mastercard</span>
+              <span style={{ fontSize: 5, fontWeight: 700, letterSpacing: '0.08em', background: 'linear-gradient(90deg, #888898, #c0c0d0, #888898)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>mastercard</span>
             </div>
           </div>
         </div>
@@ -585,6 +611,13 @@ export default function AppSection() {
           0%   { opacity: 0.5; filter: hue-rotate(0deg); }
           50%  { opacity: 0.7; filter: hue-rotate(15deg); }
           100% { opacity: 0.5; filter: hue-rotate(-10deg); }
+        }
+        .card-metal-shimmer {
+          animation: metalSweep 4s ease-in-out infinite;
+        }
+        @keyframes metalSweep {
+          0%   { background-position: 150% 0; }
+          100% { background-position: -50% 0; }
         }
         @keyframes iconPulse {
           0%, 100% { transform: scale(1); }
