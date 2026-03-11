@@ -185,7 +185,7 @@ export default function CardsSection({ onOrder }: CardsSectionProps) {
                     <div style={{ fontSize: 18, fontWeight: 800, color: accent, flexShrink: 0 }}>{card.price}</div>
                   </div>
                   <p style={{ fontSize: 12, color: t.textTertiary, marginBottom: 16 }}>{card.priceNote}</p>
-                  <p style={{ fontSize: 14, lineHeight: 1.7, color: t.textSecondary, marginBottom: 24 }}>{card.description}</p>
+                  <p style={{ fontSize: 14, lineHeight: 1.7, color: t.textSecondary, marginBottom: 24, minHeight: '4.8em' }}>{card.description}</p>
 
                   <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 32 }}>
                     {card.features.map((f, fi) => (
@@ -206,7 +206,9 @@ export default function CardsSection({ onOrder }: CardsSectionProps) {
                     marginTop: 'auto', width: '100%', height: 52,
                     borderRadius: t.r999, border: 'none', cursor: 'pointer',
                     fontSize: 15, fontWeight: 700, letterSpacing: '-0.01em',
-                    background: 'linear-gradient(135deg, #a78bfa 0%, #818cf8 55%, #60a5fa 100%)',
+                    background: isDiners
+                      ? 'linear-gradient(135deg, #c8960c, #d4a853)'
+                      : 'linear-gradient(135deg, #a78bfa 0%, #818cf8 55%, #60a5fa 100%)',
                     color: '#fff',
                   }}>
                     {card.cta}
