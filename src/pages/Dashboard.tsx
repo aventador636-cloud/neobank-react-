@@ -1698,24 +1698,28 @@ function ActionRail({ onTransfer, onTopUp, onPay, onHistory, isMobile }: {
         {actions.map(a => (
           <button key={a.label} onClick={a.onClick} style={{
             background: a.bg, border: `1px solid ${a.border}`,
-            borderRadius: 18, cursor: 'pointer', textAlign: 'left',
-            padding: isMobile ? '14px 12px' : '16px 18px',
-            display: 'flex', alignItems: 'center',
-            gap: isMobile ? 10 : 14,
+            borderRadius: 18, cursor: 'pointer',
+            padding: isMobile ? '14px 10px' : '16px 18px',
+            display: 'flex',
+            flexDirection: isMobile ? 'column' : 'row',
+            alignItems: 'center',
+            justifyContent: isMobile ? 'center' : 'flex-start',
+            gap: isMobile ? 8 : 14,
+            textAlign: isMobile ? 'center' : 'left',
             transition: 'all 0.22s ease',
           }}
             onMouseEnter={e => { e.currentTarget.style.background = a.hoverBg; e.currentTarget.style.borderColor = a.hoverBorder; e.currentTarget.style.transform = 'translateY(-2px)' }}
             onMouseLeave={e => { e.currentTarget.style.background = a.bg; e.currentTarget.style.borderColor = a.border; e.currentTarget.style.transform = 'translateY(0)' }}
           >
             <div style={{
-              width: 40, height: 40, borderRadius: 12, flexShrink: 0,
+              width: isMobile ? 36 : 40, height: isMobile ? 36 : 40, borderRadius: isMobile ? 10 : 12, flexShrink: 0,
               background: a.iconBg, border: `1px solid ${a.iconBorder}`,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
               {a.icon}
             </div>
             <div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: '#fff', marginBottom: 2 }}>{a.label}</div>
+              <div style={{ fontSize: isMobile ? 11 : 14, fontWeight: 700, color: '#fff', marginBottom: isMobile ? 0 : 2 }}>{a.label}</div>
               {!isMobile && <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)' }}>{a.sub}</div>}
             </div>
           </button>
@@ -1866,10 +1870,81 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
                     boxShadow: isActive ? `0 16px 40px rgba(0,0,0,0.35), 0 0 28px ${accent}22` : 'none',
                     transition: 'all 0.3s cubic-bezier(0.16,1,0.3,1)',
                   }}>
-                    <Card3D card={cardWithUser} />
+                    <Card3D card={cardWithUser} balance={balances[i]} />
                   </div>
                 )
               })}
+            </div>
+
+            {/* Mobile card details */}
+            <div style={{
+              marginBottom: 20,
+              background: t.surface,
+              border: `1px solid ${t.border}`,
+              borderRadius: 20,
+              overflow: 'hidden',
+            }}>
+              {/* Balance + card name */}
+              <div style={{ padding: '16px 18px', borderBottom: `1px solid ${t.border}` }}>
+                <div style={{ fontSize: 11, color: t.textTertiary, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>
+                  {cards[activeCard].id === 'standard' ? 'Standard' : cards[activeCard].id === 'premium' ? 'Premium' : 'Diners Club'}
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div className="shimmer" style={{ fontSize: 26, fontWeight: 800, letterSpacing: '-0.03em' }}>
+                    {balances[activeCard].toLocaleString('ru-RU')} ₽
+                  </div>
+                  <div style={{
+                    fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: 999,
+                    background: cardBlocked[activeCard] ? 'rgba(248,113,113,0.1)' : 'rgba(74,222,128,0.1)',
+                    color: cardBlocked[activeCard] ? '#f87171' : '#4ade80',
+                  }}>
+                    {cardBlocked[activeCard] ? '🔒 Заблокирована' : '🔓 Активна'}
+                  </div>
+                </div>
+              </div>
+
+              {/* Details rows */}
+              <div style={{ padding: '0 18px' }}>
+                {[
+                  { label: 'Номер карты', value: cards[activeCard].number, mono: true },
+                  { label: 'Держатель', value: user?.name?.toUpperCase() ?? 'КЛИЕНТ', mono: false },
+                  { label: 'Срок действия', value: '12/29', mono: true },
+                ].map((row, idx) => (
+                  <div key={row.label} style={{
+                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                    padding: '11px 0',
+                    borderTop: idx === 0 ? 'none' : `1px solid ${t.border}`,
+                  }}>
+                    <span style={{ fontSize: 13, color: t.textTertiary }}>{row.label}</span>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: t.textPrimary, fontFamily: row.mono ? 'monospace' : 'inherit', letterSpacing: row.mono ? '0.04em' : 0 }}>{row.value}</span>
+                  </div>
+                ))}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '11px 0', borderTop: `1px solid ${t.border}` }}>
+                  <span style={{ fontSize: 13, color: t.textTertiary }}>CVV</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span style={{ fontSize: 14, fontWeight: 700, color: t.textPrimary, fontFamily: 'monospace', letterSpacing: '0.2em' }}>
+                      {showCvv ? CVV_MOCK[activeCard] : '•••'}
+                    </span>
+                    <button onClick={revealCvv} disabled={showCvv} style={{
+                      background: 'rgba(167,139,250,0.12)', border: `1px solid rgba(167,139,250,0.25)`,
+                      borderRadius: 999, padding: '3px 10px', cursor: showCvv ? 'default' : 'pointer',
+                      fontSize: 11, fontWeight: 700, color: showCvv ? t.textTertiary : t.purple,
+                    }}>{showCvv ? `${cvvCountdown}с` : 'Показать'}</button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Block button */}
+              <div style={{ padding: '12px 18px', borderTop: `1px solid ${t.border}` }}>
+                <button onClick={() => setCardBlocked(prev => { const n = [...prev]; n[activeCard] = !n[activeCard]; return n })} style={{
+                  width: '100%', height: 40, borderRadius: 12, border: 'none', cursor: 'pointer',
+                  background: cardBlocked[activeCard] ? 'rgba(74,222,128,0.12)' : 'rgba(248,113,113,0.12)',
+                  color: cardBlocked[activeCard] ? '#4ade80' : '#f87171',
+                  fontSize: 13, fontWeight: 700,
+                }}>
+                  {cardBlocked[activeCard] ? '🔓 Разблокировать карту' : '🔒 Заблокировать карту'}
+                </button>
+              </div>
             </div>
 
             <ActionRail
@@ -1910,10 +1985,36 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
                         boxShadow: isActive ? `0 16px 40px rgba(0,0,0,0.35), 0 0 28px ${accent}22` : 'none',
                         transition: 'all 0.3s cubic-bezier(0.16,1,0.3,1)',
                       }}>
-                        <Card3D card={{ ...card, holder: user?.name?.toUpperCase() ?? 'КЛИЕНТ' }} />
+                        <Card3D card={{ ...card, holder: user?.name?.toUpperCase() ?? 'КЛИЕНТ' }} balance={balances[i]} />
                       </div>
                     )
                   })}
+                </div>
+              )}
+
+              {/* Mobile: balance + status for active card */}
+              {isMobile && (
+                <div style={{
+                  display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                  marginBottom: 20, padding: '14px 16px',
+                  background: t.surface, borderRadius: 16,
+                  border: `1px solid ${t.border}`,
+                }}>
+                  <div>
+                    <div style={{ fontSize: 11, color: t.textTertiary, marginBottom: 3 }}>
+                      {cards[activeCard].id === 'standard' ? 'Standard' : cards[activeCard].id === 'premium' ? 'Premium' : 'Diners Club'}
+                    </div>
+                    <div className="shimmer" style={{ fontSize: 22, fontWeight: 800, letterSpacing: '-0.03em' }}>
+                      {balances[activeCard].toLocaleString('ru-RU')} ₽
+                    </div>
+                  </div>
+                  <div style={{
+                    fontSize: 11, fontWeight: 700, padding: '4px 12px', borderRadius: 999,
+                    background: cardBlocked[activeCard] ? 'rgba(248,113,113,0.1)' : 'rgba(74,222,128,0.1)',
+                    color: cardBlocked[activeCard] ? '#f87171' : '#4ade80',
+                  }}>
+                    {cardBlocked[activeCard] ? '🔒 Блок' : '🔓 Активна'}
+                  </div>
                 </div>
               )}
 
@@ -2057,13 +2158,12 @@ export default function Dashboard({ onGoHome }: { onGoHome: () => void }) {
                 </button>
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', background: t.surface, borderRadius: t.r16, overflow: 'hidden', border: `1px solid ${t.border}` }}>
                 {transactions.length === 0 && <EmptyState type="no-transactions" />}
                 {transactions.slice(0, 8).map((tx, i) => (
                   <div key={tx.id} style={{
                     display: 'flex', alignItems: 'center', gap: 16,
-                    padding: '14px 16px', borderRadius: t.r16,
-                    background: t.surface,
+                    padding: '14px 16px',
                     borderTop: i === 0 ? 'none' : `1px solid ${t.border}`,
                     transition: t.ease, cursor: 'default',
                   }}

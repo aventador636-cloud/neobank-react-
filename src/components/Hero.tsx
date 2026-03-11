@@ -27,8 +27,8 @@ export default function Hero({ onCta }: HeroProps) {
           gridTemplateColumns: isMobile || isTablet ? '1fr' : '1fr 1fr',
           gap: isMobile ? 48 : isTablet ? 56 : 80,
           alignItems: 'center',
-          paddingTop: isMobile ? 48 : 80,
-          paddingBottom: isMobile ? 48 : 80,
+          paddingTop: isMobile ? 32 : 80,
+          paddingBottom: isMobile ? 32 : 80,
         }}>
 
           {/* ── Left: text ── */}
@@ -59,24 +59,22 @@ export default function Hero({ onCta }: HeroProps) {
           </div>
 
           {/* ── Right: card ── */}
-          {!isMobile && (
+          <div style={{
+            display: 'flex', justifyContent: isMobile ? 'center' : isTablet ? 'center' : 'flex-end',
+            position: 'relative',
+          }}>
+            {/* Glow behind card */}
             <div style={{
-              display: 'flex', justifyContent: isTablet ? 'center' : 'flex-end',
-              position: 'relative',
-            }}>
-              {/* Glow behind card */}
-              <div style={{
-                position: 'absolute', top: '50%', left: '50%',
-                transform: 'translate(-50%, -50%)',
-                width: 400, height: 300, pointerEvents: 'none',
-                background: 'radial-gradient(ellipse, rgba(167,139,250,0.15) 0%, transparent 70%)',
-                filter: 'blur(40px)',
-              }} />
-              <div style={{ width: isTablet ? 360 : 420, position: 'relative' }}>
-                <Card3D card={premiumCard} />
-              </div>
+              position: 'absolute', top: '50%', left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: isMobile ? 280 : 400, height: isMobile ? 200 : 300, pointerEvents: 'none',
+              background: 'radial-gradient(ellipse, rgba(167,139,250,0.15) 0%, transparent 70%)',
+              filter: 'blur(40px)',
+            }} />
+            <div style={{ width: isMobile ? 300 : isTablet ? 360 : 420, position: 'relative' }}>
+              <Card3D card={premiumCard} />
             </div>
-          )}
+          </div>
 
         </div>
       </Container>
