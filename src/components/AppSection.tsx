@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { t } from '../styles/tokens'
 import { Section, Heading } from './Layout'
 import { useResponsive } from '../hooks/useResponsive'
@@ -40,7 +40,7 @@ const tabs = [
     icon: '⚙️',
     desc: 'Заморозка за секунду, лимиты на покупки и снятие, смена PIN-кода, подключение Apple Pay — вся настройка прямо в приложении.',
     screen: {
-      title: 'Настройки карты',
+      title: 'Моя карта',
       items: [
         { icon: '❄️', name: 'Временная блокировка', sub: 'Разморозить в любой момент', amount: '', color: '#a78bfa', toggle: true },
         { icon: '🛡️', name: 'Лимит на покупки', sub: '100 000 ₽ / сутки', amount: '', color: '#4ade80', toggle: true },
@@ -60,212 +60,321 @@ interface ScreenItem {
   toggle?: boolean
 }
 
-function PhoneMockup({ screen, activeTab }: { screen: typeof tabs[number]['screen']; activeTab: string }) {
+// iPhone 16 Pro Max frame constants
+const FRAME_W = 280
+const FRAME_H = 588
+const SCREEN_X = 8
+const SCREEN_Y = 12
+const SCREEN_W = 264
+const SCREEN_H = 556
+const CORNER_R = 55
+const SCREEN_R = 47
+
+function IPhoneFrame() {
   return (
-    <div style={{ position: 'relative', width: 280, margin: '0 auto' }}>
-      {/* ── Titanium frame ── */}
-      <div style={{
-        position: 'relative',
-        borderRadius: 48,
-        padding: 3,
-        background: 'linear-gradient(145deg, #3a3a3c 0%, #1c1c1e 40%, #2c2c2e 60%, #48484a 100%)',
-        boxShadow: `
-          0 50px 100px rgba(0,0,0,0.6),
-          0 0 0 1px rgba(255,255,255,0.06),
-          inset 0 1px 0 rgba(255,255,255,0.08),
-          0 0 80px rgba(129,140,248,0.05)
-        `,
-      }}>
-        {/* Side button — Power (right) */}
-        <div style={{
-          position: 'absolute', right: -2.5, top: 110, width: 3, height: 48,
-          borderRadius: '0 3px 3px 0',
-          background: 'linear-gradient(180deg, #48484a, #2c2c2e, #48484a)',
-        }} />
-        {/* Side buttons — Volume (left) */}
-        <div style={{
-          position: 'absolute', left: -2.5, top: 100, width: 3, height: 28,
-          borderRadius: '3px 0 0 3px',
-          background: 'linear-gradient(180deg, #48484a, #2c2c2e, #48484a)',
-        }} />
-        <div style={{
-          position: 'absolute', left: -2.5, top: 138, width: 3, height: 28,
-          borderRadius: '3px 0 0 3px',
-          background: 'linear-gradient(180deg, #48484a, #2c2c2e, #48484a)',
-        }} />
+    <svg
+      width={FRAME_W}
+      height={FRAME_H}
+      viewBox={`0 0 ${FRAME_W} ${FRAME_H}`}
+      fill="none"
+      style={{ position: 'absolute', top: 0, left: 0, zIndex: 2, pointerEvents: 'none' }}
+    >
+      <defs>
+        {/* Titanium edge gradient */}
+        <linearGradient id="titaniumEdge" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#4a4a4a" />
+          <stop offset="30%" stopColor="#6b6b6b" />
+          <stop offset="50%" stopColor="#3d3d3d" />
+          <stop offset="70%" stopColor="#5e5e5e" />
+          <stop offset="100%" stopColor="#404040" />
+        </linearGradient>
+        {/* Glass highlight */}
+        <linearGradient id="glassHighlight" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="rgba(255,255,255,0.15)" />
+          <stop offset="50%" stopColor="rgba(255,255,255,0.02)" />
+          <stop offset="100%" stopColor="rgba(255,255,255,0.08)" />
+        </linearGradient>
+        {/* Mask to cut out screen area */}
+        <mask id="screenCutout">
+          <rect width={FRAME_W} height={FRAME_H} fill="white" />
+          <rect x={SCREEN_X} y={SCREEN_Y} width={SCREEN_W} height={SCREEN_H} rx={SCREEN_R} fill="black" />
+        </mask>
+      </defs>
 
-        {/* ── Screen ── */}
-        <div style={{
-          borderRadius: 45,
-          overflow: 'hidden',
-          background: '#000000',
-          position: 'relative',
-        }}>
+      {/* Frame with screen cutout mask */}
+      <g mask="url(#screenCutout)">
+        {/* Outer frame — titanium edge */}
+        <rect x="0" y="0" width={FRAME_W} height={FRAME_H} rx={CORNER_R} fill="url(#titaniumEdge)" />
+        {/* Inner frame body — black */}
+        <rect x="3" y="3" width={FRAME_W - 6} height={FRAME_H - 6} rx={CORNER_R - 3} fill="#1a1a1a" />
+      </g>
 
-          {/* Dynamic Island */}
-          <div style={{
-            position: 'absolute', top: 10, left: '50%', transform: 'translateX(-50%)',
-            zIndex: 10,
-            width: 120, height: 34,
-            borderRadius: 20,
-            background: '#000000',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-          }}>
-            {/* Front camera */}
-            <div style={{
-              width: 10, height: 10, borderRadius: '50%',
-              background: 'radial-gradient(circle at 35% 35%, #1a1a2e 0%, #0a0a0f 60%)',
-              boxShadow: 'inset 0 0 2px rgba(100,100,255,0.15), 0 0 3px rgba(0,0,0,0.5)',
-            }} />
-          </div>
+      {/* Glass edge highlight stroke */}
+      <rect x="0.5" y="0.5" width={FRAME_W - 1} height={FRAME_H - 1} rx={CORNER_R} fill="none" stroke="url(#glassHighlight)" strokeWidth="1" />
 
-          {/* Screen content area */}
-          <div style={{ padding: '14px 14px 10px', minHeight: 520, background: '#0c0d0f' }}>
+      {/* Dynamic Island */}
+      <rect x="94" y="20" width="92" height="28" rx="14" fill="#000" />
 
-            {/* Status bar — around Dynamic Island */}
-            <div style={{
-              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-              height: 44, marginBottom: 8, padding: '0 4px',
-            }}>
-              <span style={{ fontSize: 14, fontWeight: 700, color: '#fff', width: 50 }}>9:41</span>
-              <div style={{ width: 120 }} /> {/* Dynamic Island space */}
-              <div style={{ display: 'flex', gap: 5, alignItems: 'center', width: 50, justifyContent: 'flex-end' }}>
-                {/* Signal bars */}
-                <svg width="16" height="11" viewBox="0 0 16 11" fill="none">
-                  <rect x="0" y="8" width="3" height="3" rx="0.5" fill="rgba(255,255,255,0.9)" />
-                  <rect x="4.5" y="5.5" width="3" height="5.5" rx="0.5" fill="rgba(255,255,255,0.9)" />
-                  <rect x="9" y="2.5" width="3" height="8.5" rx="0.5" fill="rgba(255,255,255,0.9)" />
-                  <rect x="13" y="0" width="3" height="11" rx="0.5" fill="rgba(255,255,255,0.35)" />
-                </svg>
-                {/* WiFi */}
-                <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
-                  <path d="M7 9.5a1 1 0 100-2 1 1 0 000 2z" fill="rgba(255,255,255,0.9)" />
-                  <path d="M4 6.5a4.2 4.2 0 016 0" stroke="rgba(255,255,255,0.9)" strokeWidth="1.2" strokeLinecap="round" fill="none" />
-                  <path d="M1.5 4a7.5 7.5 0 0111 0" stroke="rgba(255,255,255,0.9)" strokeWidth="1.2" strokeLinecap="round" fill="none" />
-                </svg>
-                {/* Battery */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <div style={{
-                    width: 22, height: 11, borderRadius: 3,
-                    border: '1px solid rgba(255,255,255,0.35)',
-                    padding: 1.5, position: 'relative',
-                  }}>
-                    <div style={{
-                      width: '75%', height: '100%', borderRadius: 1.5,
-                      background: '#4ade80',
-                    }} />
-                  </div>
-                  <div style={{
-                    width: 1.5, height: 4, borderRadius: '0 1px 1px 0',
-                    background: 'rgba(255,255,255,0.35)',
-                  }} />
-                </div>
-              </div>
-            </div>
+      {/* Side buttons — Power (right) */}
+      <rect x={FRAME_W - 1} y="148" width="2.5" height="64" rx="1" fill="#4a4a4a" />
 
-            {/* Title */}
-            <div style={{
-              fontSize: 28, fontWeight: 800, color: '#fff',
-              marginBottom: 20, letterSpacing: '-0.03em', padding: '0 4px',
-            }}>
-              {screen.title}
-            </div>
+      {/* Volume Up (left) */}
+      <rect x="-1.5" y="128" width="2.5" height="32" rx="1" fill="#4a4a4a" />
 
-            {/* Items */}
-            <div key={activeTab} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {screen.items.map((item: ScreenItem, i: number) => (
-                <div key={item.name} style={{
-                  display: 'flex', alignItems: 'center', gap: 12,
-                  padding: '14px 12px', borderRadius: 16,
-                  background: 'rgba(255,255,255,0.04)',
-                  border: '1px solid rgba(255,255,255,0.05)',
-                  animation: `appItemSlide 0.35s cubic-bezier(0.16,1,0.3,1) ${i * 0.07}s both`,
-                  backdropFilter: 'blur(10px)',
-                }}>
-                  <div style={{
-                    width: 40, height: 40, borderRadius: 12, flexShrink: 0,
-                    background: `${item.color}15`,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 18,
-                  }}>
-                    {item.icon}
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: '#fff' }}>{item.name}</div>
-                    <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 2 }}>{item.sub}</div>
-                  </div>
-                  {item.toggle ? (
-                    <div style={{
-                      width: 42, height: 26, borderRadius: 13,
-                      background: item.color === '#4ade80'
-                        ? 'linear-gradient(135deg, #34d399, #4ade80)'
-                        : 'rgba(255,255,255,0.1)',
-                      position: 'relative', flexShrink: 0,
-                      transition: 'background 0.3s ease',
-                    }}>
-                      <div style={{
-                        width: 22, height: 22, borderRadius: '50%',
-                        background: '#fff',
-                        position: 'absolute', top: 2,
-                        left: item.color === '#4ade80' ? 18 : 2,
-                        boxShadow: '0 1px 3px rgba(0,0,0,0.3)',
-                        transition: 'left 0.2s ease',
-                      }} />
-                    </div>
-                  ) : (
-                    <div style={{ fontSize: 14, fontWeight: 700, color: item.color, flexShrink: 0 }}>
-                      {item.amount}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
+      {/* Volume Down (left) */}
+      <rect x="-1.5" y="172" width="2.5" height="32" rx="1" fill="#4a4a4a" />
 
-            {/* Bottom navigation bar */}
-            <div style={{
-              display: 'flex', justifyContent: 'space-around', alignItems: 'center',
-              marginTop: 24, padding: '12px 0 4px',
-              borderTop: '1px solid rgba(255,255,255,0.06)',
-            }}>
-              {[
-                { icon: '🏠', label: 'Главная', active: false },
-                { icon: '💳', label: 'Карта', active: activeTab === 'card' },
-                { icon: '↗️', label: 'Перевод', active: activeTab === 'transfers' },
-                { icon: '⚙️', label: 'Ещё', active: false },
-              ].map(nav => (
-                <div key={nav.label} style={{
-                  display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3,
-                }}>
-                  <span style={{ fontSize: 18, opacity: nav.active ? 1 : 0.4 }}>{nav.icon}</span>
-                  <span style={{
-                    fontSize: 9, fontWeight: 600, letterSpacing: '0.02em',
-                    color: nav.active ? '#a78bfa' : 'rgba(255,255,255,0.3)',
-                  }}>{nav.label}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+      {/* Action Button (left) */}
+      <rect x="-1.5" y="96" width="2.5" height="20" rx="1" fill="#4a4a4a" />
+    </svg>
+  )
+}
 
-          {/* Home indicator */}
-          <div style={{
-            padding: '6px 0 8px', background: '#0c0d0f',
-            display: 'flex', justifyContent: 'center',
-          }}>
-            <div style={{
-              width: 130, height: 5, borderRadius: 3,
-              background: 'rgba(255,255,255,0.2)',
-            }} />
+function StatusBar() {
+  const [now, setNow] = useState(new Date())
+  const [colonVisible, setColonVisible] = useState(true)
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setNow(new Date())
+      setColonVisible(v => !v)
+    }, 1000)
+    return () => clearInterval(timer)
+  }, [])
+
+  const hours = now.getHours()
+  const minutes = now.getMinutes().toString().padStart(2, '0')
+
+  return (
+    <div style={{
+      display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+      height: 36, padding: '0 4px', marginBottom: 2,
+      paddingTop: 24,
+    }}>
+      <span style={{ fontSize: 14, fontWeight: 700, color: '#fff', width: 40, fontVariantNumeric: 'tabular-nums' }}>
+        {hours}<span style={{ opacity: colonVisible ? 1 : 0, transition: 'opacity 0.15s ease' }}>:</span>{minutes}
+      </span>
+      {/* Gap for Dynamic Island overlay */}
+      <div style={{ width: 92 }} />
+      <div style={{ display: 'flex', gap: 4, alignItems: 'center', width: 40, justifyContent: 'flex-end' }}>
+        <svg width="14" height="10" viewBox="0 0 16 11" fill="none">
+          <rect x="0" y="8" width="3" height="3" rx="0.5" fill="rgba(255,255,255,0.8)" />
+          <rect x="4.5" y="5.5" width="3" height="5.5" rx="0.5" fill="rgba(255,255,255,0.8)" />
+          <rect x="9" y="2.5" width="3" height="8.5" rx="0.5" fill="rgba(255,255,255,0.8)" />
+          <rect x="13" y="0" width="3" height="11" rx="0.5" fill="rgba(255,255,255,0.25)" />
+        </svg>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+          <div style={{ width: 20, height: 10, borderRadius: 2.5, border: '1px solid rgba(255,255,255,0.3)', padding: 1.5 }}>
+            <div style={{ width: '75%', height: '100%', borderRadius: 1, background: '#4ade80' }} />
           </div>
         </div>
       </div>
+    </div>
+  )
+}
 
-      {/* Reflection on surface */}
+function CardVisual() {
+  return (
+    <div style={{ marginBottom: 12 }}>
+      <div className="phone-card-float" style={{
+        borderRadius: 16, padding: '16px 14px',
+        position: 'relative', overflow: 'hidden',
+        background: '#0e0b16', aspectRatio: '1.586',
+        display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+        boxShadow: '0 10px 30px rgba(0,0,0,0.4), 0 0 20px rgba(167,139,250,0.06)',
+        animation: 'phoneCardIn 0.5s cubic-bezier(0.16,1,0.3,1)',
+      }}>
+        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'radial-gradient(ellipse at 80% 0%, rgba(167,139,250,0.10) 0%, transparent 60%)' }} />
+        <div style={{ position: 'absolute', right: -8, bottom: -14, fontSize: 90, fontWeight: 900, lineHeight: 1, color: 'rgba(255,255,255,0.02)', pointerEvents: 'none' }}>N</div>
+        <div style={{ position: 'relative', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ width: 28, height: 20, borderRadius: 4, background: 'linear-gradient(135deg, #8a7340, #e8cc7a, #c4a84f)', boxShadow: 'inset 0 1px 1px rgba(255,255,255,0.2)' }} />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 1.5, opacity: 0.3 }}>
+            {[9, 6, 3].map(w => <div key={w} style={{ height: 1, width: w, borderRadius: 1, background: '#fff', alignSelf: 'flex-end' }} />)}
+          </div>
+        </div>
+        <div style={{ position: 'relative', fontFamily: 'monospace', fontSize: 11, letterSpacing: '0.18em', color: 'rgba(255,255,255,0.55)' }}>5536 •••• •••• 5678</div>
+        <div style={{ position: 'relative', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+          <div>
+            <div style={{ fontSize: 7, fontWeight: 600, color: 'rgba(255,255,255,0.25)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 2 }}>Card holder</div>
+            <div style={{ fontSize: 10, fontWeight: 700, background: 'linear-gradient(90deg, #a78bfa, #818cf8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>NeoBank Premium</div>
+          </div>
+          <svg width="28" height="17" viewBox="0 0 32 20" fill="none">
+            <circle cx="12" cy="10" r="8" fill="#EB001B" /><circle cx="20" cy="10" r="8" fill="#F79E1B" />
+            <path d="M16 3.5a8 8 0 010 13 8 8 0 010-13z" fill="#FF5F00" />
+          </svg>
+        </div>
+      </div>
+      <div style={{ display: 'flex', gap: 6, marginTop: 10 }}>
+        {[{ l: 'Заморозить', i: '❄️' }, { l: 'PIN', i: '🔢' }, { l: 'Лимиты', i: '📊' }, { l: 'Инфо', i: '📋' }].map((a, i) => (
+          <div key={a.l} style={{
+            flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
+            padding: '10px 2px', borderRadius: 12,
+            background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.05)',
+            animation: `appItemSlide 0.3s cubic-bezier(0.16,1,0.3,1) ${0.15 + i * 0.05}s both`,
+          }}>
+            <span style={{ fontSize: 16 }}>{a.i}</span>
+            <span style={{ fontSize: 9, fontWeight: 600, color: 'rgba(255,255,255,0.45)' }}>{a.l}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function ListItems({ items, activeTab }: { items: readonly ScreenItem[]; activeTab: string }) {
+  return (
+    <div key={activeTab} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+      {items.map((item: ScreenItem, i: number) => (
+        <div key={item.name} style={{
+          display: 'flex', alignItems: 'center', gap: 10,
+          padding: '10px 10px', borderRadius: 14,
+          background: 'rgba(255,255,255,0.04)',
+          border: '1px solid rgba(255,255,255,0.05)',
+          animation: `appItemSlide 0.35s cubic-bezier(0.16,1,0.3,1) ${i * 0.07}s both`,
+        }}>
+          <div style={{
+            width: 34, height: 34, borderRadius: 10, flexShrink: 0,
+            background: `${item.color}12`,
+            display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15,
+          }}>{item.icon}</div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: '#fff' }}>{item.name}</div>
+            <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', marginTop: 1 }}>{item.sub}</div>
+          </div>
+          {item.toggle ? (
+            <div style={{
+              width: 36, height: 22, borderRadius: 11, flexShrink: 0,
+              background: item.color === '#4ade80' ? 'linear-gradient(135deg, #34d399, #4ade80)' : 'rgba(255,255,255,0.1)',
+              position: 'relative',
+            }}>
+              <div style={{
+                width: 18, height: 18, borderRadius: '50%', background: '#fff',
+                position: 'absolute', top: 2,
+                left: item.color === '#4ade80' ? 16 : 2,
+                boxShadow: '0 1px 2px rgba(0,0,0,0.3)',
+              }} />
+            </div>
+          ) : (
+            <div style={{ fontSize: 13, fontWeight: 700, color: item.color, flexShrink: 0 }}>{item.amount}</div>
+          )}
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function BottomNav({ activeTab, onTabChange }: { activeTab: string; onTabChange: (id: string) => void }) {
+  return (
+    <div style={{
+      display: 'flex', justifyContent: 'space-around', alignItems: 'center',
+      padding: '10px 0 4px',
+      borderTop: '1px solid rgba(255,255,255,0.05)',
+    }}>
+      {[
+        { id: 'payments', label: 'Платежи', active: activeTab === 'payments' },
+        { id: 'transfers', label: 'Переводы', active: activeTab === 'transfers' },
+        { id: 'card', label: 'Карта', active: activeTab === 'card' },
+        { id: 'more', label: 'Ещё', active: false },
+      ].map(nav => (
+        <div
+          key={nav.label}
+          onClick={() => { if (nav.id !== 'more') onTabChange(nav.id) }}
+          style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, cursor: nav.id !== 'more' ? 'pointer' : 'default' }}
+        >
+          <div style={{ width: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            {nav.id === 'payments' ? (
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <rect x="2" y="4" width="16" height="12" rx="2.5" stroke={nav.active ? '#a78bfa' : 'rgba(255,255,255,0.25)'} strokeWidth="1.5" fill="none" />
+                <line x1="2" y1="8.5" x2="18" y2="8.5" stroke={nav.active ? '#a78bfa' : 'rgba(255,255,255,0.25)'} strokeWidth="1.5" />
+              </svg>
+            ) : nav.id === 'transfers' ? (
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M4 12l6-7 6 7" stroke={nav.active ? '#a78bfa' : 'rgba(255,255,255,0.25)'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                <line x1="10" y1="5" x2="10" y2="16" stroke={nav.active ? '#a78bfa' : 'rgba(255,255,255,0.25)'} strokeWidth="1.5" strokeLinecap="round" />
+              </svg>
+            ) : nav.id === 'card' ? (
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <rect x="3" y="5" width="14" height="10" rx="2" stroke={nav.active ? '#a78bfa' : 'rgba(255,255,255,0.25)'} strokeWidth="1.5" fill="none" />
+                <rect x="5" y="7.5" width="4" height="3" rx="0.8" fill={nav.active ? '#a78bfa' : 'rgba(255,255,255,0.25)'} />
+              </svg>
+            ) : (
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <circle cx="10" cy="4.5" r="1.5" fill={nav.active ? '#a78bfa' : 'rgba(255,255,255,0.25)'} />
+                <circle cx="10" cy="10" r="1.5" fill={nav.active ? '#a78bfa' : 'rgba(255,255,255,0.25)'} />
+                <circle cx="10" cy="15.5" r="1.5" fill={nav.active ? '#a78bfa' : 'rgba(255,255,255,0.25)'} />
+              </svg>
+            )}
+          </div>
+          <span style={{ fontSize: 9, fontWeight: 600, color: nav.active ? '#a78bfa' : 'rgba(255,255,255,0.25)' }}>{nav.label}</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function PhoneMockup({ screen, activeTab, onTabChange }: { screen: typeof tabs[number]['screen']; activeTab: string; onTabChange: (id: string) => void }) {
+  const { isMobile } = useResponsive()
+
+  return (
+    <div style={{
+      position: 'relative',
+      width: FRAME_W,
+      height: FRAME_H,
+      transform: isMobile ? 'scale(0.85)' : undefined,
+      transformOrigin: 'top center',
+    }}>
+      {/* Screen content (z-index: 1) */}
       <div style={{
-        position: 'absolute', bottom: -40, left: '10%', right: '10%', height: 40,
-        background: 'linear-gradient(to bottom, rgba(255,255,255,0.02), transparent)',
-        filter: 'blur(8px)',
-        pointerEvents: 'none',
-      }} />
+        position: 'absolute',
+        top: SCREEN_Y,
+        left: SCREEN_X,
+        width: SCREEN_W,
+        height: SCREEN_H,
+        borderRadius: SCREEN_R,
+        overflow: 'hidden',
+        background: '#0c0d0f',
+        display: 'flex',
+        flexDirection: 'column',
+        zIndex: 1,
+      }}>
+        {/* Status bar with Dynamic Island gap */}
+        <div style={{ flexShrink: 0, padding: '0 12px' }}>
+          <StatusBar />
+        </div>
+
+        {/* Title */}
+        <div style={{ flexShrink: 0, padding: '0 16px' }}>
+          <div style={{ fontSize: 22, fontWeight: 800, color: '#fff', marginBottom: 12, letterSpacing: '-0.03em' }}>
+            {screen.title}
+          </div>
+        </div>
+
+        {/* Content area — flex:1 absorbs variable height, no jumping */}
+        <div style={{
+          flex: 1,
+          overflow: 'hidden',
+          padding: '0 12px',
+        }}>
+          {activeTab === 'card' ? (
+            <CardVisual />
+          ) : (
+            <ListItems items={screen.items} activeTab={activeTab} />
+          )}
+        </div>
+
+        {/* Bottom nav */}
+        <div style={{ flexShrink: 0, padding: '0 12px' }}>
+          <BottomNav activeTab={activeTab} onTabChange={onTabChange} />
+        </div>
+
+        {/* Home indicator */}
+        <div style={{ flexShrink: 0, padding: '5px 0 8px', display: 'flex', justifyContent: 'center' }}>
+          <div style={{ width: 120, height: 4, borderRadius: 2, background: 'rgba(255,255,255,0.18)' }} />
+        </div>
+      </div>
+
+      {/* SVG frame overlay (z-index: 2) */}
+      <IPhoneFrame />
     </div>
   )
 }
@@ -372,7 +481,10 @@ export default function AppSection() {
               background: 'radial-gradient(ellipse, rgba(167,139,250,0.12) 0%, transparent 70%)',
               filter: 'blur(50px)',
             }} />
-            <PhoneMockup screen={tab.screen} activeTab={tab.id} />
+            <PhoneMockup screen={tab.screen} activeTab={tab.id} onTabChange={(id) => {
+              const idx = tabs.findIndex(tb => tb.id === id)
+              if (idx !== -1) setActive(idx)
+            }} />
           </div>
         </div>
       </div>
@@ -385,6 +497,17 @@ export default function AppSection() {
         @keyframes appFadeIn {
           from { opacity: 0; transform: translateY(8px); }
           to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes phoneCardIn {
+          from { opacity: 0; transform: perspective(600px) rotateY(-25deg) scale(0.9); }
+          to   { opacity: 1; transform: perspective(600px) rotateY(0deg) scale(1); }
+        }
+        .phone-card-float {
+          animation: phoneCardFloat 4s ease-in-out infinite, phoneCardIn 0.5s cubic-bezier(0.16,1,0.3,1);
+        }
+        @keyframes phoneCardFloat {
+          0%, 100% { transform: translateY(0px) rotateX(1deg); }
+          50%      { transform: translateY(-6px) rotateX(-1deg); }
         }
         @keyframes iconPulse {
           0%, 100% { transform: scale(1); }
