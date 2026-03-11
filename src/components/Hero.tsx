@@ -1,3 +1,4 @@
+import { useRef, useEffect, useState } from 'react'
 import { t } from '../styles/tokens'
 import { Container, Btn } from './Layout'
 import Card3D from './Card3D'
@@ -10,9 +11,34 @@ interface HeroProps { onCta: () => void }
 export default function Hero({ onCta }: HeroProps) {
   const { isMobile, isTablet } = useResponsive()
   const premiumCard = cards.find(c => c.id === 'premium')!
+  const heroRef = useRef<HTMLDivElement>(null)
+  const cardWrapRef = useRef<HTMLDivElement>(null)
+  const [scrollReady, setScrollReady] = useState(false)
+
+  useEffect(() => {
+    setScrollReady(true)
+    const handleScroll = () => {
+      if (!heroRef.current || !cardWrapRef.current) return
+      const rect = heroRef.current.getBoundingClientRect()
+      const heroH = rect.height
+      // progress: 0 = hero top at viewport top, 1 = hero fully scrolled out
+      const progress = Math.min(Math.max(-rect.top / heroH, 0), 1)
+
+      const rotateY = -18 + progress * 24    // -18° → 6°
+      const rotateX = 8 - progress * 14      // 8° → -6°
+      const scale   = 0.92 + progress * 0.08 // 0.92 → 1.0
+
+      cardWrapRef.current.style.transform =
+        `perspective(1000px) rotateY(${rotateY}deg) rotateX(${rotateX}deg) scale(${scale})`
+    }
+
+    handleScroll()
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   return (
-    <div style={{ position: 'relative', overflow: 'hidden' }}>
+    <div ref={heroRef} style={{ position: 'relative', overflow: 'hidden' }}>
       {/* Ambient glow */}
       <div style={{
         position: 'absolute', top: -100, left: '50%', transform: 'translateX(-50%)',
@@ -71,8 +97,16 @@ export default function Hero({ onCta }: HeroProps) {
               background: 'radial-gradient(ellipse, rgba(167,139,250,0.15) 0%, transparent 70%)',
               filter: 'blur(40px)',
             }} />
-            <div style={{ width: isMobile ? 300 : isTablet ? 360 : 420, position: 'relative' }}>
-              <Card3D card={premiumCard} />
+            <div
+              ref={cardWrapRef}
+              style={{
+                width: isMobile ? 300 : isTablet ? 360 : 420,
+                position: 'relative',
+                transition: scrollReady ? 'none' : 'transform 0.6s ease',
+                willChange: 'transform',
+              }}
+            >
+              <Card3D card={premiumCard} disableFloat />
             </div>
           </div>
 

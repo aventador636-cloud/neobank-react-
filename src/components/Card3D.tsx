@@ -3,7 +3,7 @@ import type { CardProduct } from '../data/cards'
 import { t } from '../styles/tokens'
 import { useResponsive } from '../hooks/useResponsive'
 
-interface Card3DProps { card: CardProduct; balance?: number }
+interface Card3DProps { card: CardProduct; balance?: number; disableFloat?: boolean }
 
 function BrandLogo({ brand, size = 'card' }: { brand: string; size?: 'card' | 'label' }) {
   if (brand === 'VISA') {
@@ -63,7 +63,7 @@ function BrandLogo({ brand, size = 'card' }: { brand: string; size?: 'card' | 'l
   return <span style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.35)' }}>{brand}</span>
 }
 
-export default function Card3D({ card, balance }: Card3DProps) {
+export default function Card3D({ card, balance, disableFloat }: Card3DProps) {
   const wrapRef  = useRef<HTMLDivElement>(null)
   const glareRef = useRef<HTMLDivElement>(null)
   const { isMobile } = useResponsive()
@@ -90,7 +90,7 @@ export default function Card3D({ card, balance }: Card3DProps) {
 
   const onMouseLeave = () => {
     if (wrapRef.current) {
-      wrapRef.current.style.animation = 'cardFloat 6s ease-in-out infinite'
+      wrapRef.current.style.animation = disableFloat ? 'none' : 'cardFloat 6s ease-in-out infinite'
       wrapRef.current.style.transform = ''
     }
     if (glareRef.current) glareRef.current.style.opacity = '0'
@@ -101,7 +101,7 @@ export default function Card3D({ card, balance }: Card3DProps) {
       <div style={{ perspective: '1000px', cursor: 'pointer' }} onMouseMove={isMobile ? undefined : onMouseMove} onMouseLeave={isMobile ? undefined : onMouseLeave}>
         <div ref={wrapRef} style={{
           transformStyle: 'preserve-3d',
-          animation: isMobile ? 'none' : 'cardFloat 6s ease-in-out infinite',
+          animation: isMobile || disableFloat ? 'none' : 'cardFloat 6s ease-in-out infinite',
           transition: isMobile ? 'none' : 'transform 0.1s linear',
           willChange: isMobile ? 'auto' : 'transform',
           position: 'relative',
