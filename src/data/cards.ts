@@ -74,7 +74,7 @@ export const cards: CardProduct[] = [
     btnClass: 'diners',
     price: '1 990 ₽',
     priceNote: 'в месяц · только по приглашению',
-    cta: 'Запросить доступ',
+    cta: 'Открыть Diners Club',
   },
 ]
 

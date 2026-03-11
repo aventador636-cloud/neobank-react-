@@ -46,7 +46,11 @@ export default function AuthModal({ onClose }: AuthModalProps) {
   const phoneReady = phoneDigits.length === 11
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPhone(e.target.value.replace(/\D/g, ''))
+    let digits = e.target.value.replace(/\D/g, '')
+    if (digits.length === 0) { setPhone(''); setError(''); return }
+    if (digits[0] === '8') digits = '7' + digits.slice(1)
+    else if (digits[0] !== '7') digits = '7' + digits
+    setPhone(digits.slice(0, 11))
     setError('')
   }
 
