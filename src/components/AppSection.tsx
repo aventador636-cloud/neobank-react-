@@ -256,15 +256,9 @@ function CardVisual() {
           {/* Bottom row: holder info + Mastercard logo */}
           <div style={{ position: 'relative', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
             <div>
-              <div style={{ display: 'flex', gap: 20, marginBottom: 6 }}>
-                <div>
-                  <div style={{ fontSize: 5.5, fontWeight: 600, color: 'rgba(255,255,255,0.18)', letterSpacing: '0.1em', marginBottom: 1.5 }}>VALID THRU</div>
-                  <div style={{ fontSize: 9, fontWeight: 600, fontFamily: 'monospace', color: 'rgba(255,255,255,0.5)', letterSpacing: '0.08em' }}>12/28</div>
-                </div>
-                <div>
-                  <div style={{ fontSize: 5.5, fontWeight: 600, color: 'rgba(255,255,255,0.18)', letterSpacing: '0.1em', marginBottom: 1.5 }}>CVV</div>
-                  <div style={{ fontSize: 9, fontWeight: 600, fontFamily: 'monospace', color: 'rgba(255,255,255,0.5)', letterSpacing: '0.08em' }}>•••</div>
-                </div>
+              <div style={{ marginBottom: 6 }}>
+                <div style={{ fontSize: 5.5, fontWeight: 600, color: 'rgba(255,255,255,0.18)', letterSpacing: '0.1em', marginBottom: 1.5 }}>VALID THRU</div>
+                <div style={{ fontSize: 9, fontWeight: 600, fontFamily: 'monospace', color: 'rgba(255,255,255,0.5)', letterSpacing: '0.08em' }}>12/28</div>
               </div>
               <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.06em', background: 'linear-gradient(90deg, #8888a0, #c8c8dd, #a78bfa, #c8c8dd, #8888a0)', backgroundSize: '200% auto', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>IVANOV ALEXEI</div>
             </div>

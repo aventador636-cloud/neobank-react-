@@ -262,18 +262,12 @@ export default function Card3D({ card, balance, disableFloat }: Card3DProps) {
                 {card.number}
               </div>
 
-              {/* ── Bottom row: holder + valid thru + CVV + brand logo ── */}
+              {/* ── Bottom row: holder + valid thru + brand logo ── */}
               <div style={{ position: 'relative', zIndex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
                 <div>
-                  <div style={{ display: 'flex', gap: 24, marginBottom: 6 }}>
-                    <div>
-                      <div style={{ fontSize: 8, fontWeight: 600, color: 'rgba(255,255,255,0.18)', letterSpacing: '0.1em', marginBottom: 2 }}>VALID THRU</div>
-                      <div style={{ fontSize: 12, fontWeight: 600, fontFamily: 'monospace', color: 'rgba(255,255,255,0.5)', letterSpacing: '0.08em' }}>12/29</div>
-                    </div>
-                    <div>
-                      <div style={{ fontSize: 8, fontWeight: 600, color: 'rgba(255,255,255,0.18)', letterSpacing: '0.1em', marginBottom: 2 }}>CVV</div>
-                      <div style={{ fontSize: 12, fontWeight: 600, fontFamily: 'monospace', color: 'rgba(255,255,255,0.5)', letterSpacing: '0.08em' }}>•••</div>
-                    </div>
+                  <div style={{ marginBottom: 6 }}>
+                    <div style={{ fontSize: 8, fontWeight: 600, color: 'rgba(255,255,255,0.18)', letterSpacing: '0.1em', marginBottom: 2 }}>VALID THRU</div>
+                    <div style={{ fontSize: 12, fontWeight: 600, fontFamily: 'monospace', color: 'rgba(255,255,255,0.5)', letterSpacing: '0.08em' }}>12/29</div>
                   </div>
                   <div className={theme.nameClass} style={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.04em' }}>
                     {card.holder}
