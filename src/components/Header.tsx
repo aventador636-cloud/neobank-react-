@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { t } from '../styles/tokens'
 import { useResponsive } from '../hooks/useResponsive'
 
@@ -7,12 +7,22 @@ interface HeaderProps { onCta: () => void; onLogin: () => void }
 export default function Header({ onCta, onLogin }: HeaderProps) {
   const { isMobile } = useResponsive()
   const [active, setActive] = useState<'login' | 'open'>('login')
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   return (
     <header style={{
       position: 'sticky', top: 0, zIndex: 100,
-      background: 'rgba(8,9,10,0.85)', backdropFilter: 'blur(20px)',
-      borderBottom: `1px solid ${t.border}`,
+      background: scrolled ? 'rgba(8,9,10,0.85)' : 'transparent',
+      backdropFilter: scrolled ? 'blur(20px)' : 'none',
+      borderBottom: scrolled ? `1px solid ${t.border}` : '1px solid transparent',
+      transition: 'background 0.4s ease, backdrop-filter 0.4s ease, border-bottom 0.4s ease',
     }}>
       <div style={{
         maxWidth: 1160, margin: '0 auto',
